@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loja - Minha Loja Online</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+<h1>Minha Loja Online</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="loja.html">Loja</a>
+<a href="carrinho.html">Carrinho</a>
+</nav>
+</header>
+
+<h2 style="text-align:center; padding-top:20px;">Nossos Produtos</h2>
+
+<div class="container">
+
+<div class="produto">
+<img src="https://via.placeholder.com/200">
+<h3>Tênis Premium</h3>
+<p>25.000 Kz</p>
+<button onclick="adicionarCarrinho('Tênis Premium', 25000)">Comprar</button>
+</div>
+
+<div class="produto">
+<img src="https://via.placeholder.com/200">
+<h3>Relógio Luxo</h3>
+<p>18.000 Kz</p>
+<button onclick="adicionarCarrinho('Relógio Luxo', 18000)">Comprar</button>
+</div>
+
+<div class="produto">
+<img src="https://via.placeholder.com/200">
+<h3>Mochila Moderna</h3>
+<p>12.000 Kz</p>
+<button onclick="adicionarCarrinho('Mochila Moderna', 12000)">Comprar</button>
+</div>
+
+</div>
+
+<script>
+function adicionarCarrinho(produto, preco){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  carrinho.push({nome:produto, preco:preco});
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  alert(produto + " adicionado ao carrinho!");
+}
+</script>
+
+</body>
+</html>

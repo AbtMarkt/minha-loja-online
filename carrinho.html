@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrinho - Minha Loja</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+<h1>Minha Loja Online</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="loja.html">Loja</a>
+<a href="carrinho.html">Carrinho</a>
+</nav>
+</header>
+
+<div class="carrinho">
+<h2>Seu Carrinho</h2>
+<div id="itens"></div>
+<p id="total"></p>
+<button class="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
+</div>
+
+<script>
+function mostrarCarrinho(){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  let container = document.getElementById('itens');
+  let total = 0;
+  container.innerHTML = "";
+  
+  carrinho.forEach((item, index) => {
+    total += item.preco;
+    container.innerHTML += `
+      <div class="produto-item">
+        ${item.nome} - ${item.preco} Kz
+        <button onclick="remover(${index})">Remover</button>
+      </div>`;
+  });
+  
+  document.getElementById('total').innerText = "Total: " + total + " Kz";
+}
+
+function remover(index){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  carrinho.splice(index,1);
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  mostrarCarrinho();
+}
+
+function finalizarCompra(){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  if(carrinho.length === 0){
+    alert("Seu carrinho está vazio!");
+    return;
+  }
+  
+  let mensagem = "Olá! Gostaria de comprar:\n";
+  carrinho.forEach(item => {
+    mensagem += `${item.nome} - ${item.preco} Kz\n`;
+  });
+  
+  // Substitua SEUNUMERO pelo seu WhatsApp internacional
+  let url = "https://wa.me/+244937912339?text=" + encodeURIComponent(mensagem);
+  window.open(url, "_blank");
+  localStorage.removeItem('carrinho');
+  mostrarCarrinho();
+}
+
+mostrarCarrinho();
+</script>
+
+</body>
+</html>
