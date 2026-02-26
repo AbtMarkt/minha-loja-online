@@ -3,29 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minha Loja Online</title>
+<title>ABT Marketplace</title>
+
+<!-- CSS Externo -->
 <link rel="stylesheet" href="style.css">
+
+<!-- Fonte Poppins -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
-<h1>Minha Loja Online</h1>
-<nav>
-<a href="index.html">Home</a>
-<a href="loja.html">Loja</a>
-<a href="carrinho.html">Carrinho</a>
-</nav>
+  <div class="container-header">
+    <h1 class="logo">ABT <span>Marktplace</span></h1>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#loja">Loja</a>
+      <a href="#carrinho">Carrinho 🛒</a>
+    </nav>
+    <button class="menu-toggle">☰</button>
+  </div>
 </header>
 
-<section class="hero">
-<h2>Bem-vindo à ABT Marktplace</h2>
-<p>Encontre produtos incríveis com os melhores preços e entrega rápida!</p>
-<a href="loja.html" class="botao">Ver Produtos</a>
+<!-- HOME -->
+<section id="home" class="hero">
+  <div class="hero-content">
+    <h2>Bem-vindo à ABT Marketplace</h2>
+    <p>Encontre produtos incríveis com os melhores preços e entrega rápida!</p>
+    <a href="#loja" class="botao">Ver Produtos</a>
+  </div>
+  <div class="hero-image">
+    <img src="https://via.placeholder.com/400x300" alt="Produtos em destaque">
+  </div>
 </section>
 
+<!-- LOJA -->
+<section id="loja">
+  <h2>Nossos Produtos</h2>
+  <div class="container">
+    <div class="produto">
+      <img src="https://via.placeholder.com/300x300" alt="Tênis Premium">
+      <h3>Tênis Premium</h3>
+      <p>25.000 Kz</p>
+      <button onclick="adicionarCarrinho('Tênis Premium', 25000)">Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/300x300" alt="Relógio Luxo">
+      <h3>Relógio Luxo</h3>
+      <p>18.000 Kz</p>
+      <button onclick="adicionarCarrinho('Relógio Luxo', 18000)">Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/300x300" alt="Mochila Moderna">
+      <h3>Mochila Moderna</h3>
+      <p>12.000 Kz</p>
+      <button onclick="adicionarCarrinho('Mochila Moderna', 12000)">Comprar</button>
+    </div>
+  </div>
+</section>
+
+<!-- CARRINHO -->
+<section id="carrinho">
+  <div class="carrinho">
+    <h2>Seu Carrinho</h2>
+    <div id="itens"></div>
+    <p id="total"></p>
+    <button class="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-<p>© 2026 Minha Loja - Todos os direitos reservados</p>
+  <div class="footer-container">
+    <div class="footer-links">
+      <h3>ABT Marketplace</h3>
+      <a href="#home">Home</a>
+      <a href="#loja">Loja</a>
+      <a href="#carrinho">Carrinho</a>
+    </div>
+    <div class="footer-info">
+      <p>© 2026 ABT Marketplace - Todos os direitos reservados</p>
+      <p>Contato: suporte@abtmarketplace.com</p>
+    </div>
+  </div>
 </footer>
+
+<!-- SCRIPT -->
+<script>
+function adicionarCarrinho(produto, preco){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  carrinho.push({nome: produto, preco: preco});
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  alert(produto + " adicionado ao carrinho!");
+  mostrarCarrinho();
+}
+
+function mostrarCarrinho(){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  let container = document.getElementById('itens');
+  let total = 0;
+  container.innerHTML = "";
+  carrinho.forEach((item, index) => {
+    total += item.preco;
+    container.innerHTML += `
+      <div class="produto-item">
+        <span>${item.nome} - ${item.preco} Kz</span>
+        <button onclick="remover(${index})">Remover</button>
+      </div>`;
+  });
+  document.getElementById('total').innerHTML = `<strong>Total: ${total} Kz</strong>`;
+}
+
+function remover(index){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  carrinho.splice(index,1);
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  mostrarCarrinho();
+}
+
+function finalizarCompra(){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  if(carrinho.length === 0){ alert("Seu carrinho está vazio!"); return; }
+  let mensagem = "Olá! Gostaria de comprar:\n";
+  carrinho.forEach(item => { mensagem += `${item.nome} - ${item.preco} Kz\n`; });
+  let url = "https://wa.me/+244937912339?text=" + encodeURIComponent(mensagem);
+  window.open(url, "_blank");
+  localStorage.removeItem('carrinho');
+  mostrarCarrinho();
+}
+
+// Menu mobile toggle
+const menuToggle = document.querySelector('.menu-toggle');
+const nav = document.querySelector('nav');
+menuToggle.addEventListener('click', () => { nav.classList.toggle('active'); });
+
+mostrarCarrinho();
+</script>
 
 </body>
 </html>

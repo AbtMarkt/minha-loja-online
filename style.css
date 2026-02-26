@@ -1,179 +1,316 @@
-/* style.css - estilo moderno e responsivo */
+/* ==========================
+   RESET E BASE
+========================== */
 * {
-  margin:0; padding:0; box-sizing:border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background:#f9f9f9;
-  color:#333;
+  font-family: 'Poppins', sans-serif;
+  background: #111111;
+  color: #E0E0E0;
+  line-height: 1.6;
+  scroll-behavior: smooth;
 }
 
-/* Header */
+:root {
+  --primaria: #D4AF37;  /* Dourado */
+  --secundaria: #FFD700; /* Dourado vivo */
+  --fundo: #111111;
+  --texto: #E0E0E0;
+  --header: #111111;
+  --footer: #111111;
+}
+
+/* ==========================
+   HEADER
+========================== */
 header {
-  background:#222;
-  color:white;
-  padding:15px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--header);
+  color: var(--primaria);
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.5);
 }
 
-header h1 {
-  font-size:1.5rem;
+header .logo {
+  font-size: 1.8rem;
 }
 
-nav a {
-  color:white;
-  margin-left:20px;
-  text-decoration:none;
-  font-weight:bold;
-  transition:0.3s;
+header .logo span {
+  color: var(--secundaria);
 }
 
-nav a:hover { color:#4CAF50; }
+header nav a {
+  margin-left: 25px;
+  color: var(--primaria);
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s;
+}
 
-/* Hero */
+header nav a:hover {
+  color: var(--secundaria);
+}
+
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: var(--primaria);
+}
+
+/* ==========================
+   HERO HOME
+========================== */
 .hero {
-  text-align:center;
-  padding:80px 20px;
-  background:#4CAF50;
-  color:white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 100px 50px;
+  background: linear-gradient(120deg, #111111, #222222);
+  color: var(--primaria);
+  border-radius: 0 0 50px 50px;
 }
 
-.hero h2 {
-  font-size:2rem;
-  margin-bottom:15px;
+.hero-content h2 {
+  font-size: 3rem;
+  margin-bottom: 20px;
 }
 
-.hero p {
-  margin-bottom:20px;
-  font-size:1.1rem;
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+  color: #E0E0E0;
 }
 
-.botao {
-  padding:15px 35px;
-  background:white;
-  color:#4CAF50;
-  text-decoration:none;
-  border-radius:5px;
-  font-weight:bold;
-  transition:0.3s;
+.hero .botao {
+  background: var(--primaria);
+  color: #111;
+  padding: 15px 40px;
+  border-radius: 50px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.3s;
 }
 
-.botao:hover { background:#e6e6e6; }
+.hero .botao:hover {
+  background: var(--secundaria);
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(255,215,0,0.4);
+}
 
-/* Container produtos */
+.hero-image img {
+  max-width: 500px;
+  border-radius: 20px;
+}
+
+/* ==========================
+   LOJA
+========================== */
+#loja {
+  padding: 80px 50px;
+  text-align: center;
+}
+
+#loja h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: var(--primaria);
+}
+
 .container {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
-  padding:40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+  gap: 25px;
+  padding: 0 50px;
 }
 
-/* Produto */
 .produto {
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
-  text-align:center;
-  transition:0.3s;
+  background: #1c1c1c;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  text-align: center;
+  transition: 0.3s;
 }
 
 .produto:hover {
-  transform:translateY(-5px);
-  box-shadow:0 10px 20px rgba(0,0,0,0.2);
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(212,175,55,0.4);
 }
 
 .produto img {
-  width:100%;
-  border-radius:10px;
-  margin-bottom:15px;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
 }
 
-.produto h3 { margin-bottom:10px; }
-.produto p { margin-bottom:15px; font-weight:bold; }
-
-button {
-  padding:10px 20px;
-  background:#4CAF50;
-  color:white;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-  transition:0.3s;
+.produto h3 {
+  margin: 10px 0;
+  font-weight: 600;
+  color: var(--primaria);
 }
 
-button:hover { background:#3e8e41; }
+.produto p {
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: var(--secundaria);
+}
 
-/* Carrinho */
+.produto button {
+  padding: 10px 20px;
+  background: var(--primaria);
+  color: #111;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.produto button:hover {
+  background: var(--secundaria);
+}
+
+/* ==========================
+   CARRINHO
+========================== */
 .carrinho {
-  background:white;
-  width:90%;
-  max-width:600px;
-  margin:40px auto;
-  padding:30px;
-  border-radius:10px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  background: #1c1c1c;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 
-.carrinho h2 { text-align:center; margin-bottom:20px; }
+.carrinho h2 {
+  margin-bottom: 25px;
+  color: var(--primaria);
+}
 
 .produto-item {
-  margin-bottom:15px;
-  padding-bottom:10px;
-  border-bottom:1px solid #ccc;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .produto-item button {
-  padding:5px 10px;
-  background:red;
-  border:none;
-  border-radius:5px;
-  color:white;
-  cursor:pointer;
-  transition:0.3s;
+  padding: 5px 10px;
+  background: red;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.produto-item button:hover { background:#b30000; }
+.produto-item button:hover {
+  background: #b30000;
+}
 
 #total {
-  text-align:right;
-  font-weight:bold;
-  margin-top:20px;
-  margin-bottom:20px;
+  text-align: right;
+  font-weight: bold;
+  margin: 20px 0;
+  color: var(--primaria);
 }
 
 button.finalizar {
-  width:100%;
-  padding:12px;
-  background:#4CAF50;
-  border:none;
-  border-radius:5px;
-  color:white;
-  cursor:pointer;
-  font-weight:bold;
-  transition:0.3s;
+  width: 100%;
+  padding: 12px;
+  background: var(--primaria);
+  border: none;
+  border-radius: 10px;
+  color: #111;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
-button.finalizar:hover { background:#3e8e41; }
+button.finalizar:hover {
+  background: var(--secundaria);
+}
 
-/* Footer */
+/* ==========================
+   FOOTER
+========================== */
 footer {
-  background:#222;
-  color:white;
-  text-align:center;
-  padding:20px;
-  margin-top:50px;
+  background: var(--footer);
+  color: var(--primaria);
+  padding: 40px 20px;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  text-align: left;
 }
 
-/* Responsivo */
-@media (max-width:600px){
-  header { flex-direction:column; }
-  nav a { margin:10px 0 0 0; }
-  .hero { padding:50px 20px; }
+footer h3 {
+  margin-bottom: 15px;
+}
+
+footer a {
+  color: var(--primaria);
+  text-decoration: none;
+  margin-bottom: 10px;
+  display: block;
+}
+
+footer a:hover {
+  color: var(--secundaria);
+}
+
+/* ==========================
+   RESPONSIVO
+========================== */
+@media(max-width:900px){
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+  .hero-image img {
+    margin-top: 20px;
+    max-width: 90%;
+  }
+}
+
+@media(max-width:600px){
+  header {
+    flex-direction: column;
+    padding: 15px;
+  }
+  .menu-toggle {
+    display: block;
+  }
+  nav {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+  }
+  nav.active {
+    display: flex;
+  }
+  nav a {
+    margin: 10px 0;
+  }
+  .container {
+    padding: 0 20px;
+  }
+  .hero, #loja, #carrinho {
+    padding: 50px 20px;
+  }
 }
