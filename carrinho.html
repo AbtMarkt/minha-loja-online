@@ -3,44 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carrinho - Minha Loja</title>
+<title>Carrinho - ABT Marketplace</title>
 <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <header>
-<h1>Minha Loja Online</h1>
-<nav>
-<a href="index.html">Home</a>
-<a href="loja.html">Loja</a>
-<a href="carrinho.html">Carrinho</a>
-</nav>
+  <div class="container-header">
+    <h1 class="logo">ABT <span>Marktplace</span></h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="index.html#loja">Loja</a>
+      <a href="#">Carrinho 🛒</a>
+    </nav>
+  </div>
 </header>
 
-<div class="carrinho">
-<h2>Seu Carrinho</h2>
-<div id="itens"></div>
-<p id="total"></p>
-<button class="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
-</div>
+<section class="carrinho-page">
+  <h2>Seu Carrinho</h2>
+  <div id="itens" class="carrinho-itens"></div>
+
+  <div class="resumo">
+    <h3>Resumo do Pedido</h3>
+    <input type="text" id="nomeCliente" placeholder="Seu Nome" required>
+    <input type="text" id="enderecoCliente" placeholder="Endereço de Entrega" required>
+    <select id="metodoPagamento">
+      <option value="">Selecione o método de pagamento</option>
+      <option value="Multicaixa">Multicaixa</option>
+      <option value="MbWay/Pix">MbWay/Pix</option>
+      <option value="Entrega">Pagamento na Entrega</option>
+    </select>
+    <button class="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-container">
+    <p>© 2026 ABT Marketplace - Todos os direitos reservados</p>
+  </div>
+</footer>
 
 <script>
 function mostrarCarrinho(){
   let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
   let container = document.getElementById('itens');
+  container.innerHTML = '';
   let total = 0;
-  container.innerHTML = "";
-  
+
   carrinho.forEach((item, index) => {
     total += item.preco;
     container.innerHTML += `
       <div class="produto-item">
-        ${item.nome} - ${item.preco} Kz
-        <button onclick="remover(${index})">Remover</button>
+        <div class="detalhes">
+          <h4>${item.nome}</h4>
+          <p>Preço: ${item.preco} Kz</p>
+        </div>
+        <button class="remover" onclick="remover(${index})">Remover</button>
       </div>`;
   });
-  
-  document.getElementById('total').innerText = "Total: " + total + " Kz";
+
+  if(carrinho.length){
+    container.innerHTML += `<p class="total"><strong>Total: ${total} Kz</strong></p>`;
+  } else {
+    container.innerHTML = '<p>Seu carrinho está vazio!</p>';
+  }
 }
 
 function remover(index){
@@ -52,17 +79,16 @@ function remover(index){
 
 function finalizarCompra(){
   let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  if(carrinho.length === 0){
-    alert("Seu carrinho está vazio!");
-    return;
-  }
-  
-  let mensagem = "Olá! Gostaria de comprar:\n";
-  carrinho.forEach(item => {
-    mensagem += `${item.nome} - ${item.preco} Kz\n`;
-  });
-  
-  // Substitua SEUNUMERO pelo seu WhatsApp internacional
+  let nome = document.getElementById('nomeCliente').value.trim();
+  let endereco = document.getElementById('enderecoCliente').value.trim();
+  let metodo = document.getElementById('metodoPagamento').value;
+
+  if(carrinho.length === 0){ alert("Seu carrinho está vazio!"); return; }
+  if(!nome || !endereco || !metodo){ alert("Preencha todos os detalhes!"); return; }
+
+  let mensagem = `Olá! Meu nome é ${nome}.\nEndereço: ${endereco}.\nForma de pagamento: ${metodo}.\nGostaria de comprar:\n`;
+  carrinho.forEach(item => { mensagem += `${item.nome} - ${item.preco} Kz\n`; });
+
   let url = "https://wa.me/+244937912339?text=" + encodeURIComponent(mensagem);
   window.open(url, "_blank");
   localStorage.removeItem('carrinho');
@@ -71,6 +97,5 @@ function finalizarCompra(){
 
 mostrarCarrinho();
 </script>
-
 </body>
 </html>

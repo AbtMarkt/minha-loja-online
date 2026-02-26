@@ -4,11 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ABT Marketplace</title>
-
-<!-- CSS Externo -->
 <link rel="stylesheet" href="style.css">
-
-<!-- Fonte Poppins -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -34,7 +30,7 @@
     <a href="#loja" class="botao">Ver Produtos</a>
   </div>
   <div class="hero-image">
-    <img src="https://via.placeholder.com/400x300" alt="Produtos em destaque">
+    <img src="https://images.unsplash.com/photo-1598300051220-d8f7b57d9c77?auto=format&fit=crop&w=500&q=80" alt="Produtos em destaque">
   </div>
 </section>
 
@@ -43,19 +39,19 @@
   <h2>Nossos Produtos</h2>
   <div class="container">
     <div class="produto">
-      <img src="https://via.placeholder.com/300x300" alt="Tênis Premium">
+      <img src="https://images.unsplash.com/photo-1618354690361-8f449d56e92c?auto=format&fit=crop&w=300&q=80" alt="Tênis Premium">
       <h3>Tênis Premium</h3>
       <p>25.000 Kz</p>
       <button onclick="adicionarCarrinho('Tênis Premium', 25000)">Comprar</button>
     </div>
     <div class="produto">
-      <img src="https://via.placeholder.com/300x300" alt="Relógio Luxo">
+      <img src="https://images.unsplash.com/photo-1598327100703-269018c6f9f3?auto=format&fit=crop&w=300&q=80" alt="Relógio Luxo">
       <h3>Relógio Luxo</h3>
       <p>18.000 Kz</p>
       <button onclick="adicionarCarrinho('Relógio Luxo', 18000)">Comprar</button>
     </div>
     <div class="produto">
-      <img src="https://via.placeholder.com/300x300" alt="Mochila Moderna">
+      <img src="https://images.unsplash.com/photo-1593032465175-1f65e1424ff1?auto=format&fit=crop&w=300&q=80" alt="Mochila Moderna">
       <h3>Mochila Moderna</h3>
       <p>12.000 Kz</p>
       <button onclick="adicionarCarrinho('Mochila Moderna', 12000)">Comprar</button>
@@ -69,6 +65,28 @@
     <h2>Seu Carrinho</h2>
     <div id="itens"></div>
     <p id="total"></p>
+
+    <div class="pagamento">
+      <h3>Formas de Pagamento</h3>
+      <ul>
+        <li>Multicaixa: 0000-0000-0000-0000</li>
+        <li>MbWay/Pix: +244 9XXXXXXXX</li>
+        <li>Pagamento na entrega disponível</li>
+      </ul>
+    </div>
+
+    <div class="detalhes-entrega">
+      <h3>Detalhes para Entrega</h3>
+      <input type="text" id="nomeCliente" placeholder="Seu Nome" required>
+      <input type="text" id="enderecoCliente" placeholder="Endereço de Entrega" required>
+      <select id="metodoPagamento">
+        <option value="">Selecione o método de pagamento</option>
+        <option value="Multicaixa">Multicaixa</option>
+        <option value="MbWay/Pix">MbWay/Pix</option>
+        <option value="Entrega">Pagamento na Entrega</option>
+      </select>
+    </div>
+
     <button class="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
   </div>
 </section>
@@ -124,9 +142,24 @@ function remover(index){
 
 function finalizarCompra(){
   let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  if(carrinho.length === 0){ alert("Seu carrinho está vazio!"); return; }
-  let mensagem = "Olá! Gostaria de comprar:\n";
-  carrinho.forEach(item => { mensagem += `${item.nome} - ${item.preco} Kz\n`; });
+  let nome = document.getElementById('nomeCliente').value.trim();
+  let endereco = document.getElementById('enderecoCliente').value.trim();
+  let metodo = document.getElementById('metodoPagamento').value;
+
+  if(carrinho.length === 0){
+    alert("Seu carrinho está vazio!");
+    return;
+  }
+  if(!nome || !endereco || !metodo){
+    alert("Preencha todos os detalhes de entrega e pagamento!");
+    return;
+  }
+
+  let mensagem = `Olá! Meu nome é ${nome}.\nEndereço: ${endereco}.\nForma de pagamento: ${metodo}.\nGostaria de comprar:\n`;
+  carrinho.forEach(item => {
+    mensagem += `${item.nome} - ${item.preco} Kz\n`;
+  });
+
   let url = "https://wa.me/+244937912339?text=" + encodeURIComponent(mensagem);
   window.open(url, "_blank");
   localStorage.removeItem('carrinho');
