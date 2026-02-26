@@ -16,7 +16,7 @@
     <nav>
       <a href="#home">Home</a>
       <a href="#loja">Loja</a>
-      <a href="#carrinho">Carrinho 🛒</a>
+      <a href="carrinho.html">Carrinho 🛒</a>
     </nav>
     <button class="menu-toggle">☰</button>
   </div>
@@ -25,7 +25,7 @@
 <!-- HOME -->
 <section id="home" class="hero">
   <div class="hero-content">
-    <h2>Bem-vindo à ABT Marketplace</h2>
+    <h2>Bem-vindo a ABT Marketplace</h2>
     <p>Encontre produtos incríveis com os melhores preços e entrega rápida!</p>
     <a href="#loja" class="botao">Ver Produtos</a>
   </div>
@@ -34,144 +34,90 @@
   </div>
 </section>
 
+<!-- BANNER PROMOCIONAL -->
+<section class="hero-banner">
+  <img src="https://images.unsplash.com/photo-1618354690361-8f449d56e92c?auto=format&fit=crop&w=1200&q=80" alt="Promoção">
+  <div class="texto-banner">Promoção: Até 50% OFF!</div>
+</section>
+
 <!-- LOJA -->
 <section id="loja">
   <h2>Nossos Produtos</h2>
+
+  <!-- FILTROS DE CATEGORIA -->
+  <div class="categorias">
+    <button onclick="filtrarCategoria('todos')">Todos</button>
+    <button onclick="filtrarCategoria('masculino')">Masculino</button>
+    <button onclick="filtrarCategoria('feminino')">Feminino</button>
+    <button onclick="filtrarCategoria('crianca')">Criança</button>
+    <button onclick="filtrarCategoria('acessorios')">Acessórios</button>
+  </div>
+
+  <!-- PRODUTOS -->
   <div class="container">
-    <div class="produto">
+    <div class="produto" data-categoria="masculino">
       <img src="https://images.unsplash.com/photo-1618354690361-8f449d56e92c?auto=format&fit=crop&w=300&q=80" alt="Tênis Premium">
       <h3>Tênis Premium</h3>
       <p>25.000 Kz</p>
       <button onclick="adicionarCarrinho('Tênis Premium', 25000)">Comprar</button>
     </div>
-    <div class="produto">
+
+    <div class="produto" data-categoria="feminino">
       <img src="https://images.unsplash.com/photo-1598327100703-269018c6f9f3?auto=format&fit=crop&w=300&q=80" alt="Relógio Luxo">
       <h3>Relógio Luxo</h3>
       <p>18.000 Kz</p>
       <button onclick="adicionarCarrinho('Relógio Luxo', 18000)">Comprar</button>
     </div>
-    <div class="produto">
+
+    <div class="produto" data-categoria="acessorios">
       <img src="https://images.unsplash.com/photo-1593032465175-1f65e1424ff1?auto=format&fit=crop&w=300&q=80" alt="Mochila Moderna">
       <h3>Mochila Moderna</h3>
       <p>12.000 Kz</p>
       <button onclick="adicionarCarrinho('Mochila Moderna', 12000)">Comprar</button>
     </div>
-  </div>
-</section>
 
-<!-- CARRINHO -->
-<section id="carrinho">
-  <div class="carrinho">
-    <h2>Seu Carrinho</h2>
-    <div id="itens"></div>
-    <p id="total"></p>
-
-    <div class="pagamento">
-      <h3>Formas de Pagamento</h3>
-      <ul>
-        <li>Multicaixa: 0000-0000-0000-0000</li>
-        <li>MbWay/Pix: +244 9XXXXXXXX</li>
-        <li>Pagamento na entrega disponível</li>
-      </ul>
+    <div class="produto" data-categoria="crianca">
+      <img src="https://images.unsplash.com/photo-1595950658280-38a4b9e0f3b1?auto=format&fit=crop&w=300&q=80" alt="Tênis Infantil">
+      <h3>Tênis Infantil</h3>
+      <p>15.000 Kz</p>
+      <button onclick="adicionarCarrinho('Tênis Infantil', 15000)">Comprar</button>
     </div>
-
-    <div class="detalhes-entrega">
-      <h3>Detalhes para Entrega</h3>
-      <input type="text" id="nomeCliente" placeholder="Seu Nome" required>
-      <input type="text" id="enderecoCliente" placeholder="Endereço de Entrega" required>
-      <select id="metodoPagamento">
-        <option value="">Selecione o método de pagamento</option>
-        <option value="Multicaixa">Multicaixa</option>
-        <option value="MbWay/Pix">MbWay/Pix</option>
-        <option value="Entrega">Pagamento na Entrega</option>
-      </select>
-    </div>
-
-    <button class="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-container">
-    <div class="footer-links">
-      <h3>ABT Marketplace</h3>
-      <a href="#home">Home</a>
-      <a href="#loja">Loja</a>
-      <a href="#carrinho">Carrinho</a>
-    </div>
-    <div class="footer-info">
-      <p>© 2026 ABT Marketplace - Todos os direitos reservados</p>
-      <p>Contato: suporte@abtmarketplace.com</p>
-    </div>
+    <p>© 2026 ABT Marketplace - Todos os direitos reservados</p>
   </div>
 </footer>
 
 <!-- SCRIPT -->
 <script>
+// Adicionar produto ao carrinho
 function adicionarCarrinho(produto, preco){
   let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
   carrinho.push({nome: produto, preco: preco});
   localStorage.setItem('carrinho', JSON.stringify(carrinho));
   alert(produto + " adicionado ao carrinho!");
-  mostrarCarrinho();
 }
 
-function mostrarCarrinho(){
-  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  let container = document.getElementById('itens');
-  let total = 0;
-  container.innerHTML = "";
-  carrinho.forEach((item, index) => {
-    total += item.preco;
-    container.innerHTML += `
-      <div class="produto-item">
-        <span>${item.nome} - ${item.preco} Kz</span>
-        <button onclick="remover(${index})">Remover</button>
-      </div>`;
+// Filtrar produtos por categoria
+function filtrarCategoria(categoria){
+  let produtos = document.querySelectorAll('.produto');
+  produtos.forEach(prod => {
+    if(categoria === 'todos' || prod.dataset.categoria === categoria){
+      prod.style.display = 'block';
+    } else {
+      prod.style.display = 'none';
+    }
   });
-  document.getElementById('total').innerHTML = `<strong>Total: ${total} Kz</strong>`;
 }
 
-function remover(index){
-  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  carrinho.splice(index,1);
-  localStorage.setItem('carrinho', JSON.stringify(carrinho));
-  mostrarCarrinho();
-}
-
-function finalizarCompra(){
-  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  let nome = document.getElementById('nomeCliente').value.trim();
-  let endereco = document.getElementById('enderecoCliente').value.trim();
-  let metodo = document.getElementById('metodoPagamento').value;
-
-  if(carrinho.length === 0){
-    alert("Seu carrinho está vazio!");
-    return;
-  }
-  if(!nome || !endereco || !metodo){
-    alert("Preencha todos os detalhes de entrega e pagamento!");
-    return;
-  }
-
-  let mensagem = `Olá! Meu nome é ${nome}.\nEndereço: ${endereco}.\nForma de pagamento: ${metodo}.\nGostaria de comprar:\n`;
-  carrinho.forEach(item => {
-    mensagem += `${item.nome} - ${item.preco} Kz\n`;
-  });
-
-  let url = "https://wa.me/+244937912339?text=" + encodeURIComponent(mensagem);
-  window.open(url, "_blank");
-  localStorage.removeItem('carrinho');
-  mostrarCarrinho();
-}
-
-// Menu mobile toggle
+// Menu mobile
 const menuToggle = document.querySelector('.menu-toggle');
 const nav = document.querySelector('nav');
 menuToggle.addEventListener('click', () => { nav.classList.toggle('active'); });
-
-mostrarCarrinho();
 </script>
 
 </body>

@@ -9,6 +9,7 @@
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
   <div class="container-header">
     <h1 class="logo">ABT <span>Marktplace</span></h1>
@@ -17,13 +18,16 @@
       <a href="index.html#loja">Loja</a>
       <a href="#">Carrinho 🛒</a>
     </nav>
+    <button class="menu-toggle">☰</button>
   </div>
 </header>
 
+<!-- CARRINHO -->
 <section class="carrinho-page">
   <h2>Seu Carrinho</h2>
   <div id="itens" class="carrinho-itens"></div>
 
+  <!-- RESUMO DO PEDIDO -->
   <div class="resumo">
     <h3>Resumo do Pedido</h3>
     <input type="text" id="nomeCliente" placeholder="Seu Nome" required>
@@ -31,19 +35,21 @@
     <select id="metodoPagamento">
       <option value="">Selecione o método de pagamento</option>
       <option value="Multicaixa">Multicaixa</option>
-      <option value="MbWay/Pix">MbWay/Pix</option>
+      <option value="MbWay/Pix">MbWay/Express</option>
       <option value="Entrega">Pagamento na Entrega</option>
     </select>
     <button class="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <div class="footer-container">
     <p>© 2026 ABT Marketplace - Todos os direitos reservados</p>
   </div>
 </footer>
 
+<!-- SCRIPT -->
 <script>
 function mostrarCarrinho(){
   let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
@@ -96,6 +102,12 @@ function finalizarCompra(){
 }
 
 mostrarCarrinho();
+
+// Menu mobile
+const menuToggle = document.querySelector('.menu-toggle');
+const nav = document.querySelector('nav');
+menuToggle.addEventListener('click', () => { nav.classList.toggle('active'); });
 </script>
+
 </body>
 </html>
