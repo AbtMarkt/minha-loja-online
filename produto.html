@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Produto | ABT Marketplace</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<h1 class="logo">ABT Marketplace</h1>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="loja.html">Loja</a>
+<a href="carrinho.html">Carrinho 🛒</a>
+</nav>
+
+</header>
+
+
+<section class="pagina-produto">
+
+<div class="produto-detalhe">
+
+<img id="imagem">
+
+<div class="info-produto">
+
+<h2 id="nome"></h2>
+
+<p class="preco" id="preco"></p>
+
+<p class="descricao">
+Produto premium disponível na ABT Marketplace.
+Qualidade garantida e entrega rápida.
+</p>
+
+<button onclick="adicionarCarrinho()">
+Adicionar ao Carrinho
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+const nome = params.get("nome");
+
+const preco = params.get("preco");
+
+const imagem = params.get("img");
+
+document.getElementById("nome").innerText = nome;
+
+document.getElementById("preco").innerText = preco + " Kz";
+
+document.getElementById("imagem").src = imagem;
+
+
+function adicionarCarrinho(){
+
+let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+
+carrinho.push({
+nome:nome,
+preco:Number(preco)
+});
+
+localStorage.setItem("carrinho",JSON.stringify(carrinho));
+
+alert("Produto adicionado ao carrinho!");
+
+}
+
+</script>
+
+</body>
+</html>

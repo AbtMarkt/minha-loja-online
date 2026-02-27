@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout com Imagens - ABT Marketplace</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{
+  font-family:'Poppins',sans-serif;
+  background:#f4f4f4;
+  margin:0; padding:0; color:#333;
+}
+header{
+  background:#1c1c1c;
+  color:#d4af37;
+  padding:15px 20px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+header h1{ font-size:1.5rem; }
+header nav a{
+  color:#d4af37; margin-left:15px; text-decoration:none; font-weight:bold;
+}
+.container{
+  max-width:1000px;
+  margin:40px auto;
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+h2{text-align:center; margin-bottom:20px;}
+.carrinho-item{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 0; border-bottom:1px solid #ccc;
+}
+.carrinho-item:last-child{ border-bottom:none; }
+.carrinho-item img{
+  width:80px; height:80px; object-fit:cover; border-radius:5px; margin-right:15px;
+}
+.carrinho-item-details{ flex:1; display:flex; flex-direction:column; gap:5px; }
+.carrinho-item-details h4{ margin:0; }
+.carrinho-item-details p{ margin:0; font-weight:bold; }
+.quantidade{ display:flex; align-items:center; gap:5px; }
+.quantidade button{
+  padding:5px 10px; background:#d4af37; border:none; border-radius:5px;
+  cursor:pointer; font-weight:bold;
+}
+.quantidade input{
+  width:50px; text-align:center; border-radius:5px; border:1px solid #ccc; padding:5px;
+}
+.remove-btn{
+  background:red; color:white; border:none; padding:8px 12px;
+  cursor:pointer; border-radius:5px; font-weight:bold; transition:0.3s;
+}
+.remove-btn:hover{ background:#b30000; }
+.total{ text-align:right; font-size:1.2rem; font-weight:bold; margin-top:20px; }
+form input, form textarea{
+  width:100%; padding:12px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:1rem;
+}
+form button{
+  width:100%; padding:15px; background:#d4af37; border:none; font-weight:bold;
+  border-radius:5px; cursor:pointer; transition:0.3s; margin-bottom:10px;
+}
+form button:hover{ background:#b88b2f; color:white; }
+#confirmacao{
+  background:#d4af37; padding:15px; border-radius:5px;
+  color:#1c1c1c; text-align:center; margin:20px 0; display:none;
+}
+#historico{ margin-top:40px; }
+.historico-item{
+  border-bottom:1px solid #ccc; padding:10px 0;
+}
+.historico-item:last-child{ border-bottom:none; }
+footer{
+  background:#1c1c1c; color:#d4af37; text-align:center; padding:20px; margin-top:40px;
+}
+.pagamento-opcoes{
+  display:flex; flex-direction:column; gap:10px; margin:20px 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>ABT Marketplace</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="loja.html">Loja</a>
+<a href="carrinho.html">Carrinho 🛒</a>
+</nav>
+</header>
+
+<div class="container">
+<h2>Checkout com Imagens</h2>
+
+<!-- ITENS DO CARRINHO -->
+<div id="carrinho-itens"></div>
+<p class="total" id="subtotal-total"></p>
+
+<!-- CONFIRMAÇÃO -->
+<div id="confirmacao">Pedido enviado com sucesso!</div>
+
+<!-- FORMULÁRIO DO CLIENTE -->
+<h2>Informações do Cliente</h2>
+<form id="checkout-form">
+<input type="text" id="nome-cliente" placeholder="Nome Completo" required>
+<input type="text" id="telefone-cliente" placeholder="Telefone (Ex: +244 9xxxxxxx)" required>
+<textarea id="endereco-cliente" placeholder="Endereço completo" rows="3" required></textarea>
+
+<!-- OPÇÕES DE PAGAMENTO -->
+<div class="pagamento-opcoes">
+  <label><input type="radio" name="pagamento" value="cartao" required> Cartão de Crédito/Débito</label>
+  <label><input type="radio" name="pagamento" value="transferencia"> Transferência / MBWay</label>
+  <label><input type="radio" name="pagamento" value="whatsapp"> Pagar via WhatsApp (atual)</label>
+</div>
+
+<button type="submit">Finalizar Pedido</button>
+</form>
+
+<!-- HISTÓRICO DE PEDIDOS -->
+<div id="historico">
+<h2>Pedidos Anteriores</h2>
+<div id="historico-itens"></div>
+</div>
+
+</div>
+
+<footer>
+<p>© 2026 ABT Marketplace - Todos os direitos reservados</p>
+</footer>
+
+<script>
+// MOSTRAR CARRINHO COM IMAGENS
+function mostrarCarrinho(){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  let container = document.getElementById('carrinho-itens');
+  let total = 0;
+  container.innerHTML = '';
+  if(carrinho.length === 0){
+    container.innerHTML = '<p>Seu carrinho está vazio!</p>';
+  } else {
+    carrinho.forEach((item, index) => {
+      if(!item.quantidade) item.quantidade = 1;
+      let subtotalItem = item.preco * item.quantidade;
+      total += subtotalItem;
+      container.innerHTML += `
+        <div class="carrinho-item">
+          <img src="${item.imagem}" alt="${item.nome}">
+          <div class="carrinho-item-details">
+            <h4>${item.nome}</h4>
+            <p>Preço Unitário: ${item.preco} Kz</p>
+            <div class="quantidade">
+              <button onclick="alterarQuantidade(${index}, -1)">-</button>
+              <input type="number" value="${item.quantidade}" min="1" onchange="atualizarQuantidade(${index}, this.value)">
+              <button onclick="alterarQuantidade(${index}, 1)">+</button>
+              <span>Subtotal: ${subtotalItem} Kz</span>
+            </div>
+          </div>
+          <button class="remove-btn" onclick="removerItem(${index})">Remover</button>
+        </div>
+      `;
+    });
+  }
+  document.getElementById('subtotal-total').innerText = 'Total: ' + total + ' Kz';
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+}
+mostrarCarrinho();
+
+// FUNÇÕES DE QUANTIDADE
+function alterarQuantidade(index, delta){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  carrinho[index].quantidade = Math.max(1, (carrinho[index].quantidade||1) + delta);
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  mostrarCarrinho();
+}
+function atualizarQuantidade(index, valor){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  carrinho[index].quantidade = Math.max(1, parseInt(valor)||1);
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  mostrarCarrinho();
+}
+
+// REMOVER ITEM
+function removerItem(index){
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  carrinho.splice(index,1);
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  mostrarCarrinho();
+}
+
+// MOSTRAR HISTÓRICO
+function mostrarHistorico(){
+  let historico = JSON.parse(localStorage.getItem('historico')) || [];
+  let container = document.getElementById('historico-itens');
+  container.innerHTML = '';
+  if(historico.length === 0){
+    container.innerHTML = '<p>Nenhum pedido anterior.</p>';
+  } else {
+    historico.forEach((pedido,index)=>{
+      container.innerHTML += `<div class="historico-item">
+        <strong>Pedido ${index+1}</strong><br>
+        Data: ${pedido.data}<br>
+        Total: ${pedido.total} Kz<br>
+        Status: ${pedido.status}<br>
+        Itens:<br>
+        ${pedido.itens.map(i=>`${i.nome} x${i.quantidade} = ${i.preco*i.quantidade} Kz`).join('<br>')}
+      </div>`;
+    });
+  }
+}
+mostrarHistorico();
+
+// ENVIO DO PEDIDO
+document.getElementById('checkout-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  let nome = document.getElementById('nome-cliente').value;
+  let telefone = document.getElementById('telefone-cliente').value;
+  let endereco = document.getElementById('endereco-cliente').value;
+  let pagamento = document.querySelector('input[name="pagamento"]:checked').value;
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  if(carrinho.length===0){
+    alert("Seu carrinho está vazio!");
+    return;
+  }
+  let total = carrinho.reduce((sum,item)=>sum + item.preco*item.quantidade,0);
+  
+  // Criar pedido
+  let pedido = {
+    data: new Date().toLocaleString(),
+    itens: carrinho,
+    total: total,
+    status: (pagamento==="whatsapp") ? "Pendente" : "Pago"
+  };
+  let historico = JSON.parse(localStorage.getItem('historico')) || [];
+  historico.push(pedido);
+  localStorage.setItem('historico', JSON.stringify(historico));
+  mostrarHistorico();
+
+  // Mensagem WhatsApp
+  if(pagamento==="whatsapp"){
+    let mensagem = `Olá! Gostaria de fazer o pedido:\n`;
+    carrinho.forEach(item=>{mensagem+=`${item.nome} - ${item.preco} Kz x${item.quantidade} = ${item.preco*item.quantidade} Kz\n`});
+    mensagem += `\nNome: ${nome}\nTelefone: ${telefone}\nEndereço: ${endereco}`;
+    let url = "https://wa.me/+244937912339?text=" + encodeURIComponent(mensagem);
+    window.open(url,'_blank');
+  } else {
+    alert("Pagamento realizado com sucesso!");
+  }
+
+  // Limpar carrinho e mostrar confirmação
+  localStorage.removeItem('carrinho');
+  mostrarCarrinho();
+  document.getElementById('confirmacao').style.display='block';
+  setTimeout(()=>{ document.getElementById('confirmacao').style.display='none'; },5000);
+});
+</script>
+</body>
+</html>

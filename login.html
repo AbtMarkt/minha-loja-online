@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login Admin | ABT Marketplace</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.login-container{
+
+max-width:400px;
+margin:120px auto;
+background:#1c1c1c;
+padding:40px;
+border-radius:10px;
+text-align:center;
+color:white;
+
+}
+
+.login-container h2{
+margin-bottom:20px;
+}
+
+.login-container input{
+
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:none;
+border-radius:5px;
+
+}
+
+.login-container button{
+
+width:100%;
+padding:12px;
+background:#d4af37;
+border:none;
+font-weight:bold;
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+<h2>Login do Administrador</h2>
+
+<input type="password" id="senha" placeholder="Digite a senha">
+
+<button onclick="login()">Entrar</button>
+
+</div>
+
+
+<script>
+
+function login(){
+
+let senha = document.getElementById("senha").value;
+
+if(senha === "123456"){
+
+localStorage.setItem("adminLogado","true");
+
+window.location.href = "admin.html";
+
+}else{
+
+alert("Senha incorreta!");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,113 +1,28 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carrinho - ABT Marketplace</title>
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
+async function finalizarCompra(){
+    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    if(carrinho.length===0){ alert("Carrinho vazio!"); return; }
 
-<!-- HEADER -->
-<header>
-  <div class="container-header">
-    <h1 class="logo">ABT <span>Marktplace</span></h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="index.html#loja">Loja</a>
-      <a href="#">Carrinho 🛒</a>
-    </nav>
-    <button class="menu-toggle">☰</button>
-  </div>
-</header>
+    let nome = document.getElementById('clienteNome').value;
+    let email = document.getElementById('clienteEmail').value;
+    let telefone = document.getElementById('clienteTelefone').value;
 
-<!-- CARRINHO -->
-<section class="carrinho-page">
-  <h2>Seu Carrinho</h2>
-  <div id="itens" class="carrinho-itens"></div>
+    let pedido = {
+        itens: carrinho,
+        total: carrinho.reduce((sum,i)=>sum+i.preco,0),
+        data: new Date().toLocaleString(),
+        status: "Pendente",
+        cliente: nome,
+        email: email,
+        telefone: telefone
+    };
 
-  <!-- RESUMO DO PEDIDO -->
-  <div class="resumo">
-    <h3>Resumo do Pedido</h3>
-    <input type="text" id="nomeCliente" placeholder="Seu Nome" required>
-    <input type="text" id="enderecoCliente" placeholder="Endereço de Entrega" required>
-    <select id="metodoPagamento">
-      <option value="">Selecione o método de pagamento</option>
-      <option value="Multicaixa">Multicaixa</option>
-      <option value="MbWay/Pix">MbWay/Express</option>
-      <option value="Entrega">Pagamento na Entrega</option>
-    </select>
-    <button class="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
-  </div>
-</section>
+    await fetch('http://localhost:3000/pedidos',{
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify(pedido)
+    });
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-container">
-    <p>© 2026 ABT Marketplace - Todos os direitos reservados</p>
-  </div>
-</footer>
-
-<!-- SCRIPT -->
-<script>
-function mostrarCarrinho(){
-  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  let container = document.getElementById('itens');
-  container.innerHTML = '';
-  let total = 0;
-
-  carrinho.forEach((item, index) => {
-    total += item.preco;
-    container.innerHTML += `
-      <div class="produto-item">
-        <div class="detalhes">
-          <h4>${item.nome}</h4>
-          <p>Preço: ${item.preco} Kz</p>
-        </div>
-        <button class="remover" onclick="remover(${index})">Remover</button>
-      </div>`;
-  });
-
-  if(carrinho.length){
-    container.innerHTML += `<p class="total"><strong>Total: ${total} Kz</strong></p>`;
-  } else {
-    container.innerHTML = '<p>Seu carrinho está vazio!</p>';
-  }
+    localStorage.removeItem('carrinho');
+    mostrarCarrinho();
+    alert("Compra registrada com sucesso!");
 }
-
-function remover(index){
-  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  carrinho.splice(index,1);
-  localStorage.setItem('carrinho', JSON.stringify(carrinho));
-  mostrarCarrinho();
-}
-
-function finalizarCompra(){
-  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  let nome = document.getElementById('nomeCliente').value.trim();
-  let endereco = document.getElementById('enderecoCliente').value.trim();
-  let metodo = document.getElementById('metodoPagamento').value;
-
-  if(carrinho.length === 0){ alert("Seu carrinho está vazio!"); return; }
-  if(!nome || !endereco || !metodo){ alert("Preencha todos os detalhes!"); return; }
-
-  let mensagem = `Olá! Meu nome é ${nome}.\nEndereço: ${endereco}.\nForma de pagamento: ${metodo}.\nGostaria de comprar:\n`;
-  carrinho.forEach(item => { mensagem += `${item.nome} - ${item.preco} Kz\n`; });
-
-  let url = "https://wa.me/+244937912339?text=" + encodeURIComponent(mensagem);
-  window.open(url, "_blank");
-  localStorage.removeItem('carrinho');
-  mostrarCarrinho();
-}
-
-mostrarCarrinho();
-
-// Menu mobile
-const menuToggle = document.querySelector('.menu-toggle');
-const nav = document.querySelector('nav');
-menuToggle.addEventListener('click', () => { nav.classList.toggle('active'); });
-</script>
-
-</body>
-</html>
