@@ -3,65 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Oficial | ABT Marketplace</title>
+    <title>Loja ABT | Categorias</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Estilos específicos para a Loja */
-        .filtros-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            background: #1c1c1c;
-            flex-wrap: wrap;
+        body { font-family: 'Poppins', sans-serif; background: #f9f9f9; margin: 0; }
+        header { background: #1c1c1c; padding: 20px; text-align: center; color: #d4af37; }
+        
+        /* Estilo dos Filtros/Categorias */
+        .categorias-nav { 
+            display: flex; justify-content: center; gap: 10px; 
+            padding: 20px; background: #fff; overflow-x: auto;
+            border-bottom: 1px solid #ddd;
         }
-        .btn-filtro {
-            background: transparent;
-            color: #d4af37;
-            border: 1px solid #d4af37;
-            padding: 8px 20px;
-            cursor: pointer;
-            border-radius: 20px;
-            transition: 0.3s;
+        .btn-filtro { 
+            border: 1px solid #d4af37; background: transparent; color: #d4af37;
+            padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: bold;
+            transition: 0.3s; white-space: nowrap;
         }
-        .btn-filtro.ativo, .btn-filtro:hover {
-            background: #d4af37;
-            color: #000;
+        .btn-filtro.ativo, .btn-filtro:hover { background: #d4af37; color: #000; }
+
+        /* Grid de Produtos */
+        .loja-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 20px; padding: 30px 5%; 
         }
-        .loja-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-            padding: 40px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+        .produto-card { 
+            background: white; border-radius: 10px; padding: 15px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center;
         }
-        .produto-item {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            text-align: center;
-            padding-bottom: 15px;
+        .produto-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        .produto-card h3 { font-size: 1rem; margin: 10px 0; color: #333; }
+        .preco { color: #d4af37; font-weight: bold; font-size: 1.1rem; }
+        .btn-comprar { 
+            display: block; width: 100%; padding: 10px; background: #1c1c1c; 
+            color: #d4af37; text-decoration: none; border-radius: 5px; margin-top: 10px; font-weight: bold;
         }
-        .produto-item:hover { transform: translateY(-5px); }
-        .produto-item img { width: 100%; height: 250px; object-fit: cover; }
-        .produto-item h3 { font-size: 1.1rem; margin: 10px 0; color: #333; }
-        .produto-item .preco { color: #d4af37; font-weight: bold; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
 <header>
-    <nav style="background: #1c1c1c; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="color: #d4af37; margin: 0;">ABT Loja</h1>
-        <div>
-            <a href="home.html" style="color: white; text-decoration: none; margin-right: 15px;">Home</a>
-            <a href="carrinho.html" style="color: white; text-decoration: none;">🛒 Carrinho</a>
-        </div>
-    </nav>
+    <h1>ABT MARKETPLACE - LOJA</h1>
+    <a href="home.html" style="color: white; text-decoration: none; font-size: 0.9rem;">← Voltar ao Início</a>
 </header>
 
-<div class="filtros-container">
-    <button class="btn-filtro ativo" onclick="filtrarProdutos('todos', this)">Todos</
+<div class="categorias-nav">
+    <button class="btn-filtro ativo" onclick="filtrar('todos', this)">Todos</button>
+    <button class="btn-filtro" onclick="filtrar('Masculino', this)">Masculino</button>
+    <button class="btn-filtro" onclick="filtrar('Feminino', this)">Feminino</button>
+    <button class="btn-filtro" onclick="filtrar('Criança', this)">Criança</button>
+    <button class="btn-filtro" onclick="filtrar('Acessórios', this)">Acessórios</button>
+</div>
+
+<main id="loja-container" class="loja-grid">
+    <p style="text-align: center; grid-column: 1/-1;">Carregando produtos da nuvem...</p>
+</main>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
+        authDomain: "abt-marketplace.firebaseapp.com",
+        projectId: "abt-marketplace",
+        storageBucket: "abt-marketplace.firebasestorage.app",
+        messagingSenderId: "763460800092",
+        appId: "1:763460800092:web:5ac1f341919c1fa02ea099"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let listaGeral = [];
+
+    // 1. BUSCAR PRODUTOS NO FIREBASE
+    async function carregarProdutos() {
+        const container = document.getElementById("loja-container");
+        try {
+            const querySnapshot = await getDocs(collection(db, "produtos"));
+            listaGeral = [];
+            querySnapshot.forEach((doc) => {
+                listaGeral.push(doc.data());
+            });
+            renderizar(listaGeral);
+        } catch (e) {
+            container.innerHTML = "Erro ao carregar produtos.";
+        }
+    }
+
+    // 2. DESENHAR OS PRODUTOS NO ECRÃ
+    function renderizar(produtos) {
+        const container = document.getElementById("loja-container");
+        container.innerHTML = "";
+        
+        if(produtos.length === 0) {
+            container.innerHTML = "<p style='grid-column:1/-1; text-align:center;'>Nenhum produto nesta categoria.</p>";
+            return;
+        }
+
+        produtos.forEach(p => {
+            container.innerHTML += `
+                <div class="produto-card">
+                    <img src="${p.imagem}" alt="${p.nome}">
+                    <h3>${p.nome}</h3>
+                    <p class="preco">${p.preco} Kz</p>
+                    <a href="produto.html?nome=${encodeURIComponent(p.nome)}&preco=${p.preco}&img=${encodeURIComponent(p.imagem)}" class="btn-comprar">Comprar</a>
+                </div>
+            `;
+        });
+    }
+
+    // 3. FUNÇÃO DE FILTRO (LIGADA AOS BOTÕES)
+    window.filtrar = (categoria, botao) => {
+        // Mudar cor do botão ativo
+        document.querySelectorAll('.btn-filtro').forEach(btn => btn.classList.remove('ativo'));
+        botao.classList.add('ativo');
+
+        if(categoria === 'todos') {
+            renderizar(listaGeral);
+        } else {
+            const filtrados = listaGeral.filter(p => p.categoria === categoria);
+            renderizar(filtrados);
+        }
+    };
+
+    carregarProdutos();
+</script>
+
+</body>
+</html>
