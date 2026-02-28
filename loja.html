@@ -1,22 +1,31 @@
-<script>
-// Buscar produtos do backend
-async function carregarProdutosBackend(){
-    const res = await fetch('http://localhost:3000/produtos');
-    const produtos = await res.json();
-    const container = document.querySelector('.container');
-    container.innerHTML = '';
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    produtos.forEach(prod => {
-        container.innerHTML += `
-        <div class="produto" data-categoria="${prod.categoria}">
-            <img src="${prod.imagem}" alt="${prod.nome}">
-            <h3>${prod.nome}</h3>
-            <p>${prod.preco} Kz</p>
-            <button onclick="adicionarCarrinho('${prod.nome}', ${prod.preco})">Comprar</button>
+  // ... (mesmo firebaseConfig acima) ...
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function carregarLoja() {
+    const lista = document.getElementById("lista-produtos");
+    const querySnapshot = await getDocs(collection(db, "produtos"));
+    lista.innerHTML = "";
+
+    querySnapshot.forEach((doc) => {
+      const p = doc.data();
+      lista.innerHTML += `
+        <div class="card">
+          <img src="${p.imagem}" onclick="ver('${p.nome}', ${p.preco}, '${p.imagem}')">
+          <h3>${p.nome}</h3>
+          <p>${p.preco} Kz</p>
+          <button onclick="ver('${p.nome}', ${p.preco}, '${p.imagem}')">Ver Detalhes</button>
         </div>`;
     });
-}
+  }
 
-// Inicializar produtos
-carregarProdutosBackend();
+  window.ver = (n, p, i) => {
+    window.location.href = `produto.html?nome=${n}&preco=${p}&img=${i}`;
+  };
+
+  carregarLoja();
 </script>

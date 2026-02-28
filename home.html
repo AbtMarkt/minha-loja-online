@@ -1,215 +1,82 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home - ABT Marketplace</title>
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  /* CONFIGURAÇÕES GERAIS */
-  body { font-family: 'Poppins', sans-serif; background-color: #f9f9f9; margin: 0; }
+<script type="module">
+// --- IMPORTAÇÃO DO FIREBASE ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, getDocs, limit, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  /* HERO BANNER ROTATIVO */
-  .hero-carousel{ position:relative; overflow:hidden; border-radius:15px; margin:20px auto; max-width:1200px; }
-  .hero-carousel .slides{ display:flex; transition:0.5s; }
-  .hero-carousel img{ width:100%; flex-shrink:0; border-radius:15px; }
-  .hero-carousel button{ position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.4); color:white; border:none; padding:10px 15px; cursor:pointer; font-weight:bold; border-radius:5px; }
-  .hero-carousel .prev{left:10px;}
-  .hero-carousel .next{right:10px;}
+const firebaseConfig = {
+    apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
+    authDomain: "abt-marketplace.firebaseapp.com",
+    projectId: "abt-marketplace",
+    storageBucket: "abt-marketplace.firebasestorage.app",
+    messagingSenderId: "763460800092",
+    appId: "1:763460800092:web:5ac1f341919c1fa02ea099"
+};
 
-  /* PRODUTOS DESTACADOS */
-  .destacados{ padding:40px 20px; max-width: 1200px; margin: auto; }
-  .destacados h2{ text-align:center; margin-bottom:30px; color: #333; }
-  .container{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
-  .produto{ background:white; border-radius:10px; padding:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); text-align:center; transition:0.3s; }
-  .produto:hover{ transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.2); }
-  .produto h3{ margin:10px 0; font-size: 1.1em; }
-  .produto p{ margin:10px 0; font-weight:bold; color: #e67e22; }
-  .carousel-container{ position:relative; overflow:hidden; border-radius:10px; }
-  .carousel-images{ display:flex; transition:0.3s; }
-  .carousel-images img{ width:100%; flex-shrink:0; border-radius:10px; }
-  .carousel-btn{ position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:5px; }
-  .carousel-btn.left{left:10px;}
-  .carousel-btn.right{right:10px;}
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  /* SEÇÃO SOBRE NÓS */
-  .sobre-nos { background: #fff; padding: 60px 20px; text-align: center; border-top: 1px solid #eee; }
-  .sobre-nos-content { max-width: 800px; margin: 0 auto; }
-  .sobre-nos h2 { color: #333; margin-bottom: 20px; }
-  .sobre-nos p { color: #666; line-height: 1.8; font-size: 1.1em; }
+// --- MINI CARRINHO (Sincronizado) ---
+window.atualizarMiniCarrinho = function() {
+    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    let totalItens = carrinho.length;
+    let subtotal = carrinho.reduce((acc, item) => acc + (item.preco || 0), 0);
+    document.getElementById('itens-count').innerText = totalItens;
+    document.getElementById('subtotal').innerText = subtotal + ' Kz';
+}
 
-  /* RODAPÉ E CONTACTOS */
-  footer { background: #222; color: #fff; padding: 40px 20px; margin-top: 40px; }
-  .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-  .footer-section h4 { border-bottom: 2px solid #e67e22; display: inline-block; margin-bottom: 20px; }
-  .footer-section p, .footer-section a { color: #bbb; text-decoration: none; display: block; margin-bottom: 10px; transition: 0.3s; }
-  .footer-section a:hover { color: #e67e22; }
-  .copyright { text-align: center; padding-top: 30px; border-top: 1px solid #333; margin-top: 30px; color: #777; font-size: 0.9em; }
+// --- ADICIONAR AO CARRINHO ---
+window.adicionarCarrinho = function(nome, preco, imagem) {
+    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    carrinho.push({ nome, preco, imagem, quantidade: 1 });
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    alert(nome + " foi adicionado!");
+    window.atualizarMiniCarrinho();
+}
 
-  /* ESTILO DOS MODAIS (POLÍTICAS) */
-  .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); }
-  .modal-content { background: #fff; margin: 10% auto; padding: 30px; width: 80%; max-width: 600px; border-radius: 10px; position: relative; }
-  .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #333; }
-</style>
-</head>
+// --- CARREGAR PRODUTOS DA NUVEM (FIREBASE) ---
+async function carregarDestacadosFirebase() {
+    const container = document.getElementById('destacados-container');
+    container.innerHTML = '<p>A carregar novidades...</p>';
 
-<body>
+    try {
+        // Busca os últimos 6 produtos adicionados na coleção "produtos"
+        const q = query(collection(db, "produtos"), limit(6));
+        const querySnapshot = await getDocs(q);
+        
+        container.innerHTML = ''; // Limpa o carregando
 
-<header>
-<h1 class="logo">ABT Marketplace</h1>
-<nav>
-<a href="index.html">Home</a>
-<a href="loja.html">Loja</a>
-<a href="carrinho.html">Carrinho 🛒</a>
-</nav>
-</header>
+        querySnapshot.forEach((doc) => {
+            const prod = doc.data();
+            const prodDiv = document.createElement('div');
+            prodDiv.className = 'produto';
 
-<section class="hero-carousel">
-<div class="slides" id="slides-container"></div>
-<button class="prev">&#10094;</button>
-<button class="next">&#10095;</button>
-</section>
+            // Tratamento de imagem (caso seja array ou string única)
+            const imgPrincipal = Array.isArray(prod.imagens) ? prod.imagens[0] : (prod.imagem || 'link-da-imagem-padrao.jpg');
 
-<section class="destacados">
-<h2>Produtos Destacados</h2>
-<div class="container" id="destacados-container"></div>
-</section>
+            prodDiv.innerHTML = `
+                <div class="carousel-container">
+                    <img src="${imgPrincipal}" style="width:100%; border-radius:10px;">
+                </div>
+                <h3>${prod.nome}</h3>
+                <p>${prod.preco} Kz</p>
+                <button onclick="adicionarCarrinho('${prod.nome}', ${prod.preco}, '${imgPrincipal}')">Comprar</button>
+            `;
+            container.appendChild(prodDiv);
+        });
+    } catch (e) {
+        console.error("Erro ao carregar produtos:", e);
+        container.innerHTML = '<p>Adicione produtos no Painel Admin para eles aparecerem aqui.</p>';
+    }
+}
 
-<section class="sobre-nos">
-  <div class="sobre-nos-content">
-    <h2>Nossa História</h2>
-    <p>A <strong>ABT Marketplace</strong> é uma loja online de moda que oferece roupas e acessórios para homens e mulheres de todas as idades. Nossa missão é trazer alegria e inovação para o closet dos nossos clientes, com uma experiência de compra única e produtos de qualidade.</p>
-  </div>
-</section>
-
-<footer>
-  <div class="footer-grid">
-    <div class="footer-section">
-      <h4>Contactos Claros</h4>
-      <p>📞 +244 937 912 339</p>
-      <p>📧 abtmarketplace00@gmail.com</p>
-      <a href="https://www.instagram.com/abt_marketplace" target="_blank">📸 Instagram @abt_marketplace</a>
-    </div>
-    <div class="footer-section">
-      <h4>Políticas da Loja</h4>
-      <a href="javascript:void(0)" onclick="openModal('modal-entrega')">Envios e Entregas</a>
-      <a href="javascript:void(0)" onclick="openModal('modal-troca')">Trocas e Devoluções</a>
-      <a href="javascript:void(0)" onclick="openModal('modal-pagamento')">Formas de Pagamento</a>
-    </div>
-    <div class="footer-section">
-      <h4>Localização</h4>
-      <p>Atendimento online para todo o país.</p>
-    </div>
-  </div>
-  <div class="copyright">
-    <p>© 2026 ABT Marketplace - Todos os direitos reservados</p>
-  </div>
-</footer>
-
-<div id="modal-entrega" class="modal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeModal('modal-entrega')">&times;</span>
-    <h3>Política de Entrega</h3>
-    <ul>
-      <li>Enviamos para todo o país.</li>
-      <li><strong>Prazos:</strong> 3-7 dias úteis após confirmação.</li>
-      <li><strong>Custos:</strong> Grátis para compras acima de um valor estipulado (Consulte no Checkout).</li>
-    </ul>
-  </div>
-</div>
-
-<div id="modal-troca" class="modal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeModal('modal-troca')">&times;</span>
-    <h3>Trocas e Devoluções</h3>
-    <p>Sua satisfação é nossa prioridade:</p>
-    <ul>
-      <li>Devolução em até 7 dias após a entrega.</li>
-      <li>O produto deve estar em condições originais e com etiqueta.</li>
-      <li>Contacte nosso suporte via WhatsApp para iniciar o processo.</li>
-    </ul>
-  </div>
-</div>
-
-<div id="modal-pagamento" class="modal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeModal('modal-pagamento')">&times;</span>
-    <h3>Pagamento e Privacidade</h3>
-    <p><strong>Métodos aceites:</strong></p>
-    <ul>
-      <li>Cartão de Débito/Crédito</li>
-      <li>Transferência Bancária / Multicaixa Express</li>
-      <li>Cash na entrega (disponível para certas regiões)</li>
-    </ul>
-    <p><small>Protegemos seus dados. Não compartilhamos informações com terceiros.</small></p>
-  </div>
-</div>
-
-<script>
-// --- LOGICA DOS MODAIS ---
-function openModal(id) { document.getElementById(id).style.display = "block"; }
-function closeModal(id) { document.getElementById(id).style.display = "none"; }
-window.onclick = function(event) { if (event.target.className === 'modal') { event.target.style.display = "none"; } }
-
-// --- HERO ROTATIVO (MANTER IGUAL) ---
-let slides = [
-  'https://images.unsplash.com/photo-1618354690361-8f449d56e92c?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1598300051220-d8f7b57d9c77?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1595950658280-38a4b9e0f3b1?auto=format&fit=crop&w=1200&q=80'
-];
-const slidesContainer=document.getElementById('slides-container');
-slides.forEach(img=>{
-  const el=document.createElement('img');
-  el.src=img;
-  slidesContainer.appendChild(el);
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+    window.atualizarMiniCarrinho();
+    carregarDestacadosFirebase();
 });
-let slideIndex=0;
-const totalSlides=slides.length;
-function showSlide(index){ slidesContainer.style.transform=`translateX(-${index*100}%)`; }
-document.querySelector('.prev').addEventListener('click', ()=>{ slideIndex=(slideIndex-1+totalSlides)%totalSlides; showSlide(slideIndex); });
-document.querySelector('.next').addEventListener('click', ()=>{ slideIndex=(slideIndex+1)%totalSlides; showSlide(slideIndex); });
-setInterval(()=>{ slideIndex=(slideIndex+1)%totalSlides; showSlide(slideIndex); },5000);
-
-// --- CARROSSEL PRODUTOS E CARREGAMENTO (MANTER IGUAL) ---
-function iniciarCarrossel(produtoEl, imagens){
-  let index=0;
-  const imgContainer=produtoEl.querySelector('.carousel-images');
-  produtoEl.querySelector('.carousel-btn.left').addEventListener('click', ()=>{
-    index=(index-1+imagens.length)%imagens.length;
-    imgContainer.style.transform=`translateX(-${index*100}%)`;
-  });
-  produtoEl.querySelector('.carousel-btn.right').addEventListener('click', ()=>{
-    index=(index+1)%imagens.length;
-    imgContainer.style.transform=`translateX(-${index*100}%)`;
-  });
-}
-
-function adicionarCarrinho(produto, preco){
-  let carrinho=JSON.parse(localStorage.getItem('carrinho'))||[];
-  carrinho.push({nome:produto, preco:preco});
-  localStorage.setItem('carrinho', JSON.stringify(carrinho));
-  alert(produto+" adicionado ao carrinho!");
-}
-
-function carregarDestacados(){
-  const container=document.getElementById('destacados-container');
-  let produtos=JSON.parse(localStorage.getItem('produtos'))||[];
-  let destacados=produtos.slice(-6).reverse();
-
-  destacados.forEach(prod=>{
-    const prodDiv=document.createElement('div');
-    prodDiv.className='produto';
-    let carouselHTML=`<div class="carousel-container"><div class="carousel-images">`;
-    prod.imagens.forEach(img=>{ carouselHTML+=`<img src="${img}" alt="${prod.nome}">`; });
-    carouselHTML+=`</div><button class="carousel-btn left">&#10094;</button><button class="carousel-btn right">&#10095;</button></div>`;
-    prodDiv.innerHTML=`${carouselHTML}<h3>${prod.nome}</h3><p>${prod.preco} Kz</p><button onclick="adicionarCarrinho('${prod.nome}',${prod.preco})">Comprar</button>`;
-    container.appendChild(prodDiv);
-    iniciarCarrossel(prodDiv,prod.imagens);
-  });
-}
-carregarDestacados();
 </script>
 
-</body>
-</html>
+<script>
+// Mantenha aqui apenas o seu código do HERO BANNER (o carrossel de cima) 
+// que já está funcionando bem!
+</script>

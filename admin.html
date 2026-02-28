@@ -1,39 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | ABT Marketplace</title>
+    
+    <script>
+        if (localStorage.getItem("adminLogado") !== "true") {
+            window.location.href = "login.html";
+        }
+        function fazerLogout() {
+            localStorage.removeItem("adminLogado");
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Teu estilo original preservado */
+        body{ font-family:'Poppins',sans-serif; background:#f4f4f4; margin:0; padding:0; color:#333; }
+        header{ background:#1c1c1c; color:#d4af37; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
+        header h1{ font-size:1.5rem; }
+        header nav a{ color:#d4af37; margin-left:15px; text-decoration:none; font-weight:bold; position:relative; }
+        .badge{ background:red; color:white; border-radius:50%; padding:2px 7px; font-size:0.8rem; position:absolute; top:-8px; right:-12px; }
+        .admin-container{ max-width:1000px; margin:40px auto; background:#1c1c1c; padding:30px; border-radius:10px; color:white; }
+        .admin-container h2{ text-align:center; margin-bottom:20px; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
+        .admin-container input, .admin-container select{ width:100%; padding:12px; margin-bottom:15px; border:none; border-radius:5px; box-sizing: border-box; color: #333; }
+        .admin-container button{ width:100%; padding:12px; background:#d4af37; border:none; color:black; font-weight:bold; cursor:pointer; border-radius:5px; margin-bottom:10px; transition: 0.3s; }
+        .admin-container button:hover{ background: #b88b2f; }
+        .pedido{ background:#111; padding:20px; margin-bottom:20px; border-radius:8px; border-left: 5px solid #d4af37; }
+        .pedido-header { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 10px; }
+        .info-cliente { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #1a1a1a; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+        .info-cliente span { font-size: 0.9rem; color: #ccc; }
+        .info-cliente strong { color: #d4af37; }
+        .itens-lista { background: #000; padding: 10px; border-radius: 5px; font-size: 0.85rem; line-height: 1.6; }
+        .status-pago { color: #4CAF50; }
+        .status-pendente { color: #FF5722; }
+        .dashboard{ background:#111; padding:20px; margin-top:40px; border-radius:10px; }
+        .dashboard canvas{ background:#fff; border-radius:10px; padding:10px; margin-bottom: 20px; }
+        .btn-logout { background: #e74c3c !important; color: white !important; width: auto !important; padding: 8px 15px !important; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ABT Marketplace - Admin</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="loja.html">Loja</a>
+        <a href="#pedidos">Pedidos <span class="badge" id="badge">0</span></a>
+        <button onclick="fazerLogout()" class="btn-logout">Sair</button>
+    </nav>
+</header>
+
 <div class="admin-container">
-<h2>Pedidos Recebidos</h2>
-<div id="pedidos"></div>
+    <h2>Gerenciar Estoque</h2>
+    <input id="nomeProd" placeholder="Nome do Produto">
+    <input id="precoProd" type="number" placeholder="Preço (Kz)">
+    <input id="imagemProd" placeholder="URL da imagem">
+    <select id="categoriaProd">
+        <option value="masculino">Masculino</option>
+        <option value="feminino">Feminino</option>
+        <option value="crianca">Criança</option>
+        <option value="acessorios">Acessórios</option>
+    </select>
+    <button id="btnAdicionar">Adicionar Produto ao Site</button>
+
+    <h2 id="pedidos" style="margin-top: 60px;">📦 Pedidos Recebidos (Nuvem)</h2>
+    <div class="lista-pedidos" id="lista-pedidos-firebase">
+        <p style="text-align:center;">A carregar pedidos da nuvem...</p>
+    </div>
+
+    <h2>📊 Resumo de Performance</h2>
+    <div class="dashboard">
+        <canvas id="statusChart" height="120"></canvas>
+    </div>
 </div>
 
-<script>
-async function carregarPedidos(){
-    const res = await fetch('http://localhost:3000/pedidos');
-    const pedidos = await res.json();
-    const container = document.getElementById('pedidos');
-    container.innerHTML = '';
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    pedidos.forEach((p, i)=>{
-        container.innerHTML += `
-        <div class="prod-admin">
-            <div>
-                <b>${p.cliente}</b> (${p.email} / ${p.telefone})<br>
-                Total: ${p.total} Kz<br>
-                Status: <span id="status-${i}">${p.status}</span>
-            </div>
-            <button onclick="atualizarStatus(${i})">Marcar como Pago</button>
-        </div>`;
+    const firebaseConfig = {
+        apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
+        authDomain: "abt-marketplace.firebaseapp.com",
+        projectId: "abt-marketplace",
+        storageBucket: "abt-marketplace.firebasestorage.app",
+        messagingSenderId: "763460800092",
+        appId: "1:763460800092:web:5ac1f341919c1fa02ea099"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // --- ADICIONAR PRODUTO ---
+    document.getElementById("btnAdicionar").addEventListener("click", async () => {
+        const nome = document.getElementById("nomeProd").value;
+        const preco = document.getElementById("precoProd").value;
+        const imagem = document.getElementById("imagemProd").value;
+        const categoria = document.getElementById("categoriaProd").value;
+
+        if(!nome || !preco || !imagem) return alert("Preencha todos os campos!");
+
+        try {
+            await addDoc(collection(db, "produtos"), {
+                nome, preco: Number(preco), imagem, categoria, dataCriacao: new Date().getTime()
+            });
+            alert("Produto adicionado com sucesso!");
+            location.reload();
+        } catch (e) { alert("Erro: " + e.message); }
     });
-}
 
-async function atualizarStatus(index){
-    const res = await fetch('http://localhost:3000/pedidos');
-    let pedidos = await res.json();
-    pedidos[index].status = "Pago";
-    await fetch('http://localhost:3000/pedidos', {
-        method:'PUT',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(pedidos)
+    // --- ESCUTAR PEDIDOS ---
+    const q = query(collection(db, "pedidos"), orderBy("data", "desc"));
+    onSnapshot(q, (snapshot) => {
+        const container = document.getElementById("lista-pedidos-firebase");
+        container.innerHTML = "";
+        let count = 0;
+        let historico = [];
+
+        snapshot.forEach((docSnap) => {
+            const pedido = docSnap.data();
+            const id = docSnap.id;
+            historico.push(pedido);
+            count++;
+
+            const statusColor = pedido.status === "Pago" ? "status-pago" : "status-pendente";
+            const itensStr = pedido.itens.map(i => `• ${i.nome} (x${i.quantidade})`).join("<br>");
+
+            container.innerHTML += `
+                <div class="pedido">
+                    <div class="pedido-header">
+                        <strong>ID: ${id.substring(0,6)}</strong>
+                        <small>${pedido.data}</small>
+                    </div>
+                    <div class="info-cliente">
+                        <span>👤 Cliente: <strong>${pedido.cliente}</strong></span>
+                        <span>📞 Tel: <strong>${pedido.telefone}</strong></span>
+                        <span>💰 Total: <strong>${pedido.total} Kz</strong></span>
+                        <span>Status: <strong class="${statusColor}">${pedido.status}</strong></span>
+                    </div>
+                    <div class="itens-lista">${itensStr}</div>
+                    <button style="margin-top:10px;" onclick="window.atualizarStatus('${id}', '${pedido.status}')">Alternar Status</button>
+                </div>`;
+        });
+
+        document.getElementById("badge").innerText = count;
+        gerarGraficos(historico);
     });
-    carregarPedidos();
-}
 
-carregarPedidos();
+    window.atualizarStatus = async (id, statusAtual) => {
+        const novoStatus = statusAtual === "Pago" ? "Pendente" : "Pago";
+        await updateDoc(doc(db, "pedidos", id), { status: novoStatus });
+    };
+
+    function gerarGraficos(dados) {
+        const ctxStatus = document.getElementById("statusChart").getContext("2d");
+        const pagos = dados.filter(p => p.status === "Pago").length;
+        const pendentes = dados.filter(p => p.status === "Pendente").length;
+
+        if(window.stChart) window.stChart.destroy();
+        window.stChart = new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: ["Pago", "Pendente"],
+                datasets: [{ data: [pagos, pendentes], backgroundColor: ['#4CAF50', '#FF5722'] }]
+            }
+        });
+    }
 </script>
+
+</body>
+</html>

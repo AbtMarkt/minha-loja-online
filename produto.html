@@ -1,91 +1,93 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Produto | ABT Marketplace</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produto | ABT Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .pagina-produto { max-width: 1000px; margin: 40px auto; padding: 20px; }
+        .produto-detalhe { display: flex; gap: 40px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .produto-detalhe img { width: 450px; height: 450px; object-fit: cover; border-radius: 10px; }
+        .info-produto { flex: 1; }
+        .info-produto h2 { font-size: 2rem; margin-top: 0; }
+        .preco { font-size: 1.8rem; color: #d4af37; font-weight: bold; margin: 20px 0; }
+        .descricao { line-height: 1.6; color: #666; margin-bottom: 30px; }
+        .btn-comprar { 
+            background: #1c1c1c; color: white; border: none; padding: 15px 30px; 
+            font-size: 1.1rem; font-weight: bold; border-radius: 5px; cursor: pointer; 
+            transition: 0.3s; width: 100%;
+        }
+        .btn-comprar:hover { background: #d4af37; color: black; }
+        
+        @media (max-width: 768px) {
+            .produto-detalhe { flex-direction: column; }
+            .produto-detalhe img { width: 100%; height: auto; }
+        }
+    </style>
 </head>
-
 <body>
 
 <header>
-
-<h1 class="logo">ABT Marketplace</h1>
-
-<nav>
-<a href="index.html">Home</a>
-<a href="loja.html">Loja</a>
-<a href="carrinho.html">Carrinho 🛒</a>
-</nav>
-
+    <h1 class="logo">ABT Marketplace</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="loja.html">Loja</a>
+        <a href="carrinho.html">Carrinho 🛒</a>
+    </nav>
 </header>
 
-
 <section class="pagina-produto">
-
-<div class="produto-detalhe">
-
-<img id="imagem">
-
-<div class="info-produto">
-
-<h2 id="nome"></h2>
-
-<p class="preco" id="preco"></p>
-
-<p class="descricao">
-Produto premium disponível na ABT Marketplace.
-Qualidade garantida e entrega rápida.
-</p>
-
-<button onclick="adicionarCarrinho()">
-Adicionar ao Carrinho
-</button>
-
-</div>
-
-</div>
-
+    <div class="produto-detalhe">
+        <img id="imagem" alt="Carregando...">
+        <div class="info-produto">
+            <h2 id="nome">Carregando...</h2>
+            <p class="preco" id="preco"></p>
+            <p class="descricao">
+                Este produto faz parte da coleção premium da <strong>ABT Marketplace</strong>. 
+                Garantimos a máxima qualidade em cada detalhe, com acabamentos superiores 
+                e durabilidade testada para clientes exigentes em Angola.
+            </p>
+            <button class="btn-comprar" onclick="adicionarCarrinho()">
+                Adicionar ao Carrinho
+            </button>
+        </div>
+    </div>
 </section>
 
-
 <script>
+    // Pegar dados da URL
+    const params = new URLSearchParams(window.location.search);
+    const nome = params.get("nome") || "Produto ABT";
+    const preco = params.get("preco") || "0";
+    const imagem = params.get("img") || "placeholder.jpg";
 
-const params = new URLSearchParams(window.location.search);
+    // Preencher a página
+    document.getElementById("nome").innerText = nome;
+    document.getElementById("preco").innerText = preco + " Kz";
+    document.getElementById("imagem").src = imagem;
 
-const nome = params.get("nome");
+    function adicionarCarrinho(){
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        
+        // Verifica se o produto já existe no carrinho para apenas aumentar a quantidade
+        let index = carrinho.findIndex(item => item.nome === nome);
+        
+        if(index !== -1) {
+            carrinho[index].quantidade += 1;
+        } else {
+            carrinho.push({
+                nome: nome,
+                preco: Number(preco),
+                imagem: imagem,
+                quantidade: 1
+            });
+        }
 
-const preco = params.get("preco");
-
-const imagem = params.get("img");
-
-document.getElementById("nome").innerText = nome;
-
-document.getElementById("preco").innerText = preco + " Kz";
-
-document.getElementById("imagem").src = imagem;
-
-
-function adicionarCarrinho(){
-
-let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-
-carrinho.push({
-nome:nome,
-preco:Number(preco)
-});
-
-localStorage.setItem("carrinho",JSON.stringify(carrinho));
-
-alert("Produto adicionado ao carrinho!");
-
-}
-
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        alert("Sucesso! " + nome + " foi adicionado ao seu carrinho.");
+    }
 </script>
 
 </body>

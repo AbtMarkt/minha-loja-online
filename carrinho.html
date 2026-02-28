@@ -1,28 +1,107 @@
-async function finalizarCompra(){
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    if(carrinho.length===0){ alert("Carrinho vazio!"); return; }
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - ABT Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    let nome = document.getElementById('clienteNome').value;
-    let email = document.getElementById('clienteEmail').value;
-    let telefone = document.getElementById('clienteTelefone').value;
+<header>
+    <h1>ABT Marketplace</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="loja.html">Loja</a>
+        <a href="carrinho.html">Carrinho 🛒</a>
+    </nav>
+</header>
 
-    let pedido = {
-        itens: carrinho,
-        total: carrinho.reduce((sum,i)=>sum+i.preco,0),
-        data: new Date().toLocaleString(),
-        status: "Pendente",
-        cliente: nome,
-        email: email,
-        telefone: telefone
+<div class="carrinho">
+    <h2>Seu Carrinho</h2>
+
+    <div id="itens">
+        </div>
+    
+    <p id="total" style="font-weight: bold; margin-top: 15px;"></p>
+
+    <hr>
+    <h3>Informações do Cliente</h3>
+    <input type="text" id="clienteNome" placeholder="Nome completo" style="display: block; width: 100%; margin-bottom: 10px;">
+    <input type="email" id="clienteEmail" placeholder="E-mail" style="display: block; width: 100%; margin-bottom: 10px;">
+    <input type="tel" id="clienteTelefone" placeholder="Telefone" style="display: block; width: 100%; margin-bottom: 10px;">
+
+    <button id="btnFinalizar" class="finalizar" style="width: 100%; padding: 10px; cursor: pointer;">
+        Finalizar Compra
+    </button>
+</div>
+
+<script src="script.js"></script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Tuas chaves reais da imagem que mandaste
+    const firebaseConfig = {
+        apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
+        authDomain: "abt-marketplace.firebaseapp.com",
+        projectId: "abt-marketplace",
+        storageBucket: "abt-marketplace.firebasestorage.app",
+        messagingSenderId: "763460800092",
+        appId: "1:763460800092:web:5ac1f341919c1fa02ea099",
+        measurementId: "G-HBBD0J393V"
     };
 
-    await fetch('http://localhost:3000/pedidos',{
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify(pedido)
-    });
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    localStorage.removeItem('carrinho');
-    mostrarCarrinho();
-    alert("Compra registrada com sucesso!");
-}
+    async function enviarParaFirebase() {
+        // Pega os itens que o seu script.js salvou no localStorage
+        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        
+        const nome = document.getElementById('clienteNome').value;
+        const email = document.getElementById('clienteEmail').value;
+        const telefone = document.getElementById('clienteTelefone').value;
+
+        if (!nome || !telefone) {
+            return alert("Por favor, preencha o nome e o telefone!");
+        }
+
+        if (carrinho.length === 0) {
+            return alert("O carrinho está vazio!");
+        }
+
+        const pedido = {
+            cliente: nome,
+            email: email,
+            telefone: telefone,
+            itens: carrinho,
+            total: document.getElementById('total').innerText,
+            data: new Date().toISOString(),
+            status: "Pendente"
+        };
+
+        try {
+            // ENVIA PARA A NUVEM
+            await addDoc(collection(db, "pedidos"), pedido);
+            
+            // WHATSAPP (Opcional, mas útil)
+            const msgZap = `Novo Pedido ABT!\nCliente: ${nome}\nTotal: ${pedido.total}`;
+            window.open(`https://wa.me/244937912339?text=${encodeURIComponent(msgZap)}`);
+
+            alert("Sucesso! O seu pedido foi guardado na nuvem.");
+            localStorage.removeItem('carrinho');
+            window.location.href = "index.html";
+        } catch (error) {
+            console.error("Erro ao salvar:", error);
+            alert("Erro de conexão. Verifique se o banco de dados está ativo.");
+        }
+    }
+
+    // Liga o clique do botão à função do Firebase
+    document.getElementById('btnFinalizar').addEventListener('click', enviarParaFirebase);
+</script>
+
+</body>
+</html>

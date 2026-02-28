@@ -1,91 +1,65 @@
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Login Admin | ABT Marketplace</title>
-
-<link rel="stylesheet" href="style.css">
-
-<style>
-
-.login-container{
-
-max-width:400px;
-margin:120px auto;
-background:#1c1c1c;
-padding:40px;
-border-radius:10px;
-text-align:center;
-color:white;
-
-}
-
-.login-container h2{
-margin-bottom:20px;
-}
-
-.login-container input{
-
-width:100%;
-padding:12px;
-margin-bottom:15px;
-border:none;
-border-radius:5px;
-
-}
-
-.login-container button{
-
-width:100%;
-padding:12px;
-background:#d4af37;
-border:none;
-font-weight:bold;
-cursor:pointer;
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin | ABT Marketplace</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-container { background: #1c1c1c; padding: 40px; border-radius: 10px; width: 100%; max-width: 350px; text-align: center; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .login-container h2 { color: #d4af37; margin-bottom: 25px; }
+        .login-container input { width: 100%; padding: 12px; margin-bottom: 15px; border: none; border-radius: 5px; box-sizing: border-box; outline: none; }
+        .login-container button { width: 100%; padding: 12px; background: #d4af37; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; transition: 0.3s; }
+        .login-container button:hover { background: #b88b2f; }
+        .voltar { display: block; margin-top: 15px; color: #888; text-decoration: none; font-size: 0.8rem; }
+    </style>
 </head>
-
 <body>
 
 <div class="login-container">
-
-<h2>Login do Administrador</h2>
-
-<input type="password" id="senha" placeholder="Digite a senha">
-
-<button onclick="login()">Entrar</button>
-
+    <h2>Painel ABT</h2>
+    
+    <input type="text" id="usuario" placeholder="Usuário">
+    
+    <input type="password" id="senha" placeholder="Senha">
+    
+    <button id="btnEntrar">Entrar</button>
+    <a href="index.html" class="voltar">Sair para a loja</a>
 </div>
 
-
 <script>
+    // CREDENCIAIS
+    const CREDENCIAIS_MESTRAS = {
+        usuario: "admin.00",
+        senha: "0430"
+    };
 
-function login(){
+    function fazerLogin() {
+        const userDigitado = document.getElementById("usuario").value;
+        const senhaDigitada = document.getElementById("senha").value;
 
-let senha = document.getElementById("senha").value;
+        if (userDigitado === CREDENCIAIS_MESTRAS.usuario && senhaDigitada === CREDENCIAIS_MESTRAS.senha) {
+            // Define o tempo de expiração ou apenas que está logado
+            localStorage.setItem("adminLogado", "true");
+            localStorage.setItem("ultimoLogin", new Date().getTime());
+            window.location.href = "admin.html";
+        } else {
+            alert("Usuário ou Senha incorretos!");
+        }
+    }
 
-if(senha === "123456"){
+    // Evento de clique
+    document.getElementById('btnEntrar').addEventListener('click', fazerLogin);
 
-localStorage.setItem("adminLogado","true");
+    // Suporte para tecla ENTER
+    document.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') fazerLogin();
+    });
 
-window.location.href = "admin.html";
-
-}else{
-
-alert("Senha incorreta!");
-
-}
-
-}
-
+    // Verificação de segurança: se já estiver logado, vai direto
+    if (localStorage.getItem("adminLogado") === "true") {
+        window.location.href = "admin.html";
+    }
 </script>
 
 </body>
