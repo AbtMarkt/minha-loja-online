@@ -1,31 +1,67 @@
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Oficial | ABT Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para a Loja */
+        .filtros-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: #1c1c1c;
+            flex-wrap: wrap;
+        }
+        .btn-filtro {
+            background: transparent;
+            color: #d4af37;
+            border: 1px solid #d4af37;
+            padding: 8px 20px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .btn-filtro.ativo, .btn-filtro:hover {
+            background: #d4af37;
+            color: #000;
+        }
+        .loja-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .produto-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            text-align: center;
+            padding-bottom: 15px;
+        }
+        .produto-item:hover { transform: translateY(-5px); }
+        .produto-item img { width: 100%; height: 250px; object-fit: cover; }
+        .produto-item h3 { font-size: 1.1rem; margin: 10px 0; color: #333; }
+        .produto-item .preco { color: #d4af37; font-weight: bold; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
 
-  // ... (mesmo firebaseConfig acima) ...
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+<header>
+    <nav style="background: #1c1c1c; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="color: #d4af37; margin: 0;">ABT Loja</h1>
+        <div>
+            <a href="home.html" style="color: white; text-decoration: none; margin-right: 15px;">Home</a>
+            <a href="carrinho.html" style="color: white; text-decoration: none;">🛒 Carrinho</a>
+        </div>
+    </nav>
+</header>
 
-  async function carregarLoja() {
-    const lista = document.getElementById("lista-produtos");
-    const querySnapshot = await getDocs(collection(db, "produtos"));
-    lista.innerHTML = "";
-
-    querySnapshot.forEach((doc) => {
-      const p = doc.data();
-      lista.innerHTML += `
-        <div class="card">
-          <img src="${p.imagem}" onclick="ver('${p.nome}', ${p.preco}, '${p.imagem}')">
-          <h3>${p.nome}</h3>
-          <p>${p.preco} Kz</p>
-          <button onclick="ver('${p.nome}', ${p.preco}, '${p.imagem}')">Ver Detalhes</button>
-        </div>`;
-    });
-  }
-
-  window.ver = (n, p, i) => {
-    window.location.href = `produto.html?nome=${n}&preco=${p}&img=${i}`;
-  };
-
-  carregarLoja();
-</script>
+<div class="filtros-container">
+    <button class="btn-filtro ativo" onclick="filtrarProdutos('todos', this)">Todos</

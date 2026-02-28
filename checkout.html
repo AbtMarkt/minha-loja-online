@@ -3,119 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout com Pagamento - ABT Marketplace</title>
+    <title>Checkout | ABT Marketplace</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body{ font-family:'Poppins',sans-serif; background:#f4f4f4; margin:0; padding:0; color:#333; }
-        header{ background:#1c1c1c; color:#d4af37; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
-        header h1{ font-size:1.5rem; }
-        header nav a{ color:#d4af37; margin-left:15px; text-decoration:none; font-weight:bold; }
-        .container{ max-width:1000px; margin:40px auto; background:white; padding:30px; border-radius:10px; box-shadow:0 5px 20px rgba(0,0,0,0.1); }
-        h2{text-align:center; margin-bottom:20px;}
-        .carrinho-item{ display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #ccc; }
-        .carrinho-item img{ width:60px; height:60px; object-fit:cover; border-radius:5px; margin-right:15px; }
-        .carrinho-item-details{ flex:1; }
-        .quantidade{ display:flex; align-items:center; gap:5px; }
-        .quantidade button{ padding:5px 10px; background:#d4af37; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
-        .quantidade input{ width:40px; text-align:center; border-radius:5px; border:1px solid #ccc; padding:5px; }
-        .total{ text-align:right; font-size:1.2rem; font-weight:bold; margin-top:20px; }
-        form input, form textarea{ width:100%; padding:12px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:1rem; box-sizing: border-box; }
-        form button{ width:100%; padding:15px; background:#d4af37; border:none; font-weight:bold; border-radius:5px; cursor:pointer; transition:0.3s; margin-bottom:10px; }
-        form button:hover{ background:#b88b2f; color:white; }
-        #confirmacao{ background:#d4af37; padding:15px; border-radius:5px; color:#1c1c1c; text-align:center; margin:20px 0; display:none; }
-        footer{ background:#1c1c1c; color:#d4af37; text-align:center; padding:20px; margin-top:40px; }
-        .pagamento-opcoes{ display:flex; flex-direction:column; gap:10px; margin:20px 0; }
+        .checkout-container { max-width: 600px; margin: 50px auto; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .resumo-pedido { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #d4af37; }
+        .campo { margin-bottom: 15px; }
+        .campo label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        .campo input, .campo select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .total-pagar { font-size: 1.5rem; text-align: center; margin: 20px 0; color: #1c1c1c; }
+        .btn-confirmar { width: 100%; padding: 18px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-confirmar:hover { background: #128C7E; transform: scale(1.02); }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>ABT Marketplace</h1>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="loja.html">Loja</a>
-        <a href="carrinho.html">Carrinho 🛒</a>
+    <nav style="background: #1c1c1c; padding: 15px; text-align: center;">
+        <h1 style="color: #d4af37; margin: 0;">Finalizar Compra</h1>
     </nav>
 </header>
 
-<div class="container">
-    <h2>Checkout com Pagamento</h2>
+<main class="checkout-container">
+    <div class="resumo-pedido">
+        <h3>Resumo do Pedido</h3>
+        <div id="itens-resumo"></div>
+        <div class="total-pagar">Total: <strong id="total-checkout">0</strong> Kz</div>
+    </div>
 
-    <div id="carrinho-itens"></div>
-    <p class="total" id="subtotal-total"></p>
-
-    <div id="confirmacao">Pedido enviado com sucesso para a nuvem!</div>
-
-    <h2>Informações do Cliente</h2>
-    <form id="checkout-form">
-        <input type="text" id="nome-cliente" placeholder="Nome Completo" required>
-        <input type="email" id="email-cliente" placeholder="Seu E-mail" required>
-        <input type="text" id="telefone-cliente" placeholder="Telefone (Ex: +244 9xxxxxxx)" required>
-        <textarea id="endereco-cliente" placeholder="Endereço completo" rows="3" required></textarea>
-
-        <div class="pagamento-opcoes">
-            <label><input type="radio" name="pagamento" value="cartao" required> Cartão de Crédito/Débito</label>
-            <label><input type="radio" name="pagamento" value="transferencia"> Transferência / MBWay</label>
-            <label><input type="radio" name="pagamento" value="whatsapp" checked> Pagar via WhatsApp (Recomendado)</label>
+    <div class="form-checkout">
+        <div class="campo">
+            <label>Nome Completo</label>
+            <input type="text" id="nome" placeholder="Como devemos chamar-te?">
+        </div>
+        <div class="campo">
+            <label>Teu WhatsApp</label>
+            <input type="tel" id="whatsapp" placeholder="Ex: 923 000 000">
+        </div>
+        <div class="campo">
+            <label>Endereço de Entrega (Luanda)</label>
+            <input type="text" id="endereco" placeholder="Bairro, Rua, Casa nº">
+        </div>
+        <div class="campo">
+            <label>Método de Pagamento</label>
+            <select id="pagamento">
+                <option value="Transferência">Transferência (IBAN)</option>
+                <option value="TPA">TPA no Local</option>
+                <option value="Dinheiro">Dinheiro vivo</option>
+            </select>
         </div>
 
-        <button type="submit" id="btn-finalizar">Finalizar Pedido na Nuvem</button>
-    </form>
-</div>
-
-<footer>
-    <p>© 2026 ABT Marketplace - Todos os direitos reservados</p>
-</footer>
-
-<script>
-function mostrarCarrinho(){
-    let carrinho=JSON.parse(localStorage.getItem('carrinho'))||[];
-    let container=document.getElementById('carrinho-itens');
-    let total=0;
-    container.innerHTML='';
-    if(carrinho.length===0){
-        container.innerHTML='<p>Seu carrinho está vazio!</p>';
-    } else {
-        carrinho.forEach((item,index)=>{
-            if(!item.quantidade)item.quantidade=1;
-            let subtotalItem=item.preco*item.quantidade;
-            total+=subtotalItem;
-            container.innerHTML+=`
-                <div class="carrinho-item">
-                    <img src="${item.imagem}" alt="${item.nome}">
-                    <div class="carrinho-item-details">
-                        <h4>${item.nome}</h4>
-                        <p>Preço: ${item.preco} Kz</p>
-                        <div class="quantidade">
-                            <button onclick="alterarQuantidade(${index}, -1)">-</button>
-                            <input type="number" value="${item.quantidade}" min="1" onchange="atualizarQuantidade(${index}, this.value)">
-                            <button onclick="alterarQuantidade(${index}, 1)">+</button>
-                            <span>Subtotal: ${subtotalItem} Kz</span>
-                        </div>
-                    </div>
-                </div>`;
-        });
-    }
-    document.getElementById('subtotal-total').innerText='Total: '+total+' Kz';
-}
-
-function alterarQuantidade(index, delta){
-    let carrinho=JSON.parse(localStorage.getItem('carrinho'))||[];
-    carrinho[index].quantidade=Math.max(1,(carrinho[index].quantidade||1)+delta);
-    localStorage.setItem('carrinho',JSON.stringify(carrinho));
-    mostrarCarrinho();
-}
-
-function atualizarQuantidade(index, valor){
-    let carrinho=JSON.parse(localStorage.getItem('carrinho'))||[];
-    carrinho[index].quantidade=Math.max(1,parseInt(valor)||1);
-    localStorage.setItem('carrinho',JSON.stringify(carrinho));
-    mostrarCarrinho();
-}
-
-mostrarCarrinho();
-</script>
+        <button class="btn-confirmar" id="btnFinalizarTudo">Confirmar e Enviar Pedido 🚀</button>
+    </div>
+</main>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -133,51 +73,60 @@ mostrarCarrinho();
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    document.getElementById('checkout-form').addEventListener('submit', async function(e){
-        e.preventDefault();
-        
-        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        if(carrinho.length === 0){ alert("Carrinho vazio!"); return; }
+    // Carregar dados do carrinho para o resumo
+    let carrinho = JSON.parse(localStorage.getItem("carrinhoABT")) || [];
+    const resumoDiv = document.getElementById("itens-resumo");
+    const totalDiv = document.getElementById("total-checkout");
+    let totalGeral = 0;
 
-        const btn = document.getElementById('btn-finalizar');
-        btn.innerText = "Processando...";
-        btn.disabled = true;
+    if(carrinho.length === 0) window.location.href = "loja.html";
 
-        let total = carrinho.reduce((sum,item) => sum + item.preco * item.quantidade, 0);
-        let pagamento = document.querySelector('input[name="pagamento"]:checked').value;
+    carrinho.forEach(item => {
+        totalGeral += (item.preco * item.quantidade);
+        resumoDiv.innerHTML += `<p>• ${item.nome} (x${item.quantidade})</p>`;
+    });
+    totalDiv.innerText = totalGeral;
 
-        // Objeto formatado para o seu Admin do Firebase
-        let pedido = {
-            cliente: document.getElementById('nome-cliente').value,
-            email: document.getElementById('email-cliente').value,
-            telefone: document.getElementById('telefone-cliente').value,
-            endereco: document.getElementById('endereco-cliente').value,
-            total: total + " Kz",
-            itens: carrinho,
-            pagamento: pagamento,
-            status: "Pendente",
-            data: new Date().toISOString()
-        };
+    // AÇÃO DE FINALIZAR
+    document.getElementById("btnFinalizarTudo").addEventListener("click", async () => {
+        const nome = document.getElementById("nome").value;
+        const tel = document.getElementById("whatsapp").value;
+        const endereco = document.getElementById("endereco").value;
+        const metodo = document.getElementById("pagamento").value;
+
+        if(!nome || !tel || !endereco) return alert("Por favor, preencha todos os campos!");
 
         try {
-            // ENVIA PARA O FIREBASE
-            await addDoc(collection(db, "pedidos"), pedido);
+            // 1. Gravar na Nuvem (Firebase)
+            await addDoc(collection(db, "pedidos"), {
+                cliente: nome,
+                telefone: tel,
+                endereco: endereco,
+                metodoPagamento: metodo,
+                total: totalGeral,
+                itens: carrinho,
+                status: "Pendente",
+                data: new Date().toLocaleString()
+            });
 
-            // ABRIR WHATSAPP
-            let mensagem = `*Novo Pedido ABT*\nCliente: ${pedido.cliente}\nTotal: ${pedido.total}\nPagamento: ${pagamento}`;
-            window.open("https://wa.me/+244937912339?text="+encodeURIComponent(mensagem),'_blank');
+            // 2. Criar mensagem WhatsApp
+            let msg = `*NOVO PEDIDO - ABT MARKETPLACE*%0A%0A`;
+            msg += `👤 *Cliente:* ${nome}%0A`;
+            msg += `📞 *Tel:* ${tel}%0A`;
+            msg += `📍 *Entrega:* ${endereco}%0A`;
+            msg += `💳 *Pagamento:* ${metodo}%0A%0A`;
+            msg += `📦 *Produtos:*%0A`;
+            carrinho.forEach(i => msg += `- ${i.nome} (x${i.quantidade})%0A`);
+            msg += `%0A💰 *TOTAL: ${totalGeral} Kz*`;
 
-            // LIMPEZA E SUCESSO
-            localStorage.removeItem('carrinho');
-            document.getElementById('confirmacao').style.display='block';
-            alert("Pedido enviado com sucesso!");
-            window.location.href = "index.html";
+            const linkZap = `https://wa.me/244937912339?text=${msg}`;
 
-        } catch (error) {
-            console.error(error);
-            alert("Erro ao conectar com o servidor. Tente novamente.");
-            btn.disabled = false;
-            btn.innerText = "Finalizar Pedido";
+            // Limpar e fechar
+            localStorage.removeItem("carrinhoABT");
+            window.location.href = linkZap;
+
+        } catch (e) {
+            alert("Erro ao enviar pedido: " + e.message);
         }
     });
 </script>

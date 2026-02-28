@@ -1,82 +1,70 @@
-<script type="module">
-// --- IMPORTAÇÃO DO FIREBASE ---
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, limit, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | ABT Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilo rápido para a vitrine da Home */
+        .vitrine {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .produto-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .produto-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .btn-ver {
+            background: #d4af37;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
-    authDomain: "abt-marketplace.firebaseapp.com",
-    projectId: "abt-marketplace",
-    storageBucket: "abt-marketplace.firebasestorage.app",
-    messagingSenderId: "763460800092",
-    appId: "1:763460800092:web:5ac1f341919c1fa02ea099"
-};
+<header>
+    <nav>
+        <h1>ABT Marketplace</h1>
+        <a href="home.html">Início</a>
+        <a href="loja.html">Loja</a>
+        <a href="carrinho.html">Carrinho</a>
+    </nav>
+</header>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+<section class="hero">
+    <div style="text-align: center; padding: 50px; background: #1c1c1c; color: white;">
+        <h2>Bem-vindo à ABT Marketplace</h2>
+        <p>Os melhores produtos, agora à distância de um clique.</p>
+    </div>
+</section>
 
-// --- MINI CARRINHO (Sincronizado) ---
-window.atualizarMiniCarrinho = function() {
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    let totalItens = carrinho.length;
-    let subtotal = carrinho.reduce((acc, item) => acc + (item.preco || 0), 0);
-    document.getElementById('itens-count').innerText = totalItens;
-    document.getElementById('subtotal').innerText = subtotal + ' Kz';
-}
+<main>
+    <h2 style="text-align: center; margin-top: 30px;">🔥 Produtos em Destaque</h2>
+    
+    <div id="destacados-container" class="vitrine">
+        <p style="text-align: center; grid-column: 1/-1;">A carregar novidades...</p>
+    </div>
+</main>
 
-// --- ADICIONAR AO CARRINHO ---
-window.adicionarCarrinho = function(nome, preco, imagem) {
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    carrinho.push({ nome, preco, imagem, quantidade: 1 });
-    localStorage.setItem('carrinho', JSON.stringify(carrinho));
-    alert(nome + " foi adicionado!");
-    window.atualizarMiniCarrinho();
-}
+<script type="module" src="script.js"></script>
 
-// --- CARREGAR PRODUTOS DA NUVEM (FIREBASE) ---
-async function carregarDestacadosFirebase() {
-    const container = document.getElementById('destacados-container');
-    container.innerHTML = '<p>A carregar novidades...</p>';
-
-    try {
-        // Busca os últimos 6 produtos adicionados na coleção "produtos"
-        const q = query(collection(db, "produtos"), limit(6));
-        const querySnapshot = await getDocs(q);
-        
-        container.innerHTML = ''; // Limpa o carregando
-
-        querySnapshot.forEach((doc) => {
-            const prod = doc.data();
-            const prodDiv = document.createElement('div');
-            prodDiv.className = 'produto';
-
-            // Tratamento de imagem (caso seja array ou string única)
-            const imgPrincipal = Array.isArray(prod.imagens) ? prod.imagens[0] : (prod.imagem || 'link-da-imagem-padrao.jpg');
-
-            prodDiv.innerHTML = `
-                <div class="carousel-container">
-                    <img src="${imgPrincipal}" style="width:100%; border-radius:10px;">
-                </div>
-                <h3>${prod.nome}</h3>
-                <p>${prod.preco} Kz</p>
-                <button onclick="adicionarCarrinho('${prod.nome}', ${prod.preco}, '${imgPrincipal}')">Comprar</button>
-            `;
-            container.appendChild(prodDiv);
-        });
-    } catch (e) {
-        console.error("Erro ao carregar produtos:", e);
-        container.innerHTML = '<p>Adicione produtos no Painel Admin para eles aparecerem aqui.</p>';
-    }
-}
-
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    window.atualizarMiniCarrinho();
-    carregarDestacadosFirebase();
-});
-</script>
-
-<script>
-// Mantenha aqui apenas o seu código do HERO BANNER (o carrossel de cima) 
-// que já está funcionando bem!
-</script>
+</body>
+</html>

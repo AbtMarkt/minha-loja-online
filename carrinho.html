@@ -3,104 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrinho - ABT Marketplace</title>
+    <title>Meu Carrinho | ABT Marketplace</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .carrinho-container { max-width: 800px; margin: 30px auto; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .item-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 15px 0; }
+        .item-carrinho img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
+        .detalhes-item { flex: 1; margin-left: 15px; }
+        .btn-remover { color: red; cursor: pointer; border: none; background: none; font-size: 0.8rem; font-weight: bold; }
+        .total-box { text-align: right; margin-top: 20px; font-size: 1.4rem; font-weight: bold; color: #1c1c1c; border-top: 2px solid #d4af37; padding-top: 10px; }
+        .formulario-envio { margin-top: 30px; background: #f9f9f9; padding: 20px; border-radius: 8px; }
+        .formulario-envio input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .btn-finalizar { width: 100%; padding: 15px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-finalizar:hover { background: #128C7E; }
+    </style>
 </head>
 <body>
 
 <header>
-    <h1>ABT Marketplace</h1>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="loja.html">Loja</a>
-        <a href="carrinho.html">Carrinho 🛒</a>
+    <nav style="background: #1c1c1c; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="color: #d4af37; margin: 0; font-size: 1.2rem;">ABT Carrinho</h1>
+        <a href="loja.html" style="color: white; text-decoration: none; font-weight: bold;">🛒 Voltar à Loja</a>
     </nav>
 </header>
 
-<div class="carrinho">
+<main class="carrinho-container">
     <h2>Seu Carrinho</h2>
+    <div id="lista-carrinho">
+        <p style="text-align:center;">O seu carrinho está vazio...</p>
+    </div>
 
-    <div id="itens">
-        </div>
-    
-    <p id="total" style="font-weight: bold; margin-top: 15px;"></p>
+    <div class="total-box">
+        Total: <span id="valor-total">0</span> Kz
+    </div>
 
-    <hr>
-    <h3>Informações do Cliente</h3>
-    <input type="text" id="clienteNome" placeholder="Nome completo" style="display: block; width: 100%; margin-bottom: 10px;">
-    <input type="email" id="clienteEmail" placeholder="E-mail" style="display: block; width: 100%; margin-bottom: 10px;">
-    <input type="tel" id="clienteTelefone" placeholder="Telefone" style="display: block; width: 100%; margin-bottom: 10px;">
-
-    <button id="btnFinalizar" class="finalizar" style="width: 100%; padding: 10px; cursor: pointer;">
-        Finalizar Compra
-    </button>
-</div>
-
-<script src="script.js"></script>
+    <div class="formulario-envio">
+        <h3>Dados de Entrega</h3>
+        <input type="text" id="nome-cliente" placeholder="Teu Nome Completo">
+        <input type="tel" id="tel-cliente" placeholder="Teu WhatsApp (Ex: 923...)">
+        <button class="btn-finalizar" id="btnFinalizar">Finalizar e Enviar Pedido 🚀</button>
+    </div>
+</main>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Tuas chaves reais da imagem que mandaste
     const firebaseConfig = {
         apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
         authDomain: "abt-marketplace.firebaseapp.com",
         projectId: "abt-marketplace",
         storageBucket: "abt-marketplace.firebasestorage.app",
         messagingSenderId: "763460800092",
-        appId: "1:763460800092:web:5ac1f341919c1fa02ea099",
-        measurementId: "G-HBBD0J393V"
+        appId: "1:763460800092:web:5ac1f341919c1fa02ea099"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    async function enviarParaFirebase() {
-        // Pega os itens que o seu script.js salvou no localStorage
-        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        
-        const nome = document.getElementById('clienteNome').value;
-        const email = document.getElementById('clienteEmail').value;
-        const telefone = document.getElementById('clienteTelefone').value;
+    // Carregar itens do carrinho
+    let carrinho = JSON.parse(localStorage.getItem("carrinhoABT")) || [];
 
-        if (!nome || !telefone) {
-            return alert("Por favor, preencha o nome e o telefone!");
-        }
+    function renderizarCarrinho() {
+        const container = document.getElementById("lista-carrinho");
+        const totalExibicao = document.getElementById("valor-total");
+        container.innerHTML = "";
+        let totalGeral = 0;
 
         if (carrinho.length === 0) {
-            return alert("O carrinho está vazio!");
+            container.innerHTML = "<p style='text-align:center;'>O carrinho está vazio.</p>";
+            totalExibicao.innerText = "0";
+            return;
         }
 
-        const pedido = {
-            cliente: nome,
-            email: email,
-            telefone: telefone,
-            itens: carrinho,
-            total: document.getElementById('total').innerText,
-            data: new Date().toISOString(),
-            status: "Pendente"
-        };
+        carrinho.forEach((item, index) => {
+            const subtotal = item.preco * item.quantidade;
+            totalGeral += subtotal;
 
-        try {
-            // ENVIA PARA A NUVEM
-            await addDoc(collection(db, "pedidos"), pedido);
-            
-            // WHATSAPP (Opcional, mas útil)
-            const msgZap = `Novo Pedido ABT!\nCliente: ${nome}\nTotal: ${pedido.total}`;
-            window.open(`https://wa.me/244937912339?text=${encodeURIComponent(msgZap)}`);
+            container.innerHTML += `
+                <div class="item-carrinho">
+                    <img src="${item.imagem}" alt="${item.nome}">
+                    <div class="detalhes-item">
+                        <strong>${item.nome}</strong><br>
+                        <small>${item.preco} Kz x ${item.quantidade}</small>
+                    </div>
+                    <div style="text-align:right;">
+                        <strong>${subtotal} Kz</strong><br>
+                        <button class="btn-remover" onclick="window.removerItem(${index})">Remover</button>
+                    </div>
+                </div>`;
+        });
 
-            alert("Sucesso! O seu pedido foi guardado na nuvem.");
-            localStorage.removeItem('carrinho');
-            window.location.href = "index.html";
-        } catch (error) {
-            console.error("Erro ao salvar:", error);
-            alert("Erro de conexão. Verifique se o banco de dados está ativo.");
-        }
+        totalExibicao.innerText = totalGeral;
     }
 
-    // Liga o clique do botão à função do Firebase
-    document.getElementById('btnFinalizar').addEventListener('click', enviarParaFirebase);
+    // Função Global para remover itens
+    window.removerItem = (index) => {
+        carrinho.splice(index, 1);
+        localStorage.setItem("carrinhoABT", JSON.stringify(carrinho));
+        renderizarCarrinho();
+    };
+
+    // Função para Finalizar o Pedido
+    document.getElementById("btnFinalizar").addEventListener("click", async () => {
+        const nome = document.getElementById("nome-cliente").value;
+        const tel = document.getElementById("tel-cliente").value;
+        const total = document.getElementById("valor-total").innerText;
+
+        if (!nome || !tel || carrinho.length === 0) {
+            alert("Por favor, preencha os seus dados e adicione itens!");
+            return;
+        }
+
+        try {
+            // 1. Enviar para o Firebase
+            await addDoc(collection(db, "pedidos"), {
+                cliente: nome,
+                telefone: tel,
+                total: total,
+                itens: carrinho,
+                status: "Pendente",
+                data: new Date().toLocaleString()
+            });
+
+            // 2. Criar mensagem para WhatsApp
+            let msg = `*Novo Pedido - ABT Marketplace*%0A`;
+            msg += `*Cliente:* ${nome}%0A`;
+            msg += `*WhatsApp:* ${tel}%0A%0A`;
+            msg += `*Produtos:*%0A`;
+            carrinho.forEach(i => {
+                msg += `• ${i.nome} (x${i.quantidade})%0A`;
+            });
+            msg += `%0A*Total: ${total} Kz*`;
+
+            const meuNumero = "244937912339"; 
+            const linkZap = `https://wa.me/${meuNumero}?text=${msg}`;
+
+            // 3. Limpar e redirecionar
+            localStorage.removeItem("carrinhoABT");
+            window.location.href = linkZap;
+
+        } catch (e) {
+            console.error("Erro:", e);
+            alert("Erro ao processar o pedido.");
+        }
+    });
+
+    renderizarCarrinho();
 </script>
 
 </body>
