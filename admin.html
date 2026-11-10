@@ -1,10 +1,423 @@
-<button onclick="gerarProdutosBeta()" style="background: #4CAF50; color: white; padding: 15px; margin: 20px; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-    🧪 CLIQUE AQUI PARA GERAR 3 PRODUTOS DE TESTE (BETA)
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin ABT | Gestão Especial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>if(localStorage.getItem('abt_theme')==='dark')document.documentElement.classList.add('abt-tema-escuro');</script><link rel="stylesheet" href="tema.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f9f9f9 url('golden.jpg') repeat; background-size: 700px; margin: 0; padding: 15px; }
+        .header-admin { text-align: center; padding: 20px 0; background: #ffffff; color: #000000; margin: -15px -15px 20px -15px; border-bottom: 3px solid #c5a059; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .admin-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; max-width: 1600px; margin: auto; min-height: 85vh; }
+        .sidebar-menu { background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 4px; border: 1px solid #e0e0e0; box-shadow: 0 8px 25px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 8px; height: fit-content; position: sticky; top: 15px; }
+        .btn-aba { background: #ffffff; color: #000000; border: 1px solid #e0e0e0; padding: 14px 18px; text-align: left; border-radius: 4px; font-family: 'Poppins'; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; }
+        .btn-aba i { font-size: 1.1rem; width: 20px; color: #c5a059; transition: 0.3s; }
+        .btn-aba:hover { background: #fcfcfc; border-color: #c5a059; padding-left: 22px; }
+        .btn-aba.active { background: #000000; color: #c5a059; border-color: #000000; }
+        .btn-aba.active i { color: #c5a059; }
+        .admin-container { display: block; }
+        .card { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 4px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); overflow-y: auto; max-height: 88vh; position: relative; display: none; margin-bottom: 20px; }
+        .card.active { display: block; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 20px; height: 20px; border-top: 4px solid #000000; border-left: 4px solid #000000; }
+        h2 { font-size: 1.1rem; border-bottom: 3px solid #c5a059; padding-bottom: 8px; margin-bottom: 15px; color: #000000; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #e0e0e0; border-radius: 4px; font-family: 'Poppins'; box-sizing: border-box; background: #ffffff; color: #000000; }
+        textarea { height: 80px; resize: none; }
+        .label-input { font-size: 0.75rem; color: #c5a059; font-weight: bold; margin-top: 10px; display: block; text-transform: uppercase; }
+        .grid-cores { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; background: #ffffff; padding: 12px; border-radius: 4px; border: 1px solid #e0e0e0; margin: 10px 0; }
+        .grid-cores label { font-size: 0.75rem; display: flex; align-items: center; gap: 6px; cursor: pointer; color: #16110a; background:#f2d58e; border:1px solid #c5a059; border-radius:5px; padding:8px; min-height:38px; line-height:1.25; overflow-wrap:anywhere; }
+        .btn-cadastrar { background: #000000; color: #c5a059; border: none; padding: 15px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-cadastrar:hover { background: #1c1c1c; }
+        .btn-campanha { background: #c5a059; color: #ffffff; border: none; padding: 15px; width: 100%; border-radius: 4px; font-weight: 900; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn-campanha:hover { background: #a38043; }
+        .item-lista { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 12px; border-radius: 4px; margin-bottom: 8px; border-left: 4px solid #c5a059; box-shadow: 0 4px 15px rgba(0,0,0,0.04); color: #000000; }
+        .promo-active { border-left-color: #d93838 !important; background: #fff9f9; }
+        .item-esgotado { border-left-color: #888 !important; background: #f2f2f2; opacity: 0.8; }
+        .btn-acao { border: none; background: none; cursor: pointer; font-size: 1.1rem; margin-left: 8px; }
+        .grid-overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .mini-card-ov { background: #ffffff; border: 1px solid #e0e0e0; border-left: 4px solid #c5a059; padding: 15px; border-radius: 4px; display: flex; align-items: center; gap: 15px; }
+        .mini-card-ov i { font-size: 2rem; color: #000000; }
+        .mini-card-ov div h4 { margin: 0; font-size: 0.75rem; color: #777; text-transform: uppercase; }
+        .mini-card-ov div p { margin: 2px 0 0 0; font-size: 1.4rem; font-weight: 800; color: #000000; }
+        .linha-graficos { display: grid; grid-template-columns: 1fr; gap: 20px; background: #ffffff; padding: 20px; border-radius: 4px; border: 1px solid #e0e0e0; margin-top: 20px; }
+        .controlo-grafico { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .seletor-filtro { max-width: 250px; margin: 0; }
+        .btn-pdf { background: #000000; color: #c5a059; border: 1px solid #000000; padding: 10px 20px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-pdf:hover { background: #c5a059; color: #000000; border-color: #c5a059; }
+        .box-canvas { width: 100%; max-height: 380px; position: relative; margin: auto; }
+        .grid-comparativo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        @media (max-width: 1100px) { .admin-layout { grid-template-columns: 1fr; } .sidebar-menu { position: static; } .grid-comparativo { grid-template-columns: 1fr; } }
+    </style>
+    <style>
+        @media (max-width: 700px) {
+            body { padding:8px; } .header-admin { margin:-8px -8px 12px; padding:15px 10px; } .header-admin h1 { font-size:1rem !important; }
+            .sidebar-menu { flex-direction:row; overflow-x:auto; position:static; padding:9px; gap:7px; } .btn-aba { flex:0 0 auto; padding:10px 11px; font-size:.68rem; white-space:nowrap; }
+            .admin-layout { gap:12px; } .card { padding:15px 12px; max-height:none; overflow:visible; } .grid-overview { grid-template-columns:1fr 1fr; gap:9px; } .mini-card-ov { padding:10px; gap:8px; } .mini-card-ov i { font-size:1.3rem; }.mini-card-ov div p { font-size:1.05rem; }
+            .item-lista { align-items:flex-start; gap:8px; padding:10px; }.item-lista div:last-child { display:flex; flex-wrap:wrap; justify-content:flex-end; }.btn-acao { margin:0 0 0 5px; }.grid-cores { grid-template-columns:repeat(2,minmax(0,1fr)); }.box-canvas { min-height:240px; }.controlo-grafico { gap:8px; }.seletor-filtro { max-width:100%; }
+        }
+        @media (max-width: 520px) {
+            .header-admin { text-align:left; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; }.header-admin h1 { line-height:1.3; max-width:230px; }
+            .sidebar-menu { margin:0 -2px; border-radius:10px; scrollbar-width:thin; }.btn-aba { min-height:42px; font-size:.7rem; padding:10px 12px; }.btn-aba i { font-size:.9rem; width:auto; }
+            .admin-container { min-width:0; }.card { border-radius:10px; padding:18px 14px; }.card h2 { font-size:.95rem; line-height:1.35; padding-right:8px; }
+            .grid-overview { grid-template-columns:1fr; }.mini-card-ov { min-height:70px; }.linha-graficos { padding:12px; overflow-x:auto; }.box-canvas { min-width:290px; }
+            .grid-comparativo { gap:13px; }.resumo { min-width:0; padding:14px !important; }.item-lista { flex-direction:column; align-items:stretch; }.item-lista > div:last-child { justify-content:flex-start; margin-top:6px; }
+            input,select,textarea { font-size:16px; min-height:44px; }.grid-cores { grid-template-columns:1fr; padding:10px; }.grid-cores label { font-size:.82rem; min-height:44px; }.btn-cadastrar,.btn-campanha { min-height:46px; font-size:.8rem; }
+            table { display:block; overflow-x:auto; white-space:nowrap; font-size:.76rem; }.controlo-grafico > * { width:100%; }.btn-pdf { justify-content:center; }.card[style*="grid-template-columns"] { display:block !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="bloqueio-seguranca" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #ffffff; background-image: url('golden.jpg'); repeat: repeat; background-size: 700px; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: black;">
+    <div style="background: rgba(255,255,255,0.96); padding: 40px; border-radius: 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; max-width: 360px; width: 90%; position: relative;">
+        <div style="position: absolute; top: 0; left: 0; width: 25px; height: 25px; border-top: 5px solid #000000; border-left: 5px solid #000000;"></div>
+        <i class="fas fa-lock" style="font-size: 3rem; color: #c5a059; margin-bottom: 20px;"></i>
+        <h2 style="color: black; border: none; margin-bottom: 20px;">Acesso Restrito ABT</h2>
+        <input type="email" id="email-admin" autocomplete="email" placeholder="E-mail de administrador" style="text-align: center; background: #ffffff; color: black; border: 1px solid #e0e0e0;">
+        <input type="password" id="pass-admin" autocomplete="current-password" placeholder="Palavra-passe" style="text-align: center; background: #ffffff; color: black; border: 1px solid #e0e0e0;">
+        <button class="btn-campanha" id="btn-entrar-admin" style="margin-top: 10px; width: 100%;">ENTRAR NO PAINEL</button>
+        <p id="status-login-admin" role="alert" style="min-height: 20px; margin: 12px 0 0; color: #b42318; font-size: 0.8rem;"></p>
+        <a href="home.html" style="display: block; margin-top: 20px; color: #666; text-decoration: none; font-size: 0.8rem; font-weight: 600;">Voltar para a Loja</a>
+    </div>
+</div>
+
+<div class="header-admin">
+    <h1 style="font-weight: 800; letter-spacing: 1px;">💼 GESTÃO ESTRATÉGICA ABT</h1>
+    <a href="home.html" style="color: #000000; text-decoration: none; font-size: 0.85rem; font-weight: 700; border-bottom: 2px solid #c5a059;">Voltar para Loja</a>
+</div>
+
+<div class="admin-layout">
+    <div class="sidebar-menu">
+        <button class="btn-aba active" onclick="alternarAba('visao-geral', this)"><i class="fas fa-chart-pie"></i> Visão Geral</button>
+        <button class="btn-aba" onclick="alternarAba('faturamento', this)"><i class="fas fa-wallet"></i> Faturamento ABT & Parceiros</button>
+        <button class="btn-aba" onclick="alternarAba('relatorio-abt-parceiros', this)"><i class="fas fa-file-invoice-dollar"></i> Relatório ABT vs Parceiros</button>
+        <button class="btn-aba" onclick="alternarAba('editando-produto', this)"><i class="fas fa-plus-circle"></i> Editando Produto</button>
+        <button class="btn-aba" onclick="alternarAba('epoca-especial', this)"><i class="fas fa-calendar-star"></i> Época Especial</button>
+        <button class="btn-aba" onclick="alternarAba('cupons', this)"><i class="fas fa-ticket"></i> Cupons de Fidelidade</button>
+        <button class="btn-aba" onclick="alternarAba('servicos', this)"><i class="fas fa-briefcase"></i> Serviços</button>
+        <button class="btn-aba" onclick="alternarAba('stock-promocoes', this)"><i class="fas fa-boxes-stacked"></i> Stock & Promoções</button>
+        <button class="btn-aba" onclick="alternarAba('pedidos-recentes', this)"><i class="fas fa-shopping-bag"></i> Pedidos Recentes</button>
+        <button class="btn-aba" onclick="alternarAba('empresas-parceiras', this)"><i class="fas fa-building"></i> Empresas Parceiras</button>
+        <button class="btn-aba" onclick="alternarAba('candidaturas', this)"><i class="fas fa-user-clock"></i> Candidaturas Pendentes</button>
+        <button class="btn-aba" onclick="alternarAba('log-auditoria', this)">
+    <i class="fas fa-history"></i> Logs de Auditoria
 </button>
+    </div>
+
+    <div class="admin-container">
+        <div class="card acti8ve" id="aba-visao-geral">
+            <h2><i class="fas fa-chart-pie"></i> Visão Geral do Ecossistema</h2>
+            <div class="grid-overview">
+                <div class="mini-card-ov"><i class="fas fa-box"></i><div><h4>Total de Produtos</h4><p id="ov-total-produtos">0</p></div></div>
+                <div class="mini-card-ov" style="border-left-color: #d93838;"><i class="fas fa-percentage" style="color: #d93838;"></i><div><h4>Em Promoção</h4><p id="ov-total-promos">0</p></div></div>
+                <div class="mini-card-ov" style="border-left-color: #2ecc71;"><i class="fas fa-cash-register" style="color: #2ecc71;"></i><div><h4>Pedidos Feitos</h4><p id="ov-total-pedidos">0</p></div></div>
+                <div class="mini-card-ov" style="border-left-color: #000000;"><i class="fas fa-handshake"></i><div><h4>Marcas Parceiras</h4><p id="ov-total-parceiros">0</p></div></div>
+            </div>
+            <div class="linha-graficos" id="bloco-pdf-visao-geral">
+                <div class="controlo-grafico">
+                    <div style="flex-grow: 1;">
+                        <h3 style="margin: 0 0 5px 0; font-size: 0.95rem; text-transform: uppercase; color: #000;">Volumetria de Categorias em Stock</h3>
+                        <p style="margin: 0; font-size: 0.75rem; color: #666;">Filtre o gráfico e exporte a análise rápida em formato documental.</p>
+                    </div>
+                    <select id="filtro-origem-grafico" class="seletor-filtro" onchange="renderizarGraficoVisaoGeral()">
+                        <option value="TUDO">Mostrar Tudo (Geral)</option>
+                        <option value="ABT">Apenas Produtos ABT</option>
+                        <option value="Parceiro">Apenas de Parceiros</option>
+                    </select>
+                    <button class="btn-pdf" onclick="exportarVisaoGeralPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+                </div>
+                <div class="box-canvas"><canvas id="chartVisaoGeral"></canvas></div>
+            </div>
+        </div>
+
+        <div class="card" id="aba-faturamento">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c5a059; padding-bottom: 8px; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
+                <h2><i class="fas fa-wallet"></i> Controlo de Faturamento</h2>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="filtro-tipo-faturamento" style="max-width: 250px; margin: 0;" onchange="filtrarFaturamentoExibido()">
+                        <option value="CONSOLIDADO">Faturamento Geral Consolidado</option>
+                        <option value="ABT">Apenas Faturamento Próprio (ABT)</option>
+                        <option value="PARCEIROS_TODOS">Faturamento Acumulado dos Parceiros</option>
+                    </select>
+                    <button class="btn-pdf" onclick="exportarFaturamentoPDF()"><i class="fas fa-file-pdf"></i> PDF Faturamento</button>
+                </div>
+            </div>
+            <p style="font-size: 0.8rem; color: #555; margin-bottom: 20px;">Gestão financeira integrada baseada em auditoria de pedidos concluídos e comissionamentos estruturados de parceiros cadastrados.</p>
+            
+            <div id="bloco-pdf-faturamento">
+                <div class="grid-overview">
+                    <div class="mini-card-ov" style="border-left-color: #c5a059;"><i class="fas fa-money-bill-wave" style="color: #c5a059;"></i><div><h4>Bruto Total Gerado</h4><p id="fat-bruto-geral">0 Kz</p></div></div>
+                    <div class="mini-card-ov" style="border-left-color: #000000;"><i class="fas fa-vault"></i><div><h4>Faturamento Líquido ABT</h4><p id="fat-liquido-abt">0 Kz</p></div></div>
+                    <div class="mini-card-ov" style="border-left-color: #2ecc71;"><i class="fas fa-handshake-angle" style="color: #2ecc71;"></i><div><h4>Retido Parceiros</h4><p id="fat-total-parceiros">0 Kz</p></div></div>
+                </div>
+
+                <div class="linha-graficos">
+                    <h3 style="margin: 0 0 10px 0; font-size: 0.95rem; text-transform: uppercase; color: #000;">Gráfico Evolutivo de Entradas Finanças</h3>
+                    <div class="box-canvas"><canvas id="chartFaturamentoEvolutivo"></canvas></div>
+                </div>
+
+                <div style="margin-top: 25px; background: #ffffff; padding: 20px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                    <h4 style="margin: 0 0 15px 0; font-size: 0.85rem; text-transform: uppercase; color: #c5a059;">Discriminação Analítica por Fornecedor</h4>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+                            <thead>
+                                <tr style="background: #000; color: #c5a059; text-transform: uppercase; font-size: 0.75rem;">
+                                    <th style="padding: 12px;">Entidade Comercial</th>
+                                    <th style="padding: 12px;">Regime de Operação</th>
+                                    <th style="padding: 12px;">Pedidos Associados</th>
+                                    <th style="padding: 12px;">Valor Bruto Movimentado</th>
+                                    <th style="padding: 12px;">Comissão Retida ABT</th>
+                                    <th style="padding: 12px;">Repasse Líquido Provedor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-corpo-faturamento">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="aba-relatorio-abt-parceiros">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c5a059; padding-bottom: 8px; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
+                <h2 style="border: none; margin: 0;"><i class="fas fa-file-invoice-dollar"></i> Relatório de Desempenho ABT vs Parceiros</h2>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="filtro-modo-relatorio" style="max-width: 220px; margin: 0;" onchange="renderizarGraficosRelatorio()">
+                        <option value="COMPLETO">Comparativo Geral</option>
+                        <option value="ABT">Análise Individual: ABT</option>
+                        <option value="PARCEIROS">Análise Individual: Parceiros</option>
+                    </select>
+                    <button class="btn-pdf" onclick="exportarRelatorioCompletoPDF()"><i class="fas fa-download"></i> Baixar Relatório</button>
+                </div>
+            </div>
+            <p style="font-size: 0.8rem; color: #555; margin-bottom: 20px;">Auditoria mercadológica em tempo real mapeando a divisão de produtos e balanceamento de stock da plataforma.</p>
+            <div id="bloco-pdf-relatorio">
+                <div class="grid-comparativo">
+                    <div style="background: #fff; padding: 15px; border-radius: 4px; border: 1px solid #e0e0e0;">
+                        <h4 id="tit-quota-relatorio" style="margin: 0 0 15px 0; font-size: 0.85rem; text-transform: uppercase;">Quota de Distribuição (Produtos)</h4>
+                        <div style="max-height: 250px; position: relative;"><canvas id="chartDivisaoQuota"></canvas></div>
+                    </div>
+                    <div style="background: #fff; padding: 15px; border-radius: 4px; border: 1px solid #e0e0e0;">
+                        <h4 id="tit-barras-relatorio" style="margin: 0 0 15px 0; font-size: 0.85rem; text-transform: uppercase;">Níveis Globais de Stock por Gestão</h4>
+                        <div style="max-height: 250px; position: relative;"><canvas id="chartBarrasStock"></canvas></div>
+                    </div>
+                </div>
+                <div style="margin-top: 25px; background: #ffffff; padding: 20px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                    <h4 style="margin: 0 0 15px 0; font-size: 0.85rem; text-transform: uppercase; color: #c5a059;">Tabela de Balanço Consolidada</h4>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+                            <thead>
+                                <tr style="background: #000; color: #c5a059; text-transform: uppercase; font-size: 0.75rem;">
+                                    <th style="padding: 12px;">Origem da Conta</th>
+                                    <th style="padding: 12px;">Qtd Itens Diferentes</th>
+                                    <th style="padding: 12px;">Stock Total Acumulado</th>
+                                    <th style="padding: 12px;">Produtos em Promoção</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="linha-tab-abt" style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 12px; font-weight: 700;">ABT Marketplace</td>
+                                    <td style="padding: 12px;" id="tab-abt-itens">0</td>
+                                    <td style="padding: 12px;" id="tab-abt-stock">0 un</td>
+                                    <td style="padding: 12px; color: #d93838; font-weight: 600;" id="tab-abt-promos">0</td>
+                                </tr>
+                                <tr id="linha-tab-parc" style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 12px; font-weight: 700;">Empresas Parceiras</td>
+                                    <td style="padding: 12px;" id="tab-parc-itens">0</td>
+                                    <td style="padding: 12px;" id="tab-parc-stock">0 un</td>
+                                    <td style="padding: 12px; color: #d93838; font-weight: 600;" id="tab-parc-promos">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div class="card" id="aba-editando-produto">
+            <h2 id="titulo-form"><i class="fas fa-plus-circle"></i> Novo Produto</h2>
+            <input type="text" id="nome-p" placeholder="Nome do Produto">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="number" id="preco-p" placeholder="Preço (Kz)">
+                <input type="number" id="estoque-p" placeholder="Qtd em Stock">
+                <input type="hidden" id="whatsapp-parceiro-vincular">
+            </div>
+            <textarea id="desc-p" placeholder="Breve descrição do produto..."></textarea>
+            <span class="label-input">Propriedade do Produto (Origem):</span>
+            <select id="origem-p" onchange="atualizarSeletorMarcas()">
+                <option value="ABT">Produto Próprio (ABT Marketplace)</option>
+                <option value="Parceiro">Produto de Empresa Parceira</option>
+            </select>
+            <span class="label-input">Marca / Provedor Responsável:</span>
+            <select id="marca-p"><option value="ABT Stock">ABT Stock Principal</option></select>
+            <span class="label-input">Gênero / Público-Alvo:</span>
+            <select id="genero-p">
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Criança">Criança</option>
+                <option value="Unissexo">Unissexo</option>
+            </select>
+            <span class="label-input">Subcategoria (Para o Motor IA):</span>
+            <select id="cat-p" onchange="atualizarInterfaceTamanhos()">
+                <option value="Eletrónico">Eletrónico (iPhones, computadores e acessórios)</option>
+                <option value="Outros">Outros produtos</option>
+                <option value="Peça Superior">Peça Superior (Casacos, Jaquetas, Camisas, etc.)</option>
+                <option value="Peça Inferior">Peça Inferior (Calças, Calções, Saias, etc.)</option>
+                <option value="Calçado">Calçado (Sapatos, Sapatilhas, Slip On, etc.)</option>
+                <option value="Acessório">Acessório (Relógios, Pulseiras, Anéis, Óculos, etc.)</option>
+                <option value="Cosmético">Cosmético (Perfumes, Sabonetes, Cremes, Shampoos, etc.)</option>
+                <option value="Peça Única">Peça única (Vestido, Macacão, etc.)</option>
+            </select>
+            <span class="label-input">Tamanhos Disponíveis:</span>
+            <div class="grid-cores" id="box-tamanhos"></div>
+            <span class="label-input">Cores Disponíveis:</span>
+            <div class="grid-cores" id="box-cores" onchange="atualizarImagensPorCor()">
+                <label><input type="checkbox" value="Preto"> Preto</label>
+                <label><input type="checkbox" value="Branco"> Branco</label>
+                <label><input type="checkbox" value="Cinza"> Cinza</label>
+                <label><input type="checkbox" value="Bege"> Bege</label>
+                <label><input type="checkbox" value="Azul"> Azul</label>
+                <label><input type="checkbox" value="Vermelho"> Vermelho</label>
+                <label><input type="checkbox" value="Verde"> Verde</label>
+                <label><input type="checkbox" value="Amarelo"> Amarelo</label>
+                <label><input type="checkbox" value="Rosa"> Rosa</label>
+                <label><input type="checkbox" value="Castanho"> Castanho</label>
+                <label><input type="checkbox" value="Laranja"> Laranja</label>
+                <label><input type="checkbox" value="Roxo"> Roxo</label>
+                <label><input type="checkbox" value="Vinho"> Vinho</label>
+                <label><input type="checkbox" value="Ciano"> Ciano</label>
+                <label><input type="checkbox" value="Creme"> Creme</label>
+                <label><input type="checkbox" value="Malhado"> Malhado</label>
+                <label><input type="checkbox" value="Turquesa"> Turquesa</label>
+                <label><input type="checkbox" value="Dourado"> Dourado</label>
+                <label><input type="checkbox" value="Prateado"> Prateado</label>
+                <label><input type="checkbox" value="Multicor"> Multicor</label>
+           </div>
+            <span class="label-input">Imagem para cada cor (opcional):</span>
+            <div id="imagens-por-cor" style="display:grid; gap:8px; margin-bottom:10px;"><small style="color:#666;">Selecione as cores para adicionar os links das imagens correspondentes.</small></div>
+            <span class="label-input">Link da imagem principal:</span>
+            <input type="url" id="img-p" placeholder="https://exemplo.com/imagem.jpg">
+            <button id="btn-principal" class="btn-cadastrar" onclick="salvarProduto()">CADASTRAR PRODUTO</button>
+            <button id="btn-cancelar" style="display:none; background:#888; color: white;" class="btn-cadastrar" onclick="cancelarEdicao()">CANCELAR</button>
+        </div>
+
+        <div class="card" id="aba-epoca-especial">
+            <h2><i class="fas fa-calendar-star"></i> Épocas Especial</h2>
+            <span class="label-input">Escolher Temática:</span>
+            <select id="tema-loja">
+                <optgroup label="Geral & Estações">
+                    <option value="padrao">Padrão ABT</option>
+                    <option value="blackfriday">Black Friday ⚫</option>
+                    <option value="verao">Verão ☀️</option>
+                    <option value="inverno">Inverno ❄️</option>
+                    <option value="primavera">Primavera 🌸</option>
+                    <option value="outono">Outono 🍂</option>
+                </optgroup>
+                <optgroup label="Datas Especiais">
+                    <option value="natal">Natal 🎄</option>
+                    <option value="pascoa">Páscoa 🐰</option>
+                    <option value="halloween">Halloween 🎃</option>
+                    <option value="namorados">Dia dos Namorados ❤️</option>
+                    <option value="diamae">Dia da Mãe 🌹</option>
+                    <option value="diapai">Dia do Pai 👔</option>
+                </optgroup>
+                <optgroup label="Angola 🇦🇴">
+                    <option value="independencia">Independência ✨</option>
+                    <option value="heroinacional">Herói Nacional 🦸‍♂️</option>
+                    <option value="diapaz">Dia da Paz 🕊️</option>
+                </optgroup>
+            </select>
+            <span class="label-input">Valor do Desconto (%):</span>
+            <input type="number" id="desc-global" placeholder="Ex: 20">
+            <span class="label-input">Link único da imagem do banner</span>
+            <input type="url" id="banner-imagem-url" placeholder="https://exemplo.com/banner.jpg">
+            <small style="display:block;color:#666;font-size:.74rem;line-height:1.45;">Cole aqui a imagem que quer usar para qualquer temática. Não precisa procurar ou alterar links em outros ficheiros.</small>
+            <button class="btn-campanha" onclick="salvarCampanha()">ATUALIZAR LOJA AGORA</button>
+            <hr style="border:0;border-top:1px solid #e0e0e0;margin:25px 0;">
+            <h3 style="margin:0;font-size:.95rem;">Desconto por Loja / Marca</h3>
+            <p style="font-size:.78rem;color:#666;line-height:1.5;">Este desconto só é aplicado aos produtos dessa loja que estejam marcados com a etiqueta de promoção.</p>
+            <span class="label-input">Nome da loja ou marca</span>
+            <input id="desconto-loja-nome" placeholder="Ex.: ABT ou Luís Acessórios">
+            <span class="label-input">Desconto desta loja (%)</span>
+            <input type="number" id="desconto-loja-valor" min="0" max="100" placeholder="Ex.: 15">
+            <button class="btn-campanha" onclick="salvarDescontoLoja()">GUARDAR DESCONTO DA LOJA</button>
+            <div id="lista-descontos-lojas" style="margin-top:12px;"></div>
+        </div>
+
+        <div class="card" id="aba-cupons">
+            <h2><i class="fas fa-ticket"></i> Cupons de Fidelidade</h2>
+            <p style="font-size:.8rem;color:#666;">Os cupons são liberados automaticamente conforme a quantidade de pedidos marcados como concluídos.</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px;">
+                <div class="resumo"><h3>Cupom 10%</h3><label><input type="checkbox" id="cupom-10-ativo"> Ativar cupom</label><span class="label-input">Percentual</span><input type="number" id="cupom-10-percentual" min="1" max="100"><span class="label-input">Pedidos concluídos necessários</span><input type="number" id="cupom-10-requisito" min="1"></div>
+                <div class="resumo"><h3>Cupom 15%</h3><label><input type="checkbox" id="cupom-15-ativo"> Ativar cupom</label><span class="label-input">Percentual</span><input type="number" id="cupom-15-percentual" min="1" max="100"><span class="label-input">Pedidos concluídos necessários</span><input type="number" id="cupom-15-requisito" min="1"></div>
+            </div>
+            <button class="btn-campanha" onclick="salvarCupons()">GUARDAR REGRAS DOS CUPONS</button>
+        </div>
+        <div class="card" id="aba-servicos"><h2><i class="fas fa-briefcase"></i> Gestão de Serviços</h2><p style="font-size:.8rem;color:#666">Cadastre categorias, serviços e prestadores. Os IDs são criados automaticamente: copie o ID mostrado abaixo da categoria ou do serviço para criar as ligações.</p><div class="grid-comparativo"><div class="resumo"><h3>Categoria</h3><input id="sc-nome" placeholder="Nome"><select id="sc-icone" aria-label="Ícone da categoria"><option value="fas fa-briefcase">💼 Negócios e serviços</option><option value="fas fa-handshake">🤝 Consultoria e mentoria</option><option value="fas fa-calculator">🧮 Finanças e contabilidade</option><option value="fas fa-bullhorn">📣 Marketing</option><option value="fas fa-laptop-code">💻 Serviços digitais</option><option value="fas fa-graduation-cap">🎓 Formação</option><option value="fas fa-paint-brush">🎨 Criatividade</option><option value="fas fa-screwdriver-wrench">🛠 Serviços técnicos</option><option value="fas fa-heart-pulse">❤ Bem-estar</option></select><textarea id="sc-desc" placeholder="Descrição"></textarea><button class="btn-campanha" onclick="salvarCategoriaServico()">ADICIONAR CATEGORIA</button></div><div class="resumo"><h3>Serviço</h3><input id="ss-nome" placeholder="Nome do serviço"><input id="ss-categoria" placeholder="ID da categoria (copie-o abaixo)"><textarea id="ss-desc" placeholder="Descrição"></textarea><button class="btn-campanha" onclick="salvarServico()">ADICIONAR SERVIÇO</button></div><div class="resumo"><h3>Prestador parceiro</h3><input id="sp-nome" placeholder="Nome comercial"><input id="sp-whats" placeholder="WhatsApp (244...)"/><textarea id="sp-desc" placeholder="Descrição"></textarea><input id="sp-servicos" placeholder="IDs dos serviços, separados por vírgula"><input id="sp-modalidades" placeholder="Modalidades: Online, Presencial"><input id="sp-local" placeholder="Localização"><input id="sp-preco" placeholder="Preço ou Sob consulta"><button class="btn-campanha" onclick="salvarPrestadorServico()">ADICIONAR PRESTADOR</button></div></div><h3 style="margin-top:24px">Registos cadastrados</h3><div id="lista-servicos-admin"></div></div>
+
+        <div class="card" id="aba-stock-promocoes">
+            <h2><i class="fas fa-boxes-stacked"></i> Stock & Promoções</h2>
+            <p style="font-size: 0.75rem; color: #666; margin-bottom: 10px; font-weight: 500;">Clique na etiqueta <i class="fas fa-tag"></i> para aplicar/remover o desconto no produto.</p>
+            <div id="container-stock">Carregando stock...</div>
+        </div>
+
+       <div class="card" id="aba-pedidos-recentes">
+            <h2><i class="fas fa-shopping-bag"></i> Pedidos Recentes</h2>
+            <div id="lista-pedidos-admin"></div> 
+    
+            <div id="container-vendas" style="max-height: 75vh; overflow-y: auto;"></div>
+        </div>
+
+        <div class="card" id="aba-empresas-parceiras">
+            <h2><i class="fas fa-building"></i> Empresas Parceiras</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+             <thead>
+              <tr style="border-bottom: 1px solid #ddd; text-align: left;">
+                <th>Empresa</th><th>Responsável</th><th>Status</th><th>Rank</th><th>Ações</th>
+             </tr>
+            </thead>
+            <tbody id="container-parceiros-tbody">
+             </tbody>
+    </table>
+</div>
+
+        <div class="card" id="aba-candidaturas">
+            <h2><i class="fas fa-user-clock"></i> Gestão de Candidaturas</h2>
+            <div id="container-candidaturas"></div>
+        </div>
+
+        <div class="card" id="aba-log-auditoria">
+            <h2><i class="fas fa-history"></i> Log de Auditoria</h2>
+            <div id="container-logs"></div>
+        </div>
+        
+    </div> </div>
+
+<script>
+    function alternarAba(alvo, botao) {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.btn-aba').forEach(b => b.classList.remove('active'));
+        document.getElementById('aba-' + alvo).classList.add('active');
+        botao.classList.add('active');
+        if(alvo === 'visao-geral') { setTimeout(() => { window.renderizarGraficoVisaoGeral(); }, 150); }
+        if(alvo === 'faturamento') { setTimeout(() => { window.processarEFiltreFaturamento(); }, 150); }
+        if(alvo === 'relatorio-abt-parceiros') { setTimeout(() => { window.renderizarGraficosRelatorio(); }, 150); }
+    }
+    window.addEventListener('load', () => {
+        const aba = new URLSearchParams(window.location.search).get('aba');
+        const permitidas = ['faturamento', 'editando-produto', 'stock-promocoes'];
+        if (!permitidas.includes(aba)) return;
+        const botao = Array.from(document.querySelectorAll('.btn-aba')).find(item => (item.getAttribute('onclick') || '').includes(`'${aba}'`));
+        if (botao) alternarAba(aba, botao);
+    });
+</script>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, getDoc, setDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
@@ -17,21 +430,831 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    window.gerarProdutosBeta = async () => {
-        const produtosBeta = [
-            { nome: "Ténis Urban Black", preco: "15000", categoria: "Masculino", imagem: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500", dataCriacao: new Date() },
-            { nome: "Vestido Verão Gold", preco: "12000", categoria: "Feminino", imagem: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500", dataCriacao: new Date() },
-            { nome: "Relógio ABT Classic", preco: "25000", categoria: "Acessórios", imagem: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500", dataCriacao: new Date() }
-        ];
+    const bloqueio = document.getElementById('bloqueio-seguranca');
+    const emailAdmin = document.getElementById('email-admin');
+    const passAdmin = document.getElementById('pass-admin');
+    const btnEntrarAdmin = document.getElementById('btn-entrar-admin');
+    const statusLoginAdmin = document.getElementById('status-login-admin');
 
+    async function validarAdministrador(user) {
+        const perfil = await getDoc(doc(db, 'admins', user.uid));
+        return perfil.exists() && perfil.data().ativo === true;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) return;
         try {
-            for (const p of produtosBeta) {
-                await addDoc(collection(db, "produtos"), p);
+            if (await validarAdministrador(user)) {
+                bloqueio.style.display = 'none';
+                statusLoginAdmin.textContent = '';
+                return;
             }
-            alert("✅ 3 Produtos Beta adicionados! Verifica agora a tua Loja.");
+            await signOut(auth);
+            statusLoginAdmin.textContent = 'Esta conta não tem autorização de administrador.';
+        } catch (erro) {
+            console.error('Não foi possível validar o acesso administrativo:', erro);
+            await signOut(auth);
+            statusLoginAdmin.textContent = 'Não foi possível validar o acesso. Tente novamente.';
+        }
+    });
+
+    btnEntrarAdmin.addEventListener('click', async () => {
+        const email = emailAdmin.value.trim();
+        const senha = passAdmin.value;
+        if (!email || !senha) {
+            statusLoginAdmin.textContent = 'Informe o e-mail e a palavra-passe.';
+            return;
+        }
+        btnEntrarAdmin.disabled = true;
+        statusLoginAdmin.style.color = '#666';
+        statusLoginAdmin.textContent = 'A validar acesso…';
+        try {
+            await signInWithEmailAndPassword(auth, email, senha);
+        } catch (erro) {
+            console.error('Falha no login administrativo:', erro);
+            statusLoginAdmin.style.color = '#b42318';
+            statusLoginAdmin.textContent = 'E-mail ou palavra-passe inválidos.';
+        } finally {
+            btnEntrarAdmin.disabled = false;
+        }
+    });
+
+    passAdmin.addEventListener('keydown', (evento) => {
+        if (evento.key === 'Enter') btnEntrarAdmin.click();
+    });
+
+    // --- Lógica de Gestão de Parceiros ---
+
+function carregarParceiros() {
+    onSnapshot(collection(db, "parceiros"), (snapshot) => {
+    // --- ADICIONE ESTA LINHA ---
+    const contador = document.getElementById("ov-total-parceiros");
+    if(contador) contador.innerText = snapshot.size;
+    // ---------------------------
+
+    const tbody = document.getElementById("container-parceiros-tbody");
+    if (!tbody) return; 
+    
+    tbody.innerHTML = ""; 
+
+    snapshot.forEach(docSnap => {
+        const p = docSnap.data();
+        const id = docSnap.id;
+        
+        const dataCadastro = new Date(p.dataCadastro || Date.now());
+        const seteDiasAtras = new Date();
+        seteDiasAtras.setDate(seteDiasAtras.getDate() - 7);
+        const isNovo = dataCadastro > seteDiasAtras ? '✨' : '';
+
+        tbody.innerHTML += `
+    <tr style="border-bottom: 1px solid #eee; padding: 10px 0;">
+        <td>${p.nomeEmpresa || 'Sem nome'} ${isNovo}</td>
+        <td>${p.responsável || p.nomeResponsavel || 'Sem nome'} ${isNovo}</td>
+        <td>
+            <select onchange="window.atualizarStatus('${id}', this.value)">
+                <option value="ativo" ${p.status === 'ativo' ? 'selected' : ''}>Ativo</option>
+                <option value="inativo" ${p.status === 'inativo' ? 'selected' : ''}>Inativo</option>
+            </select>
+        </td>
+        <td>
+            <select onchange="window.atualizarRank('${id}', this.value)">
+                <option value="Bronze" ${p.rank === 'Bronze' ? 'selected' : ''}>Bronze</option>
+                <option value="Prata" ${p.rank === 'Prata' ? 'selected' : ''}>Prata</option>
+                <option value="Ouro" ${p.rank === 'Ouro' ? 'selected' : ''}>Ouro</option>
+                <option value="Platina" ${p.rank === 'Platina' ? 'selected' : ''}>Platina</option>
+            </select>
+        </td>
+        <td>
+            <button onclick="window.notificarParceiro('${p.telefone || ''}', '${p.nomeEmpresa || ''}')"><i class="fab fa-whatsapp"></i></button>
+            <button onclick="window.removerParceiro('${id}')"><i class="fas fa-trash"></i></button>
+        </td>
+    </tr>
+`;
+    });
+});
+
+}
+
+// Funções de Ação (expostas no window para o HTML chamar)
+window.atualizarStatus = async (id, novoStatus) => {
+    try {
+        await updateDoc(doc(db, "parceiros", id), { status: novoStatus });
+        alert("Status atualizado com suce2sso!");
+    } catch (e) {
+        alert("Erro ao atualizar status.");
+    }
+};
+
+window.notificarParceiro = (tel, nome) => {
+    if (!tel) return alert("Telefone não disponível.");
+    window.open(`https://wa.me/${tel}?text=Olá ${nome}, da ABT Marketplace.`, '_blank');
+};
+
+window.removerParceiro = async (id) => {
+    if(confirm("Tem certeza que deseja remover este parceiro definitivamente?")) {
+        try {
+            await deleteDoc(doc(db, "parceiros", id));
         } catch (e) {
-            alert("❌ Erro ao enviar para o Firebase: " + e.message);
+            alert("Erro ao remover parceiro.");
+        }
+    }
+};
+
+window.atualizarRank = async (id, novoRank) => {
+    try {
+        await updateDoc(doc(db, "parceiros", id), { rank: novoRank });
+        alert("Rank atualizado!");
+    } catch (e) { alert("Erro ao atualizar rank."); }
+};
+
+// Iniciar a carga de dados
+carregarParceiros();
+
+    let idEdicao = null;
+    let produtosLocal = [];
+    let listaParceirosLocal = [];
+    let vendasLocal = [];
+    let chartVisaoGeralInstance = null;
+    let chartQuotaInstance = null;
+    let chartBarrasInstance = null;
+    let chartFaturamentoInstance = null;
+
+    const CONFIG_SISTEMA = {
+        tamanhos: {
+            vestuarioLetras: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '4XL'],
+            vestuarioNumeros: [34, 36, 38, 40, 42, 44, 46, 48, 50, 52],
+            calcados: [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46],
+            cosmeticoVolumes: ['1ml','2ml','3ml','5ml','10ml','15ml','20ml','25ml','30ml','40ml','50ml','60ml','70ml','75ml','80ml','90ml','100ml','120ml','150ml','180ml','200ml','250ml','300ml','350ml','400ml','450ml','500ml','750ml','1L','1.5L','2L','Kit Padrão']
+        },
+        comissaoPadrao: 0.10 // 10% fixos de comissão da ABT sobre vendas de parceiros
+    };
+
+    // Exemplo de regra para o seu painel de parceiros:
+function definirRank(atrasos, vendas) {
+    if (atrasos > 5) return "Risco";
+    if (vendas > 100) return "Ouro";
+    return "Bronze";
+}
+
+    window.atualizarInterfaceTamanhos = () => {
+        const subCat = document.getElementById('cat-p').value;
+        const box = document.getElementById('box-tamanhos');
+        box.innerHTML = "";
+        if (subCat === "Peça Superior" || subCat === "Peça Inferior") {
+            CONFIG_SISTEMA.tamanhos.vestuarioLetras.forEach(t => { box.innerHTML += `<label><input type="checkbox" value="${t}"> ${t}</label>`; });
+            CONFIG_SISTEMA.tamanhos.vestuarioNumeros.forEach(t => { box.innerHTML += `<label><input type="checkbox" value="${t}"> ${t}</label>`; });
+        } else if (subCat === "Calçado") {
+            CONFIG_SISTEMA.tamanhos.calcados.forEach(t => { box.innerHTML += `<label><input type="checkbox" value="${t}"> ${t}</label>`; });
+        } else if (subCat === "Cosmético") {
+            CONFIG_SISTEMA.tamanhos.cosmeticoVolumes.forEach(t => { box.innerHTML += `<label><input type="checkbox" value="${t}"> ${t}</label>`; });
+        } else { box.innerHTML = `<label><input type="checkbox" value="Único" checked> Único</label>`; }
+    };
+
+    async function carregarConfig() {
+        try {
+            const d = await getDoc(doc(db, "configuracoes", "home"));
+            if(d.exists()){
+                document.getElementById('tema-loja').value = d.data().tema || 'padrao';
+                document.getElementById('desc-global').value = d.data().desconto || 0;
+                document.getElementById('banner-imagem-url').value = d.data().bannerImg || '';
+            }
+        } catch (error) { console.error("Erro ao carregar configs:", error); }
+    }
+
+    async function carregarCupons() {
+        const padrao = { ativo10:true, percentual10:10, requisito10:100, ativo15:true, percentual15:15, requisito15:200 };
+        try {
+            const snap = await getDoc(doc(db, 'configuracoes', 'cupons'));
+            const dados = snap.exists() ? {...padrao, ...snap.data()} : padrao;
+            document.getElementById('cupom-10-ativo').checked = dados.ativo10;
+            document.getElementById('cupom-10-percentual').value = dados.percentual10;
+            document.getElementById('cupom-10-requisito').value = dados.requisito10;
+            document.getElementById('cupom-15-ativo').checked = dados.ativo15;
+            document.getElementById('cupom-15-percentual').value = dados.percentual15;
+            document.getElementById('cupom-15-requisito').value = dados.requisito15;
+        } catch (erro) { console.error('Erro ao carregar cupons:', erro); }
+    }
+
+    window.salvarCupons = async () => {
+        const dados = {
+            ativo10: document.getElementById('cupom-10-ativo').checked,
+            percentual10: Number(document.getElementById('cupom-10-percentual').value),
+            requisito10: Number(document.getElementById('cupom-10-requisito').value),
+            ativo15: document.getElementById('cupom-15-ativo').checked,
+            percentual15: Number(document.getElementById('cupom-15-percentual').value),
+            requisito15: Number(document.getElementById('cupom-15-requisito').value)
+        };
+        if (Object.values(dados).some(valor => typeof valor === 'number' && (!Number.isFinite(valor) || valor < 1))) return alert('Informe percentuais e requisitos válidos.');
+        await setDoc(doc(db, 'configuracoes', 'cupons'), dados);
+        alert('Regras dos cupons atualizadas.');
+    };
+
+    window.salvarCategoriaServico = async () => { const nome=document.getElementById('sc-nome').value.trim(); if(!nome)return alert('Informe a categoria.'); await addDoc(collection(db,'categorias_servicos'),{nome,icone:document.getElementById('sc-icone').value.trim()||'fas fa-briefcase',descricao:document.getElementById('sc-desc').value.trim(),ativo:true}); document.getElementById('sc-nome').value=''; };
+    window.salvarServico = async () => { const nome=document.getElementById('ss-nome').value.trim(),categoriaId=document.getElementById('ss-categoria').value.trim(); if(!nome||!categoriaId)return alert('Informe nome e ID da categoria.'); await addDoc(collection(db,'servicos'),{nome,categoriaId,descricao:document.getElementById('ss-desc').value.trim(),ativo:true}); document.getElementById('ss-nome').value=''; };
+    window.salvarPrestadorServico = async () => { const nome=document.getElementById('sp-nome').value.trim(),whatsapp=document.getElementById('sp-whats').value.trim(),servicos=document.getElementById('sp-servicos').value.split(',').map(x=>x.trim()).filter(Boolean); if(!nome||!whatsapp||!servicos.length)return alert('Informe nome, WhatsApp e ao menos um serviço.'); await addDoc(collection(db,'prestadores_servicos'),{nome,whatsapp,descricao:document.getElementById('sp-desc').value.trim(),servicos,servicosNomes:[],modalidades:document.getElementById('sp-modalidades').value.split(',').map(x=>x.trim()).filter(Boolean),localizacao:document.getElementById('sp-local').value.trim(),preco:document.getElementById('sp-preco').value.trim()||'Sob consulta',ativo:true}); };
+    window.removerRegistoServico = async (colecao,id) => { if(confirm('Eliminar este registo?')) await deleteDoc(doc(db,colecao,id)); };
+    let categoriasServicosAdmin=[], servicosAdmin=[], prestadoresServicosAdmin=[];
+    function renderizarRegistosServicos() {
+        const area=document.getElementById('lista-servicos-admin'); if(!area)return;
+        const lista=(titulo,colecao,itens,detalhe)=>`<h4 style="margin:18px 0 8px">${titulo}</h4>${itens.length?itens.map(d=>`<div class="item-lista"><span><strong>${d.nome||'Sem nome'}</strong><br><small>${detalhe(d)}<br>ID: ${d.id}</small></span><button class="btn-acao" onclick="removerRegistoServico('${colecao}','${d.id}')" title="Eliminar">🗑</button></div>`).join(''):'<p style="font-size:.8rem;color:#777">Nenhum registo ainda.</p>'}`;
+        area.innerHTML=lista('Categorias','categorias_servicos',categoriasServicosAdmin,d=>d.descricao||'Sem descrição')+lista('Serviços','servicos',servicosAdmin,d=>`Categoria: ${d.categoriaId||'não associada'}`)+lista('Prestadores','prestadores_servicos',prestadoresServicosAdmin,d=>`Serviços: ${(d.servicos||[]).join(', ')||'não associados'}`);
+    }
+    onSnapshot(collection(db,'categorias_servicos'), snap => { categoriasServicosAdmin=snap.docs.map(d=>({id:d.id,...d.data()})); renderizarRegistosServicos(); });
+    onSnapshot(collection(db,'servicos'), snap => { servicosAdmin=snap.docs.map(d=>({id:d.id,...d.data()})); renderizarRegistosServicos(); });
+    onSnapshot(collection(db,'prestadores_servicos'), snap => { prestadoresServicosAdmin=snap.docs.map(d=>({id:d.id,...d.data()})); renderizarRegistosServicos(); });
+
+    window.salvarCampanha = async () => {
+        const tema = document.getElementById('tema-loja').value;
+        const desconto = parseInt(document.getElementById('desc-global').value) || 0;
+        const bannerImg = tema === 'padrao' ? '' : document.getElementById('banner-imagem-url').value.trim();
+        if (bannerImg && !/^https?:\/\//i.test(bannerImg)) return alert('Use um link de imagem que comece com https:// ou http://');
+        try {
+            await setDoc(doc(db, "configuracoes", "home"), { tema, desconto, bannerImg, fraseHero: 'Tudo o que procura, num só lugar.' }, { merge: true });
+            alert("LOJA ATUALIZADA!\nTema: " + tema.toUpperCase() + "\nDesconto: " + desconto + "%");
+        } catch (error) { alert("Erro ao atualizar tema."); }
+    };
+
+    let descontosPorLojaAdmin = {};
+    async function carregarDescontosLojas() {
+        try {
+            const snap = await getDoc(doc(db, 'configuracoes', 'descontos_lojas'));
+            descontosPorLojaAdmin = snap.exists() ? (snap.data().lojas || {}) : {};
+            const area = document.getElementById('lista-descontos-lojas');
+            if (!area) return;
+            const entradas = Object.entries(descontosPorLojaAdmin);
+            area.innerHTML = entradas.length ? entradas.map(([nome, percentual]) => `<div class="item-lista"><span><strong>${nome}</strong><br><small>${Number(percentual)}% nos produtos em promoção</small></span><button class="btn-acao" title="Remover desconto" onclick="removerDescontoLoja('${nome.replace(/'/g, "\\'")}')">🗑</button></div>`).join('') : '<small style="color:#777;">Ainda não há descontos específicos por loja.</small>';
+        } catch (erro) { console.error('Erro ao carregar descontos por loja:', erro); }
+    }
+    window.salvarDescontoLoja = async () => {
+        const nome = document.getElementById('desconto-loja-nome').value.trim();
+        const percentual = Number(document.getElementById('desconto-loja-valor').value);
+        if (!nome || !Number.isFinite(percentual) || percentual < 0 || percentual > 100) return alert('Informe o nome da loja e um desconto entre 0 e 100.');
+        descontosPorLojaAdmin[nome] = percentual;
+        await setDoc(doc(db, 'configuracoes', 'descontos_lojas'), { lojas: descontosPorLojaAdmin });
+        document.getElementById('desconto-loja-nome').value = ''; document.getElementById('desconto-loja-valor').value = '';
+        carregarDescontosLojas();
+    };
+    window.removerDescontoLoja = async (nome) => {
+        if (!confirm(`Remover o desconto específico de ${nome}?`)) return;
+        delete descontosPorLojaAdmin[nome];
+        await setDoc(doc(db, 'configuracoes', 'descontos_lojas'), { lojas: descontosPorLojaAdmin });
+        carregarDescontosLojas();
+    };
+
+   window.atualizarSeletorMarcas = () => {
+    const origem = document.getElementById('origem-p').value;
+    const selectMarca = document.getElementById('marca-p');
+    const inputWp = document.getElementById('whatsapp-parceiro-vincular');
+
+    selectMarca.innerHTML = ""; // Limpa a lista atual
+
+    if (origem === "ABT") {
+        selectMarca.innerHTML = `
+            <option value="ABT Stock">ABT Stock Principal</option>
+            <option value="ABT Limited">ABT Coleção Limitada</option>
+        `;
+        inputWp.value = "244900000000"; // Número da ABT
+    } else {
+        if (listaParceirosLocal.length === 0) {
+            selectMarca.innerHTML = `<option value="">Nenhum parceiro ativo</option>`;
+        } else {
+            listaParceirosLocal.forEach(emp => {
+                // Adicionamos data-tel para o JS ler o telefone daquele parceiro específico
+                selectMarca.innerHTML += `<option value="${emp.nomeEmpresa}" data-tel="${emp.telefone}">${emp.nomeEmpresa}</option>`;
+            });
+            // Define o WhatsApp do primeiro da lista inicialmente
+            inputWp.value = listaParceirosLocal[0].telefone || "";
+        }
+    }
+};
+
+// Adiciona isto também no teu JS para que o WhatsApp mude se trocares de marca no select
+document.getElementById('marca-p').onchange = (e) => {
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    const tel = selectedOption.getAttribute('data-tel');
+    if (tel) {
+        document.getElementById('whatsapp-parceiro-vincular').value = tel;
+    }
+};
+
+    window.atualizarImagensPorCor = (imagensExistentes = {}) => {
+        const box = document.getElementById('imagens-por-cor');
+        const atuais = Object.fromEntries(Array.from(box.querySelectorAll('input[data-cor]')).map(input => [input.dataset.cor, input.value]));
+        const cores = Array.from(document.querySelectorAll('#box-cores input:checked')).map(cb => cb.value);
+        if (!cores.length) {
+            box.innerHTML = '<small style="color:#666;">Selecione as cores para adicionar as imagens correspondentes.</small>';
+            return;
+        }
+        box.innerHTML = cores.map(cor => `<div><small style="display:block; margin-bottom:3px; font-weight:700;">${cor}</small><input type="url" data-cor="${cor}" value="${imagensExistentes[cor] || atuais[cor] || ''}" placeholder="Link da imagem para a cor ${cor}"></div>`).join('');
+    };
+
+    window.salvarProduto = async () => {
+        const cores = Array.from(document.querySelectorAll('#box-cores input:checked')).map(cb => cb.value);
+        const tamanhos = Array.from(document.querySelectorAll('#box-tamanhos input:checked')).map(cb => cb.value);
+        const imagensPorCor = Object.fromEntries(Array.from(document.querySelectorAll('#imagens-por-cor input[data-cor]')).filter(input => input.value.trim()).map(input => [input.dataset.cor, input.value.trim()]));
+        
+        // --- LOGICA ADICIONADA: Buscar o WhatsApp do parceiro ---
+        const marcaSelecionada = document.getElementById('marca-p').value;
+        const parceiroObj = listaParceirosLocal.find(p => p.nomeEmpresa === marcaSelecionada);
+        // Se for ABT, usa um número fixo, se for parceiro, busca o telefone dele
+        const telefoneVenda = parceiroObj ? parceiroObj.telefone : "244900000000"; 
+        // --------------------------------------------------------
+
+        const dados = {
+            nome: document.getElementById('nome-p').value,
+            preco: parseFloat(document.getElementById('preco-p').value),
+            estoque: parseInt(document.getElementById('estoque-p').value) || 0,
+            descricao: document.getElementById('desc-p').value,
+            genero: document.getElementById('genero-p').value,
+            categoria: document.getElementById('cat-p').value,
+            imagem: document.getElementById('img-p').value.trim(),
+            cores: cores,
+            imagensPorCor: imagensPorCor,
+            tamanhos: tamanhos,
+            origem: document.getElementById('origem-p').value,
+            marca: marcaSelecionada,
+            whatsappParceiro: telefoneVenda // <--- LINHA QUE VINCULA O WP AO PRODUTO
+        };
+
+        if(!dados.nome || !dados.preco || !dados.imagem) return alert("Nome, Preço e Imagem são obrigatórios!");
+        
+        try {
+            if(idEdicao) { 
+                await updateDoc(doc(db, "produtos", idEdicao), dados); 
+            } else { 
+                await addDoc(collection(db, "produtos"), {...dados, promocao: false, data: new Date()}); 
+            }
+            window.cancelarEdicao();
+            alternarAba('stock-promocoes', document.querySelectorAll('.btn-aba')[6]);
+        } catch (e) { alert("Erro ao salvar produto."); }
+    };
+
+    window.editarProduto = (id) => {
+        const p = produtosLocal.find(item => item.id === id);
+        if(!p) return;
+        idEdicao = id;
+        document.getElementById('titulo-form').innerHTML = `<i class="fas fa-edit"></i> Editando: ${p.nome}`;
+        document.getElementById('nome-p').value = p.nome;
+        document.getElementById('preco-p').value = p.preco;
+        document.getElementById('estoque-p').value = p.estoque;
+        document.getElementById('desc-p').value = p.descricao || "";
+        document.getElementById('origem-p').value = p.origem || "ABT";
+        window.atualizarSeletorMarcas();
+        document.getElementById('marca-p').value = p.marca || "ABT Stock";
+        document.getElementById('genero-p').value = p.genero || "Masculino";
+        document.getElementById('cat-p').value = p.categoria || "Peça Superior";
+        window.atualizarInterfaceTamanhos();
+        
+        document.querySelectorAll('#box-cores input').forEach(cb => cb.checked = p.cores ? p.cores.includes(cb.value) : false);
+        window.atualizarImagensPorCor(p.imagensPorCor || {});
+        setTimeout(() => {
+            document.querySelectorAll('#box-tamanhos input').forEach(cb => cb.checked = p.tamanhos ? p.tamanhos.includes(cb.value) : false);
+        }, 80);
+        document.getElementById('img-p').value = p.imagem;
+        document.getElementById('btn-principal').innerText = "ATUALIZAR PRODUTO";
+        document.getElementById('btn-cancelar').style.display = "inline-block";
+        alternarAba('editando-produto', document.querySelectorAll('.btn-aba')[3]);
+    };
+
+    window.cancelarEdicao = () => {
+        idEdicao = null;
+        document.getElementById('titulo-form').innerHTML = `<i class="fas fa-plus-circle"></i> Novo Produto`;
+        document.getElementById('nome-p').value = "";
+        document.getElementById('preco-p').value = "";
+        document.getElementById('estoque-p').value = "";
+        document.getElementById('desc-p').value = "";
+        document.getElementById('img-p').value = "";
+        document.getElementById('imagens-por-cor').innerHTML = '<small style="color:#666;">Selecione as cores para adicionar as imagens correspondentes.</small>';
+        document.querySelectorAll('#box-cores input, #box-tamanhos input').forEach(cb => cb.checked = false);
+        document.getElementById('btn-principal').innerText = "CADASTRAR PRODUTO";
+        document.getElementById('btn-cancelar').style.display = "none";
+    };
+
+    window.eliminarProduto = async (id) => {
+        if(confirm("Tem a certeza que deseja eliminar permanentemente este produto?")) {
+            try { await deleteDoc(doc(db, "produtos", id)); } catch(e) { alert("Erro ao eliminar."); }
         }
     };
+
+    window.alternarPromocao = async (id, statusAtual) => {
+        try { await updateDoc(doc(db, "produtos", id), { promocao: !statusAtual }); } catch(e) { alert("Erro ao mudar promoção."); }
+    };
+    window.alternarNovidade = async (id, statusAtual) => { try { await updateDoc(doc(db,'produtos',id),{novidade:!statusAtual}); } catch(e){ alert('Erro ao atualizar novidade.'); } };
+
+    // ============================================================================
+    // LÓGICA DO NOVO MÓDULO DE FATURAMENTO COM FILTROS AVANÇADOS
+    // ============================================================================
+    window.processarEFiltreFaturamento = () => {
+        const filtro = document.getElementById('filtro-tipo-faturamento').value;
+        let totalBruto = 0;
+        let liquidoABT = 0;
+        let retidoParceiros = 0;
+
+        // Mapeamento consolidado por marca/fornecedor
+        const resumoFinanceiroMap = {};
+        resumoFinanceiroMap["ABT Stock"] = { nome: "ABT Marketplace", regime: "Direto", pedidos: 0, bruto: 0, comissao: 0, liquido: 0 };
+        listaParceirosLocal.forEach(p => {
+            resumoFinanceiroMap[p.nomeEmpresa] = { nome: p.nomeEmpresa, regime: "Parceiro (10%)", pedidos: 0, bruto: 0, comissao: 0, liquido: 0 };
+        });
+
+        // Loop sobre os pedidos concluídos reais recuperados do banco
+        vendasLocal.forEach(venda => {
+            const itens = venda.itens || [];
+            itens.forEach(item => {
+                const itemBruto = (item.preco || 0) * (item.qtd || 1);
+                const marcaAlvo = item.marca || "ABT Stock";
+
+                if (!resumoFinanceiroMap[marcaAlvo]) {
+                    resumoFinanceiroMap[marcaAlvo] = { nome: marcaAlvo, regime: "Parceiro (10%)", pedidos: 0, bruto: 0, comissao: 0, liquido: 0 };
+                }
+
+                resumoFinanceiroMap[marcaAlvo].bruto += itemBruto;
+                resumoFinanceiroMap[marcaAlvo].pedidos += 1;
+            });
+        });
+
+        // Processa regras de divisão de faturamento (Take-Rate)
+        Object.keys(resumoFinanceiroMap).forEach(key => {
+            const item = resumoFinanceiroMap[key];
+            if (key.startsWith("ABT")) {
+                item.comissao = 0;
+                item.liquido = item.bruto;
+                liquidoABT += item.bruto;
+            } else {
+                item.comissao = item.bruto * CONFIG_SISTEMA.comissaoPadrao;
+                item.liquido = item.bruto - item.comissao;
+                liquidoABT += item.comissao;
+                retidoParceiros += item.liquido;
+            }
+            totalBruto += item.bruto;
+        });
+
+        // Renderiza os contadores baseados no filtro selecionado no botão superior
+        if (filtro === "CONSOLIDADO") {
+            document.getElementById('fat-bruto-geral').innerText = totalBruto.toLocaleString('pt') + " Kz";
+            document.getElementById('fat-liquido-abt').innerText = liquidoABT.toLocaleString('pt') + " Kz";
+            document.getElementById('fat-total-parceiros').innerText = retidoParceiros.toLocaleString('pt') + " Kz";
+        } else if (filtro === "ABT") {
+            const apenasABT = (resumoFinanceiroMap["ABT Stock"]?.bruto || 0) + (resumoFinanceiroMap["ABT Limited"]?.bruto || 0);
+            document.getElementById('fat-bruto-geral').innerText = apenasABT.toLocaleString('pt') + " Kz";
+            document.getElementById('fat-liquido-abt').innerText = liquidoABT.toLocaleString('pt') + " Kz";
+            document.getElementById('fat-total-parceiros').innerText = "0 Kz";
+        } else if (filtro === "PARCEIROS_TODOS") {
+            document.getElementById('fat-bruto-geral').innerText = (totalBruto - (resumoFinanceiroMap["ABT Stock"]?.bruto || 0)).toLocaleString('pt') + " Kz";
+            document.getElementById('fat-liquido-abt').innerText = (liquidoABT - (resumoFinanceiroMap["ABT Stock"]?.bruto || 0)).toLocaleString('pt') + " Kz";
+            document.getElementById('fat-total-parceiros').innerText = retidoParceiros.toLocaleString('pt') + " Kz";
+        }
+
+        // Construção dinâmica da tabela de auditoria
+        const tabela = document.getElementById('tabela-corpo-faturamento');
+        tabela.innerHTML = "";
+        
+        Object.keys(resumoFinanceiroMap).forEach(key => {
+            const item = resumoFinanceiroMap[key];
+            // Filtros aplicados diretamente nas linhas da tabela analítica
+            if (filtro === "ABT" && !key.startsWith("ABT")) return;
+            if (filtro === "PARCEIROS_TODOS" && key.startsWith("ABT")) return;
+
+            tabela.innerHTML += `
+                <tr style="border-bottom: 1px solid #e0e0e0; background: ${key.startsWith('ABT') ? '#fffdf7' : '#fff'};">
+                    <td style="padding: 12px; font-weight: 700;">${item.nome}</td>
+                    <td style="padding: 12px; color: #666;">${item.regime}</td>
+                    <td style="padding: 12px;">${item.pedidos} x</td>
+                    <td style="padding: 12px; font-weight: 600;">${item.bruto.toLocaleString('pt')} Kz</td>
+                    <td style="padding: 12px; color: #c5a059;">${item.comissao.toLocaleString('pt')} Kz</td>
+                    <td style="padding: 12px; font-weight: bold; color: #2ecc71;">${item.liquido.toLocaleString('pt')} Kz</td>
+                </tr>`;
+        });
+
+        // Renderiza o gráfico evolutivo de faturamento temporal
+        renderizarGraficoFaturamentoEvolutivo(resumoFinanceiroMap, filtro);
+    };
+
+    window.filtrarFaturamentoExibido = () => {
+        window.processarEFiltreFaturamento();
+    };
+
+    function renderizarGraficoFaturamentoEvolutivo(mapaFinanceiro, filtro) {
+        const ctx = document.getElementById('chartFaturamentoEvolutivo').getContext('2d');
+        if (chartFaturamentoInstance) chartFaturamentoInstance.destroy();
+
+        let labels = [];
+        let dadosBruto = [];
+        let dadosLiquido = [];
+
+        Object.keys(mapaFinanceiro).forEach(key => {
+            const item = mapaFinanceiro[key];
+            if (filtro === "ABT" && !key.startsWith("ABT")) return;
+            if (filtro === "PARCEIROS_TODOS" && key.startsWith("ABT")) return;
+
+            labels.push(item.nome);
+            dadosBruto.push(item.bruto);
+            dadosLiquido.push(item.liquido);
+        });
+
+        chartFaturamentoInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Volume Bruto (Kz)', data: dadosBruto, backgroundColor: '#000000', borderRadius: 3 },
+                    { label: 'Líquido / Repasse (Kz)', data: dadosLiquido, backgroundColor: '#c5a059', borderRadius: 3 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    // ============================================================================
+    // OUTROS MOTORES DE RENDERIZAÇÃO E MONITORIZAÇÃO (PRESERVADOS)
+    // ============================================================================
+    window.renderizarGraficoVisaoGeral = () => {
+        const ctx = document.getElementById('chartVisaoGeral').getContext('2d');
+        if(chartVisaoGeralInstance) chartVisaoGeralInstance.destroy();
+        const f = document.getElementById('filtro-origem-grafico').value;
+        const contagem = { 'Peça Superior': 0, 'Peça Inferior': 0, 'Calçado': 0, 'Acessório': 0, 'Cosmético': 0 };
+        
+        produtosLocal.forEach(p => {
+            if(f === 'ABT' && p.origem !== 'ABT') return;
+            if(f === 'Parceiro' && p.origem !== 'Parceiro') return;
+            if(contagem[p.categoria] !== undefined) contagem[p.categoria]++;
+        });
+
+        chartVisaoGeralInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(contagem),
+                datasets: [{ label: 'Qtd Itens Diferentes', data: Object.values(contagem), backgroundColor: '#c5a059', borderWith: 0, borderRadius: 4 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#f0f0f0' } } } }
+        });
+    };
+
+    window.renderizarGraficosRelatorio = () => {
+        const modo = document.getElementById('filtro-modo-relatorio').value;
+        const titQ = document.getElementById('tit-quota-relatorio');
+        const titB = document.getElementById('tit-barras-relatorio');
+
+        let abtItens = 0, abtStock = 0, abtPromos = 0;
+        let parcItens = 0, parcStock = 0, parcPromos = 0;
+
+        produtosLocal.forEach(p => {
+            if(p.origem === 'ABT') { abtItens++; abtStock += (p.estoque || 0); if(p.promocao) abtPromos++; } 
+            else { parcItens++; parcStock += (p.estoque || 0); if(p.promocao) parcPromos++; }
+        });
+
+        document.getElementById('tab-abt-itens').innerText = abtItens;
+        document.getElementById('tab-abt-stock').innerText = abtStock + " un";
+        document.getElementById('tab-abt-promos').innerText = abtPromos;
+        document.getElementById('tab-parc-itens').innerText = parcItens;
+        document.getElementById('tab-parc-stock').innerText = parcStock + " un";
+        document.getElementById('tab-parc-promos').innerText = parcPromos;
+
+        const ctxQ = document.getElementById('chartDivisaoQuota').getContext('2d');
+        if(chartQuotaInstance) chartQuotaInstance.destroy();
+        
+        let labelsQ = [], dadosQ = [], coresQ = [];
+        if(modo === 'COMPLETO' || modo === 'ABT') { labelsQ.push('ABT Marketplace'); dadosQ.push(abtItens); coresQ.push('#000000'); }
+        if(modo === 'COMPLETO' || modo === 'PARCEIROS') { labelsQ.push('Empresas Parceiras'); dadosQ.push(parcItens); coresQ.push('#c5a059'); }
+        
+        titQ.innerText = modo === 'COMPLETO' ? "Quota de Distribuição (Produtos)" : (modo === 'ABT' ? "Quota: Foco Único ABT" : "Quota: Foco Único Parceiros");
+
+        chartQuotaInstance = new Chart(ctxQ, {
+            type: 'doughnut',
+            data: { labels: labelsQ, datasets: [{ data: dadosQ, backgroundColor: coresQ }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        const ctxB = document.getElementById('chartBarrasStock').getContext('2d');
+        if(chartBarrasInstance) chartBarrasInstance.destroy();
+
+        let labelsB = [], dadosB = [], labelDataset = "";
+        if(modo === 'COMPLETO') { labelsB = ['ABT Stock', 'Parceiros Stock']; dadosB = [abtStock, parcStock]; labelDataset = "Unidades Totais"; }
+        else if(modo === 'ABT') { labelsB = ['Stock Total', 'Em Promoção']; dadosB = [abtStock, abtPromos]; labelDataset = "Métricas ABT"; }
+        else { labelsB = ['Stock Total', 'Em Promoção']; dadosB = [parcStock, parcPromos]; labelDataset = "Métricas Parceiros"; }
+
+        titB.innerText = modo === 'COMPLETO' ? "Níveis Globais de Stock por Gestão" : "Detalhamento de Stock & Alinhamento";
+
+        chartBarrasInstance = new Chart(ctxB, {
+            type: 'bar',
+            data: { labels: labelsB, datasets: [{ label: labelDataset, data: dadosB, backgroundColor: ['#c5a059', '#000000'], borderRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    };
+
+    // EXPORTADORES PDF (html2pdf)
+    window.exportarVisaoGeralPDF = () => {
+        const elemento = document.getElementById('bloco-pdf-visao-geral');
+        const opt = { margin: 10, filename: 'ABT_Volumetria_Stock.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
+        html2pdf().set(opt).from(elemento).save();
+    };
+
+    window.exportarRelatorioCompletoPDF = () => {
+        const elemento = document.getElementById('bloco-pdf-relatorio');
+        const opt = { margin: 10, filename: 'ABT_Relatorio_Desempenho.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+        html2pdf().set(opt).from(elemento).save();
+    };
+
+    window.exportarFaturamentoPDF = () => {
+        const elemento = document.getElementById('bloco-pdf-faturamento');
+        const opt = { margin: 10, filename: 'ABT_Faturamento_Auditoria.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+        html2pdf().set(opt).from(elemento).save();
+    };
+
+    // ESCUTAS EM TEMPO REAL (FIREBASE)
+    onSnapshot(collection(db, "produtos"), (snapshot) => {
+        produtosLocal = [];
+        let totalP = 0, emPromo = 0;
+        snapshot.forEach(docSnap => {
+            const p = { id: docSnap.id, ...docSnap.data() };
+            produtosLocal.push(p);
+            totalP++;
+            if(p.promocao) emPromo++;
+        });
+        document.getElementById('ov-total-produtos').innerText = totalP;
+        document.getElementById('ov-total-promos').innerText = emPromo;
+
+        const containerStock = document.getElementById('container-stock');
+        containerStock.innerHTML = "";
+        produtosLocal.forEach(p => {
+            const esgotado = (p.estoque || 0) <= 0;
+            containerStock.innerHTML += `
+                <div class="item-lista ${p.promocao ? 'promo-active' : ''} ${esgotado ? 'item-esgotado' : ''}">
+                    <div>
+                        <strong>${p.nome}</strong> - <span style="color:#c5a059; font-weight:700;">${p.preco?.toLocaleString('pt')} Kz</span><br>
+                        <small>Origem: ${p.origem || 'ABT'} (${p.marca || 'Padrão'}) | Categoria: ${p.categoria} | Stock: ${p.estoque || 0} un</small>
+                    </div>
+                    <div>
+            <button class="btn-acao" style="color: ${p.promocao ? '#d93838' : '#888'};" onclick="alternarPromocao('${p.id}', ${p.promocao})" title="Mudar Promoção"><i class="fas fa-tag"></i></button><button class="btn-acao" style="color:${p.novidade ? '#c5a059' : '#888'};" onclick="alternarNovidade('${p.id}', ${p.novidade === true})" title="Destacar como novidade"><i class="fas fa-star"></i></button>
+                        <button class="btn-acao" style="color: #4a90e2;" onclick="editarProduto('${p.id}')" title="Editar"><i class="fas fa-edit"></i></button>
+                        <button class="btn-acao" style="color: #d93838;" onclick="eliminarProduto('${p.id}')" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>`;
+        });
+
+        if(document.getElementById('aba-visao-geral').classList.contains('active')) window.renderizarGraficoVisaoGeral();
+        if(document.getElementById('aba-relatorio-abt-parceiros').classList.contains('active')) window.renderizarGraficosRelatorio();
+        window.processarEFiltreFaturamento();
+    });
+
+    // Substitui o teu onSnapshot atual de parceiros por este:
+onSnapshot(collection(db, "parceiros"), (snapshot) => {
+    listaParceirosLocal = [];
+    
+    snapshot.forEach(doc => {
+        const dados = doc.data();
+        
+        // Vamos garantir que só pegamos os que estão "ativo" conforme a tua imagem
+        if (dados.status === "ativo") {
+            listaParceirosLocal.push({
+                nomeEmpresa: dados.nomeEmpresa,
+                telefone: dados.telefone
+            });
+        }
+    });
+
+    console.log("Parceiros carregados com sucesso:", listaParceirosLocal);
+    
+    // Atualiza o seletor logo após carregar os dados
+    window.atualizarSeletorMarcas();
+});
+
+onSnapshot(query(collection(db, "pedidos"), orderBy("data", "desc")), (snapshot) => {
+    const container = document.getElementById('lista-pedidos-admin');
+    const contador = document.getElementById('ov-total-pedidos');
+    vendasLocal = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+    contador.innerText = vendasLocal.length;
+    console.log("Total de pedidos encontrados:", snapshot.size); // Vais ver isto na consola do F12
+    
+    container.innerHTML = "";
+    
+    if (snapshot.empty) {
+        container.innerHTML = "<p>Nenhum pedido encontrado no Firebase.</p>";
+        window.processarEFiltreFaturamento();
+        return;
+    }
+
+    const escapar = (valor) => String(valor ?? '').replace(/[&<>'"]/g, caractere => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[caractere]));
+    const formatarData = (valor) => {
+        const data = valor?.toDate ? valor.toDate() : new Date(valor);
+        return Number.isNaN(data.getTime()) ? 'Data não disponível' : data.toLocaleString('pt-AO');
+    };
+    vendasLocal.forEach(pedido => {
+        const itens = pedido.itens || [];
+        const resumoItens = itens.map(item => `${Number(item.qtd || 1)}x ${escapar(item.nome)}`).join('<br>') || 'Sem itens';
+        const concluido = pedido.status === 'concluido';
+        container.innerHTML += `<article class="item-lista" style="display:block; margin-bottom:12px;"><strong>${escapar(pedido.cliente || 'Cliente não identificado')}</strong><span style="float:right; color:#c5a059; font-weight:700;">${escapar(pedido.total || '0')} Kz</span><small style="display:block; margin:6px 0; color:#666;">${escapar(pedido.telefone || 'Sem contacto')} · ${formatarData(pedido.data)}</small><small style="display:block; margin-bottom:6px; color:#666;">Pagamento: ${escapar(pedido.pagamento?.nome || 'Não informado')}</small><div style="font-size:0.85rem; line-height:1.5;">${resumoItens}</div><div style="margin-top:10px;"><strong style="color:${concluido ? '#16803c' : '#a38043'};font-size:.8rem;">${concluido ? 'CONCLUÍDO' : 'PENDENTE'}</strong>${concluido ? '' : ` <button class="btn-campanha" style="width:auto;padding:7px 10px;margin:0 0 0 8px;" onclick="concluirPedido('${pedido.id}')">MARCAR COMO CONCLUÍDO</button>`}</div></article>`;
+    });
+    window.processarEFiltreFaturamento();
+
+    snapshot.forEach(d => {
+        const v = d.data();
+        console.log("Pedido:", v); // Vais ver o conteúdo de cada pedido aqui
+        // ... (resto do teu código de renderização)
+    });
+});
+
+window.concluirPedido = async (id) => {
+    if (!confirm('Confirmar que este pedido foi concluído? Ele passará a contar para os cupons do cliente.')) return;
+    try { await updateDoc(doc(db, 'pedidos', id), { status: 'concluido', concluidoEm: new Date().toISOString() }); }
+    catch (erro) { console.error(erro); alert('Não foi possível atualizar o pedido.'); }
+};
+
+    window.atualizarInterfaceTamanhos();
+    carregarConfig();
+    carregarCupons();
+    carregarDescontosLojas();
+
+    // Monitorar a coleção de candidaturas
+// --- GESTÃO DE CANDIDATURAS E LOGS (CORREÇÃO DE ALINHAMENTO) ---
+
+// 1. Monitorar Candidaturas
+onSnapshot(collection(db, "candidatos_parceiros"), (snapshot) => {
+    const container = document.getElementById('container-candidaturas');
+    if (!container) return;
+    
+    container.innerHTML = "";
+    snapshot.forEach((doc) => {
+        const c = doc.data();
+        container.innerHTML += `
+            <div class="item-lista">
+                <div>
+                    <strong>${c.nome || 'Sem nome'}</strong><br>
+                    <small>NIF: ${c.nif} | Tel: ${c.tel}</small>
+                </div>
+                <div>
+                    <button class="btn-acao" onclick="window.aprovarCandidato('${doc.id}')" title="Aprovar"><i class="fas fa-check" style="color: #2ecc71;"></i></button>
+                    <button class="btn-acao" onclick="window.removerCandidato('${doc.id}')" title="Recusar"><i class="fas fa-times" style="color: #d93838;"></i></button>
+                </div>
+            </div>
+        `;
+    });
+});
+
+// 2. Lógica de Aprovação (Atualizada com notificação WhatsApp)
+window.aprovarCandidato = async (id) => {
+    try {
+        const snap = await getDoc(doc(db, "candidatos_parceiros", id));
+        if (snap.exists()) {
+            const data = snap.data();
+            
+            // Adicionar à coleção de parceiros
+            await addDoc(collection(db, "parceiros"), { 
+                nomeEmpresa: data.nome, 
+                nomeResponsavel: data.responsavel || data.nomeResponsavel || data.nome,
+                telefone: data.tel, 
+                status: "ativo", 
+                rank: "Bronze", 
+                dataCadastro: new Date().toISOString() 
+            });
+            
+            // Registar log
+            await addDoc(collection(db, "logs_auditoria"), {
+                acao: "Aprovação de Parceiro",
+                alvo: data.nome,
+                data: new Date().toISOString()
+            });
+            
+            // Remover dos pendentes
+            await deleteDoc(doc(db, "candidatos_parceiros", id));
+
+            // Notificar via WhatsApp (Abrirá uma nova aba para enviar a mensagem)
+            const mensagem = `Olá ${data.nome}, a sua candidatura à ABT Marketplace foi aprovada com sucesso! Pode agora aceder à plataforma e começar a vender.`;
+            window.open(`https://wa.me/${data.tel}?text=${encodeURIComponent(mensagem)}`, '_blank');
+
+            alert(`Parceiro ${data.nome} aprovado e notificado!`);
+        }
+    } catch (e) { 
+        console.error("Erro ao aprovar:", e); 
+        alert("Ocorreu um erro ao processar a aprovação.");
+    }
+};
+
+window.removerCandidato = async (id) => {
+    if (confirm("Confirmar recusa desta candidatura?")) {
+        await deleteDoc(doc(db, "candidatos_parceiros", id));
+    }
+};
+
+// 3. Monitorar Logs
+onSnapshot(query(collection(db, "logs_auditoria"), orderBy("data", "desc")), (snapshot) => {
+    const container = document.getElementById('container-logs');
+    if (!container) return;
+    
+    container.innerHTML = "";
+    snapshot.forEach((doc) => {
+        const l = doc.data();
+        container.innerHTML += `
+            <div class="item-lista">
+                <small><strong>${l.data ? l.data.slice(0, 10) : ''}</strong> | ${l.acao}: <em>${l.alvo}</em></small>
+            </div>
+        `;
+    });
+});
 </script>
+</body>
+</html>

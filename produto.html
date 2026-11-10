@@ -4,117 +4,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes do Produto | ABT Marketplace</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>if(localStorage.getItem('abt_theme')==='dark')document.documentElement.classList.add('abt-tema-escuro');</script><link rel="stylesheet" href="tema.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        .produto-detalhe-container {
-            max-width: 900px;
-            margin: 40px auto;
-            display: flex;
-            gap: 40px;
-            padding: 20px;
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .foto-produto { flex: 1; }
-        .foto-produto img { width: 100%; border-radius: 10px; object-fit: cover; }
-        .info-produto { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .info-produto h2 { font-size: 2rem; color: #1c1c1c; margin-bottom: 10px; }
-        .info-produto .preco-grande { font-size: 1.8rem; color: #d4af37; font-weight: bold; margin-bottom: 20px; }
-        .controles { margin-bottom: 20px; }
-        .controles input { width: 60px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; margin-left: 10px; }
-        .btn-adicionar {
-            background: #1c1c1c;
-            color: #d4af37;
-            border: none;
-            padding: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
-        .btn-adicionar:hover { background: #d4af37; color: #000; }
-        
-        @media (max-width: 768px) {
-            .produto-detalhe-container { flex-direction: column; }
-        }
+        body { font-family: 'Poppins', sans-serif; background: #f9f9f9 url('golden.jpg') repeat; background-size: 700px; margin: 0; }
+        header { background: #ffffff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c5a059; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .produto-detalhe-container { max-width: 1000px; margin: 40px auto; display: flex; gap: 40px; padding: 30px; background: rgba(255, 255, 255, 0.96); border-radius: 4px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); position: relative; }
+        .produto-detalhe-container::before { content: ''; position: absolute; top: 0; left: 0; width: 24px; height: 24px; border-top: 5px solid #000000; border-left: 5px solid #000000; }
+        .foto-produto { flex: 1.2; position: relative; }
+        .foto-produto img { width: 100%; border-radius: 4px; border: 1px solid #e0e0e0; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.04); transition: 0.3s; }
+        .foto-produto.esgotada img { filter: grayscale(1); opacity: 0.6; }
+        .info-produto { flex: 1; display: flex; flex-direction: column; }
+        .info-produto h2 { font-size: 2.2rem; color: #000000; margin: 0 0 10px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .preco-area { margin-bottom: 20px; }
+        .preco-antigo { text-decoration: line-through; color: #888888; font-size: 1.1rem; font-weight: 500; }
+        .preco-grande { font-size: 2rem; color: #c5a059; font-weight: 800; margin: 0; }
+        .badge-detalhe { background: #000000; color: #c5a059; padding: 4px 10px; border-radius: 4px; font-size: 0.9rem; margin-left: 10px; vertical-align: middle; font-weight: 800; border: 1px solid #c5a059; }
+        .escassez { color: #d93838; font-size: 0.85rem; font-weight: 600; margin-top: 8px; display: flex; align-items: center; gap: 5px; }
+        .seccao-opcoes { margin-top: 20px; border-top: 1px solid #e0e0e0; padding-top: 20px; }
+        .titulo-opcoes { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #000000; margin-bottom: 10px; display: block; letter-spacing: 0.5px; }
+        .lista-cores { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+        .cor-tag { padding: 8px 12px; border: 1px solid #c5a059; border-radius: 5px; font-size: 0.85rem; color: #16110a; background: #f2d58e; font-weight: 700; white-space:normal; overflow-wrap:anywhere; cursor:pointer; }
+        .descricao-texto { font-size: 0.95rem; color: #444444; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
+        .controles { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+        .controles input, .controles select { width: auto; min-width: 96px; padding: 10px; border: 1px solid #c5a059; border-radius: 5px; text-align: center; font-size: .9rem; color: #16110a; font-family: 'Poppins'; outline: none; background:#f2d58e; font-weight:700; }
+        .titulo-opcoes { display:inline-block; background:#c5a059; color:#171007; padding:5px 9px; border-radius:4px; }
+        .botoes-acao { display: flex; flex-direction: column; gap: 10px; }
+        .btn-carrinho { background: #000000; color: #c5a059; border: none; padding: 18px; font-size: 1rem; font-weight: 800; cursor: pointer; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-whats { background: #128c7e; color: white; border: none; padding: 15px; font-size: 1rem; font-weight: 800; cursor: pointer; border-radius: 4px; text-align: center; text-decoration: none; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-esgotado { background: #e0e0e0; color: #777777; border: none; padding: 18px; font-size: 1rem; font-weight: 800; border-radius: 4px; text-align: center; cursor: not-allowed; text-transform: uppercase; letter-spacing: 0.5px; }
+        @media (max-width: 850px) { .produto-detalhe-container { flex-direction: column; margin: 12px; padding: 18px; gap:22px; } .foto-produto img { height:auto; aspect-ratio:1/1; } .info-produto h2 { font-size:1.55rem; } .preco-grande { font-size:1.55rem; } }
+        @media (max-width: 420px) { header { padding:13px 14px; } header h1 { font-size:1rem !important; } .produto-detalhe-container { margin:8px; padding:14px; } .controles { gap:8px; flex-wrap:wrap; } .btn-carrinho,.btn-whats,.btn-esgotado { font-size:.82rem; padding:14px 10px; } .cor-tag { font-size:.75rem; padding:5px 10px; } }
     </style>
 </head>
 <body>
-
 <header>
-    <nav style="background: #1c1c1c; padding: 15px; display: flex; justify-content: space-between;">
-        <h1 style="color: #d4af37; margin: 0; font-size: 1.2rem;">ABT Detalhes</h1>
-        <a href="loja.html" style="color: white; text-decoration: none;">⬅ Voltar à Loja</a>
-    </nav>
+    <h1 style="color: #000000; margin: 0; font-size: 1.3rem; cursor:pointer; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;" onclick="window.location.href='home.html'">ABT MARKETPLACE</h1>
+    <a href="loja.html" style="color: #000000; text-decoration: none; font-size: 0.9rem; font-weight: 600;"><i class="fas fa-arrow-left"></i> Voltar</a>
 </header>
-
-<main class="produto-detalhe-container">
-    <div class="foto-produto">
-        <img id="img-produto" src="https://via.placeholder.com/400" alt="Produto">
-    </div>
-
-    <div class="info-produto">
-        <h2 id="nome-produto">Carregando...</h2>
-        <p class="preco-grande"><span id="preco-produto">0</span> Kz</p>
-        
-        <div class="controles">
-            <label>Quantidade:</label>
-            <input type="number" id="quantidade" value="1" min="1">
-        </div>
-
-        <button class="btn-adicionar" onclick="adicionarAoCarrinho()">Adicionar ao Carrinho 🛒</button>
-        <p id="msg-sucesso" style="color: green; margin-top: 10px; display: none;">✅ Adicionado com sucesso!</p>
-    </div>
+<main class="produto-detalhe-container" id="conteudo-detalhes">
+    <div style="text-align: center; width: 100%; padding: 50px; font-weight: 600; color: #666666;">Carregando detalhes do produto...</div>
 </main>
-
-<script>
-    // 1. Pegar dados da URL (vêm da loja.html)
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    const db = getFirestore(initializeApp({apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0", authDomain: "abt-marketplace.firebaseapp.com", projectId: "abt-marketplace", storageBucket: "abt-marketplace.firebasestorage.app", messagingSenderId: "763460800092", appId: "1:763460800092:web:5ac1f341919c1fa02ea099"}));
     const params = new URLSearchParams(window.location.search);
-    const nome = params.get("nome");
-    const preco = params.get("preco");
-    const img = params.get("img");
+    const produtoId = params.get("id"); let produtoAtual = null; let corSelecionada = ''; let precoFinalAtual = 0;
 
-    // 2. Preencher a página com os dados
-    if (nome && preco && img) {
-        document.getElementById("nome-produto").innerText = nome;
-        document.getElementById("preco-produto").innerText = preco;
-        document.getElementById("img-produto").src = decodeURIComponent(img);
+    // Função de reencaminhamento inteligente para WhatsApp
+   window.enviarWhatsApp = (nome, preco, marca, wppParceiro) => {
+    const numeroABT = "244946560930";
+    
+    // FORÇAMOS A VERIFICAÇÃO:
+    // Se for um produto da ABT, o wppParceiro deve ser ignorado.
+    // Se a marca for "ABT" ou o campo wppParceiro estiver "estranho" (como esse 244900000000), ignoramos.
+    
+    const numeroDestino = (marca === "ABT" || wppParceiro === "244900000000" || !wppParceiro) 
+                          ? numeroABT 
+                          : wppParceiro;
+
+    const msg = `Olá! Gostaria de encomendar: ${nome}. Preço: ${preco} Kz.`;
+    window.open(`https://wa.me/${numeroDestino}?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
+    async function carregarDados() {
+        if (!produtoId) return;
+        try {
+            const pDoc = await getDoc(doc(db, "produtos", produtoId));
+            const [cDoc, descontosDoc] = await Promise.all([getDoc(doc(db, "configuracoes", "home")), getDoc(doc(db, "configuracoes", "descontos_lojas"))]);
+            if (pDoc.exists()) {
+                const p = pDoc.data(); const config = cDoc.exists() ? cDoc.data() : { desconto: 0 };
+                produtoAtual = { id: pDoc.id, ...p };
+                const descontosLojas = descontosDoc.exists() ? (descontosDoc.data().lojas || {}) : {};
+                const nomeLoja = p.marca || p.loja || (p.origem === 'ABT' ? 'ABT' : 'ABT');
+                const descontoAplicavel = Number(descontosLojas[nomeLoja] ?? config.desconto ?? 0);
+                const taxa = descontoAplicavel / 100;
+                const precoExibido = p.promocao ? Math.round(p.preco * (1 - taxa)) : p.preco;
+                renderizar(p, precoExibido, p.preco, descontoAplicavel);
+            }
+        } catch (e) { document.getElementById("conteudo-detalhes").innerHTML = "Erro ao carregar."; }
     }
-
-    // 3. Função para salvar no Carrinho (LocalStorage)
-    function adicionarAoCarrinho() {
-        const qtd = parseInt(document.getElementById("quantidade").value);
-        
-        // Criar o objeto do item
-        const item = {
-            nome: nome,
-            preco: parseFloat(preco),
-            imagem: img,
-            quantidade: qtd
-        };
-
-        // Pegar o que já tem no carrinho ou criar lista vazia
-        let carrinho = JSON.parse(localStorage.getItem("carrinhoABT")) || [];
-
-        // Verificar se o produto já está no carrinho
-        const index = carrinho.findIndex(p => p.nome === item.nome);
-        if (index > -1) {
-            carrinho[index].quantidade += qtd; // Soma a quantidade
-        } else {
-            carrinho.push(item); // Adiciona novo
+    function renderizar(p, precoFinal, precoOriginal, descGlobal) {
+        precoFinalAtual = precoFinal;
+        const container = document.getElementById("conteudo-detalhes");
+        const isEsgotado = p.estoque !== undefined && p.estoque <= 0;
+        let avisoStock = "";
+        if(!isEsgotado && p.promocao) {
+            const qtd = (p.estoque && p.estoque > 0) ? p.estoque : 3;
+            avisoStock = `<div class="escassez"><i class="fas fa-bolt"></i> Restam apenas ${qtd} unidades com este preço!</div>`;
         }
-
-        // Salvar de volta
-        localStorage.setItem("carrinhoABT", JSON.stringify(carrinho));
-
-        // Mostrar feedback ao usuário
-        const msg = document.getElementById("msg-sucesso");
-        msg.style.display = "block";
-        setTimeout(() => { window.location.href = "carrinho.html"; }, 1500);
+        const badgeOrigemHTML = p.origem === "Parceiro" ? `<div style="display: inline-flex; align-items: center; gap: 6px; background: #fdfaf4; border: 1px solid #c5a059; color: #a38043; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-building"></i> Parceiro Oficial: ${p.marca || 'Verificado'}</div>` : `<div style="display: inline-flex; align-items: center; gap: 6px; background: #000000; color: #c5a059; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #000000;"><i class="fas fa-gem"></i> Exclusivo ABT Marketplace</div>`;
+        const tamOpcoes = (p.tamanhos && Array.isArray(p.tamanhos)) ? p.tamanhos.map(t => `<option value="${t}">${t}</option>`).join('') : `<option value="${p.tamanho || 'Único'}">${p.tamanho || 'Único'}</option>`;
+        const coresHTML = (Array.isArray(p.cores) && p.cores.filter(Boolean).length) ? `<span class="titulo-opcoes">Cores:</span><div class="lista-cores">${p.cores.filter(Boolean).map(c => `<button type="button" class="cor-tag" data-cor="${c}" onclick="selecionarCor('${c}')">${c}</button>`).join('')}</div>` : "";
+        container.innerHTML = `
+            <div class="foto-produto ${isEsgotado ? 'esgotada' : ''}"><img id="imagem-principal" src="${p.imagem}" alt="${p.nome}"></div>
+            <div class="info-produto">
+                ${badgeOrigemHTML}
+                <h2>${p.nome}</h2>
+                <div class="preco-area">${p.promocao ? `<span class="preco-antigo">${precoOriginal} Kz</span> <span class="badge-detalhe">-${descGlobal}%</span>` : ""}<p class="preco-grande">${precoFinal} Kz</p>${avisoStock}</div>
+                <div class="seccao-opcoes">
+                    ${p.descricao ? `<span class="titulo-opcoes">Descrição:</span><p class="descricao-texto">${p.descricao}</p>` : ""}
+                    ${coresHTML}
+                    ${!isEsgotado ? `
+                        <span class="titulo-opcoes">Qtd | Tamanho:</span>
+                        <div class="controles"><input type="number" id="quantidade" value="1" min="1" max="${p.estoque || 99}"><select id="tamanho">${tamOpcoes}</select></div>
+                        <div class="botoes-acao">
+                            <button class="btn-carrinho" onclick="window.addCarrinho()">Adicionar ao Carrinho 🛒</button>
+                            <button class="btn-whats" onclick="enviarWhatsApp('${p.nome}', ${precoFinal}, '${p.marca || 'ABT'}', '${p.whatsappParceiro || ''}')">Comprar via WhatsApp</button>
+                        </div>` : `<button class="btn-esgotado" disabled>ESGOTADO</button>`}
+                </div>
+            </div>`;
+        if (p.cores?.length) window.selecionarCor(p.cores[0]);
     }
+    window.selecionarCor = (cor) => {
+        corSelecionada = cor;
+        const imagem = produtoAtual.imagensPorCor?.[cor] || produtoAtual.imagem;
+        const principal = document.getElementById('imagem-principal');
+        if (principal) principal.src = imagem;
+        document.querySelectorAll('.cor-tag').forEach(botao => {
+            botao.style.background = botao.dataset.cor === cor ? '#000000' : '#ffffff';
+            botao.style.color = botao.dataset.cor === cor ? '#c5a059' : '#000000';
+        });
+    };
+    window.addCarrinho = () => {
+        let c = JSON.parse(localStorage.getItem("abt_carrinho")) || [];
+        const imagem = produtoAtual.imagensPorCor?.[corSelecionada] || produtoAtual.imagem;
+        c.push({...produtoAtual, imagem, cor: corSelecionada, preco: precoFinalAtual, precoOriginal: produtoAtual.preco, promocao: produtoAtual.promocao === true, qtd: document.getElementById("quantidade").value, tamanho: document.getElementById("tamanho").value});
+        localStorage.setItem("abt_carrinho", JSON.stringify(c)); window.location.href = "carrinho.html";
+    };
+    carregarDados();
 </script>
-
 </body>
 </html>

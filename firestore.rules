@@ -1,0 +1,123 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.ativo == true;
+    }
+
+    function isActivePartner() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/empresas/$(request.auth.uid))
+        && get(/databases/$(database)/documents/empresas/$(request.auth.uid)).data.status == 'ativo';
+    }
+
+    match /admins/{userId} {
+      allow read: if signedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
+
+    match /empresas/{userId} {
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.status == 'pendente';
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == userId);
+      allow update, delete: if isAdmin();
+      allow update: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['logoUrl', 'corDestaque']);
+    }
+
+    match /produtos/{productId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /categorias_servicos/{categoryId} { allow read: if true; allow write: if isAdmin(); }
+    match /servicos/{serviceId} { allow read: if true; allow write: if isAdmin(); }
+    match /prestadores_servicos/{providerId} { allow read: if true; allow write: if isAdmin(); }
+    match /solicitacoes_servicos/{requestId} {
+      allow create: if signedIn() && request.resource.data.clienteUid == request.auth.uid && request.resource.data.status == 'pendente';
+      allow read: if isAdmin() || (signedIn() && resource.data.clienteUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /configuracoes/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /usuarios/{userId} {
+      allow create: if signedIn() && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['nome', 'telefone', 'email', 'criadoEm']);
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == userId);
+      allow update: if isAdmin() || (signedIn() && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nome', 'telefone']));
+      allow delete: if isAdmin();
+    }
+
+    match /pedidos/{orderId} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['cliente', 'telefone', 'itens', 'total', 'data', 'clienteUid', 'status', 'cupom', 'pagamento'])
+        && request.resource.data.cliente is string
+        && request.resource.data.telefone is string
+        && request.resource.data.itens is list
+        && request.resource.data.clienteUid == request.auth.uid
+        && request.resource.data.status == 'pendente';
+      allow read: if isAdmin() || (signedIn() && resource.data.clienteUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /depoimentos/{testimonialId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['nome', 'texto', 'data'])
+        && request.resource.data.nome is string
+        && request.resource.data.texto is string;
+      allow update, delete: if isAdmin();
+    }
+
+    match /candidatos_parceiros/{candidateId} {
+      allow create: if request.resource.data.keys().hasOnly(['nome', 'nif', 'email', 'tel', 'desc', 'data', 'status'])
+        && request.resource.data.status == 'pendente';
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /parceiros/{partnerId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /mensagens/{messageId} {
+      allow create: if request.resource.data.msg is string;
+      allow read: if isAdmin() || isActivePartner();
+      allow update, delete: if isAdmin();
+
+      match /respostas/{replyId} {
+        allow read: if isAdmin() || isActivePartner();
+        allow create, update, delete: if isAdmin();
+      }
+    }
+
+    match /logs_auditoria/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /alertas_invasao/{alertId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

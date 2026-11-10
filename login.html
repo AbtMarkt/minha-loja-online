@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <style>
         body {
-            background: #121212;
+            background: #f9f9f9 url('golden.jpg') repeat;
+            background-size: 700px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,47 +17,53 @@
             font-family: 'Poppins', sans-serif;
         }
         .login-card {
-            background: #1c1c1c;
+            background: rgba(255, 255, 255, 0.96);
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border-radius: 4px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
             width: 100%;
             max-width: 350px;
             text-align: center;
-            color: white;
-            border-top: 4px solid #d4af37;
+            color: #000000;
+            border-top: 4px solid #c5a059;
+            position: relative;
         }
-        .login-card h2 { margin-bottom: 20px; color: #d4af37; }
+        .login-card::before { content: ''; position: absolute; top: -4px; left: 0; width: 20px; height: 20px; border-top: 5px solid #000000; border-left: 5px solid #000000; }
+        .login-card h2 { margin-bottom: 5px; color: #000000; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .login-card input {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
-            border: none;
-            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
             box-sizing: border-box;
-            background: #333;
-            color: white;
+            background: #ffffff;
+            color: #000000;
+            outline: none;
+            font-family: 'Poppins';
         }
         .login-card button {
             width: 100%;
-            padding: 12px;
-            background: #d4af37;
+            padding: 14px;
+            background: #000000;
             border: none;
-            color: black;
-            font-weight: bold;
+            color: #c5a059;
+            font-weight: 800;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 4px;
             transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .login-card button:hover { background: #b88b2f; }
-        .msg-erro { color: #ff4d4d; font-size: 0.8rem; margin-bottom: 10px; display: none; }
+        .login-card button:hover { background: #1c1c1c; }
+        .msg-erro { color: #d93838; font-size: 0.8rem; margin-bottom: 15px; display: none; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div class="login-card">
     <h2>Painel ABT</h2>
-    <p>Acesso restrito ao administrador</p>
+    <p style="color: #666666; font-size: 0.85rem; margin-bottom: 25px; font-weight: 500;">Acesso restrito ao administrador</p>
     
     <div id="erro" class="msg-erro">Usuário ou senha incorretos!</div>
     

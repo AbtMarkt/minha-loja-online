@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Loja | Parceiro ABT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f9f9f9 url('golden.jpg') repeat; background-size: 700px; margin: 0; color: #000000; }
+        header { background: #ffffff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c5a059; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        h1 { margin: 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; cursor: pointer; }
+        .container { max-width: 900px; margin: 40px auto; padding: 30px; background: rgba(255, 255, 255, 0.98); border-radius: 4px; border: 1px solid #e0e0e0; box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
+        .perfil-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 30px; }
+        .info-loja h2 { margin: 0; font-size: 1.5rem; text-transform: uppercase; }
+        .tab-menu { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { background: #eee; border: none; padding: 10px 20px; cursor: pointer; font-weight: 600; border-radius: 4px; }
+        .tab-btn.active { background: #c5a059; color: #fff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .perfil-marca { display: flex; align-items: center; gap: 14px; }
+        .logo-loja { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; border: 2px solid #c5a059; background: #f5f5f5; }
+        .logo-placeholder { width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; background: #000; color: #c5a059; font-weight: 800; }
+        .form-visual { max-width: 560px; display: grid; gap: 12px; }
+        .form-visual label { font-size: .8rem; font-weight: 700; text-transform: uppercase; }
+        .form-visual input { margin: 0; }
+        .preview-loja { display: flex; align-items: center; gap: 14px; padding: 18px; border-left: 5px solid #c5a059; background: #fff; }
+        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card-produto { border: 1px solid #e0e0e0; padding: 15px; border-radius: 4px; text-align: center; background: #fff; }
+        .card-produto img { width: 100%; height: 150px; object-fit: cover; border-radius: 2px; margin-bottom: 10px; }
+        .card-produto h3 { font-size: 0.9rem; margin: 5px 0; }
+        .card-produto span { font-weight: 800; color: #c5a059; margin-bottom: 10px; display: block; }
+        .btn-voltar { background: #000000; color: #c5a059; padding: 12px 25px; text-decoration: none; font-weight: 800; text-transform: uppercase; border-radius: 4px; font-size: 0.8rem; border: 1px solid #000000; cursor: pointer; }
+        .login-box { max-width: 400px; margin: 80px auto; padding: 30px; background: #fff; border-radius: 4px; border: 1px solid #e0e0e0; text-align: center; }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e0e0e0; border-radius: 4px; box-sizing: border-box; }
+        #chat-modal { display:none; position:fixed; bottom:90px; left:20px; width:280px; height:350px; background:#fff; border:1px solid #ccc; z-index:2500; padding:15px; border-radius:8px; box-shadow:0 5px 15px rgba(0,0,0,0.2); }
+        .chat-log { height: 200px; overflow-y: auto; margin-bottom: 10px; border: 1px solid #eee; padding: 5px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<div id="btn-chat-toggle" onclick="document.getElementById('chat-modal').style.display = document.getElementById('chat-modal').style.display === 'none' ? 'block' : 'none'" style="position:fixed; bottom:20px; left:20px; background:#c5a059; color:#fff; width:50px; height:50px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:2500;">
+    <i class="fas fa-comment-dots"></i>
+</div>
+
+<div id="chat-modal">
+    <h4 style="margin:0 0 10px 0;">Suporte Admin</h4>
+    <div id="chat-log" class="chat-log"></div>
+    <input type="text" id="msg-input" placeholder="Sua mensagem..." style="width:100%; padding:5px; margin-bottom:5px;">
+    <button id="btn-enviar" style="width:100%; padding:8px;">Enviar Mensagem</button>
+</div>
+
+<header>
+    <h1 onclick="window.location.href='home.html'">ABT MARKETPLACE</h1>
+    <button class="btn-voltar" onclick="sairParceiro()"><i class="fas fa-home"></i> Sair e Voltar</button>
+</header>
+
+<div id="login-container" class="login-box">
+    <h2 style="font-weight:800; margin-bottom:5px;">LOGIN PARCEIRO</h2>
+    <input type="email" id="login-email" placeholder="E-mail Corporativo" required>
+    <input type="password" id="login-senha" placeholder="Palavra-passe" required>
+    <button id="btn-login" class="btn-voltar" style="width:100%; padding:14px; margin-top:10px;">Entrar no Painel 🚀</button>
+    <p id="login-erro" style="color:red; font-size:0.85rem; margin-top:15px; font-weight:700; display:none;">Dados incorretos!</p>
+</div>
+
+<div class="container" id="painel-container" style="display: none;">
+    <div class="perfil-header">
+        <div class="perfil-marca"><div id="logo-loja"></div><div class="info-loja"><h2 id="nome-loja">A carregar...</h2></div></div>
+        <button class="btn-voltar" onclick="sairParceiro()">Sair</button>
+    </div>
+
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="openTab(event, 'tab-produtos')">Meus Produtos</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-financeiro')">Financeiro</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-visual')">Visual da Loja</button>
+    </div>
+
+    <div id="tab-produtos" class="tab-content active">
+        <div class="produtos-grid" id="grid-parceiro"></div>
+    </div>
+
+    <div id="tab-financeiro" class="tab-content">
+        <h3>Resumo Financeiro</h3>
+        <p>Total de inventário: <span id="total-vendas">0</span> Kz</p>
+    </div>
+    <div id="tab-visual" class="tab-content">
+        <h3>Personalizar a Loja</h3>
+        <p style="font-size:.85rem; color:#666;">Use um link direto para o logo e escolha a cor de destaque da sua loja.</p>
+        <form id="form-visual-loja" class="form-visual">
+            <label for="logo-url">Link do logo</label>
+            <input type="url" id="logo-url" placeholder="https://exemplo.com/meu-logo.png">
+            <label for="cor-destaque">Cor de destaque</label>
+            <input type="color" id="cor-destaque" value="#c5a059">
+            <button class="btn-voltar" type="submit">Guardar visual</button>
+            <p id="status-visual" style="margin:0; font-size:.85rem;"></p>
+        </form>
+        <div class="preview-loja" id="preview-loja" style="margin-top:20px;"></div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, query, where, addDoc, serverTimestamp, onSnapshot, orderBy, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const app = initializeApp({ apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0", authDomain: "abt-marketplace.firebaseapp.com", projectId: "abt-marketplace", storageBucket: "abt-marketplace.firebasestorage.app", messagingSenderId: "763460800092", appId: "1:763460800092:web:5ac1f341919c1fa02ea099" });
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    
+    let nomeEmpresaLogada = "";
+    let parceiroIdLogado = "";
+    let dadosEmpresaLogada = {};
+
+    window.openTab = (evt, tabName) => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    // Chat
+    function iniciarChat(nomeEmpresa) {
+        onSnapshot(query(collection(db, "mensagens"), orderBy("data", "asc")), (snap) => {
+            const chatLog = document.getElementById('chat-log');
+            chatLog.innerHTML = "";
+            snap.forEach(doc => {
+                const m = doc.data();
+                if(m.nomeEmpresa === nomeEmpresa || (m.de === "Admin" && m.para === nomeEmpresa)) {
+                    chatLog.innerHTML += `<div style="margin-bottom:5px;"><strong>${m.de}:</strong> ${m.msg}</div>`;
+                }
+            });
+            chatLog.scrollTop = chatLog.scrollHeight;
+        });
+    }
+
+    document.getElementById('btn-enviar').onclick = async () => {
+        const input = document.getElementById('msg-input');
+        if(input.value.trim() !== "") {
+            await addDoc(collection(db, "mensagens"), { msg: input.value, data: serverTimestamp(), de: "Parceiro", nomeEmpresa: nomeEmpresaLogada });
+            input.value = "";
+        }
+    };
+
+    async function abrirPainelParceiro(user) {
+        const empresa = await getDoc(doc(db, 'empresas', user.uid));
+        if (!empresa.exists() || empresa.data().status !== 'ativo') {
+            await signOut(auth);
+            const erro = document.getElementById('login-erro');
+            erro.textContent = 'A conta ainda não foi ativada pela ABT.';
+            erro.style.display = 'block';
+            return;
+        }
+        parceiroIdLogado = user.uid;
+        dadosEmpresaLogada = empresa.data();
+        nomeEmpresaLogada = dadosEmpresaLogada.nomeEmpresa;
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('painel-container').style.display = 'block';
+        document.getElementById('nome-loja').innerText = 'Loja: ' + nomeEmpresaLogada;
+        preencherVisualLoja();
+        iniciarChat(nomeEmpresaLogada);
+        sincronizarProdutos(nomeEmpresaLogada);
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) return;
+        try { await abrirPainelParceiro(user); }
+        catch (erro) {
+            console.error('Não foi possível validar o parceiro:', erro);
+            await signOut(auth);
+            document.getElementById('login-erro').textContent = 'Não foi possível validar a conta.';
+            document.getElementById('login-erro').style.display = 'block';
+        }
+    });
+
+    document.getElementById('btn-login').addEventListener('click', async () => {
+        const email = document.getElementById('login-email').value.trim();
+        const senha = document.getElementById('login-senha').value;
+        const erro = document.getElementById('login-erro');
+        erro.style.display = 'none';
+        try { await signInWithEmailAndPassword(auth, email, senha); }
+        catch { erro.textContent = 'E-mail ou palavra-passe incorretos.'; erro.style.display = 'block'; }
+    });
+
+    window.sairParceiro = async () => {
+        await signOut(auth);
+        window.location.href = 'home.html';
+    };
+
+    function escaparHtml(valor) {
+        return String(valor || '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
+    }
+
+    function preencherVisualLoja() {
+        const logo = dadosEmpresaLogada.logoUrl || '';
+        const cor = dadosEmpresaLogada.corDestaque || '#c5a059';
+        document.getElementById('logo-url').value = logo;
+        document.getElementById('cor-destaque').value = cor;
+        const conteudoLogo = logo ? `<img class="logo-loja" src="${escaparHtml(logo)}" alt="Logo de ${escaparHtml(nomeEmpresaLogada)}" onerror="this.replaceWith(Object.assign(document.createElement('div'), {className:'logo-placeholder', textContent:'${escaparHtml(nomeEmpresaLogada.charAt(0))}'}))">` : `<div class="logo-placeholder" style="border-color:${cor};">${escaparHtml(nomeEmpresaLogada.charAt(0))}</div>`;
+        document.getElementById('logo-loja').innerHTML = conteudoLogo;
+        document.getElementById('preview-loja').innerHTML = `${conteudoLogo}<div><strong>${escaparHtml(nomeEmpresaLogada)}</strong><br><small style="color:${cor};">Pré-visualização da marca parceira</small></div>`;
+    }
+
+    document.getElementById('form-visual-loja').addEventListener('submit', async (evento) => {
+        evento.preventDefault();
+        const status = document.getElementById('status-visual');
+        const logoUrl = document.getElementById('logo-url').value.trim();
+        const corDestaque = document.getElementById('cor-destaque').value;
+        status.textContent = 'A guardar…';
+        try {
+            await updateDoc(doc(db, 'empresas', parceiroIdLogado), { logoUrl, corDestaque });
+            dadosEmpresaLogada = { ...dadosEmpresaLogada, logoUrl, corDestaque };
+            preencherVisualLoja();
+            status.style.color = '#16803c';
+            status.textContent = 'Visual atualizado com sucesso.';
+        } catch (erro) {
+            console.error('Erro ao atualizar o visual:', erro);
+            status.style.color = '#b42318';
+            status.textContent = 'Não foi possível guardar. Confirme as regras do Firestore.';
+        }
+    });
+
+    // Sincronização em tempo real
+    function sincronizarProdutos(nomeEmpresa) {
+        const grid = document.getElementById('grid-parceiro');
+        const totalVendasSpan = document.getElementById('total-vendas');
+        
+        onSnapshot(query(collection(db, "produtos"), where("marca", "==", nomeEmpresa)), (snapshot) => {
+            grid.innerHTML = "";
+            let somaTotal = 0;
+            snapshot.forEach(docSnap => {
+                const p = docSnap.data();
+                const preco = parseFloat(p.preco) || 0;
+                somaTotal += preco;
+                grid.innerHTML += `<div class="card-produto">
+                    <img src="${p.imagem}">
+                    <h3>${p.nome}</h3>
+                    <span>${preco.toLocaleString()} Kz</span>
+                </div>`;
+            });
+            totalVendasSpan.innerText = somaTotal.toLocaleString();
+        });
+    }
+</script>
+</body>
+</html>

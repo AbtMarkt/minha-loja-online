@@ -1,0 +1,20 @@
+/* Tema de alto conforto visual. A escolha é guardada no navegador do utilizador. */
+html.abt-tema-escuro { color-scheme: dark; }
+html.abt-tema-escuro body { background:#121212 !important; color:#f4f1ea !important; }
+html.abt-tema-escuro header, html.abt-tema-escuro .top, html.abt-tema-escuro aside,
+html.abt-tema-escuro .card, html.abt-tema-escuro .carrinho-container, html.abt-tema-escuro .produto-detalhe-container,
+html.abt-tema-escuro .modal-box, html.abt-tema-escuro .modal-card, html.abt-tema-escuro .produto-card,
+html.abt-tema-escuro .filtros-box, html.abt-tema-escuro .dados-cliente { background:#1d1d1d !important; color:#f4f1ea !important; border-color:#5e512d !important; }
+html.abt-tema-escuro h1, html.abt-tema-escuro h2, html.abt-tema-escuro h3, html.abt-tema-escuro h4,
+html.abt-tema-escuro p, html.abt-tema-escuro span, html.abt-tema-escuro a,
+html.abt-tema-escuro label, html.abt-tema-escuro small, html.abt-tema-escuro strong { color:inherit !important; }
+html.abt-tema-escuro input, html.abt-tema-escuro select, html.abt-tema-escuro textarea { background:#292929 !important; color:#fff !important; border-color:#8e7840 !important; }
+html.abt-tema-escuro .bg-white, html.abt-tema-escuro .bg-dark-sec, html.abt-tema-escuro footer { background:#1a1a1a !important; color:#f4f1ea !important; }
+html.abt-tema-escuro .politica-card, html.abt-tema-escuro .mini-product, html.abt-tema-escuro .item { background:#222 !important; color:#f4f1ea !important; border-color:#5e512d !important; }
+html.abt-tema-escuro .hero { background:#050505 !important; background-image:none !important; color:#fff !important; }
+html.abt-tema-escuro .hero h1,html.abt-tema-escuro .hero p{color:#fff !important;text-shadow:0 2px 8px #000!important}
+html.abt-tema-escuro .categorias-shortcut{background:#111!important;border-color:#6d592c!important}html.abt-tema-escuro .bg-white,html.abt-tema-escuro .bg-dark-sec,html.abt-tema-escuro section{background-color:#111!important;color:#f4f1ea!important}html.abt-tema-escuro .politica-card{background:#181818!important}html.abt-tema-escuro #chat-modal{background:#181818!important;color:#f4f1ea!important;border-color:#8e7840!important}
+html.abt-tema-escuro .cat-btn, html.abt-tema-escuro .btn-detalhe { background:#292929 !important; color:#f4d88c !important; }
+html.abt-tema-escuro .modal,html.abt-tema-escuro .modal-overlay{background:rgba(0,0,0,.78)!important}html.abt-tema-escuro .order,html.abt-tema-escuro .stat,html.abt-tema-escuro .quick-icon,html.abt-tema-escuro .history-item,html.abt-tema-escuro .utility-item{background:#292929!important;border-color:#5e512d!important;color:#f4f1ea!important}html.abt-tema-escuro .preco-novo,html.abt-tema-escuro .preco-grande{color:#f4d88c!important}html.abt-tema-escuro .chat,html.abt-tema-escuro .chat-body{background-color:#181818!important}html.abt-tema-escuro .sidebar,html.abt-tema-escuro .conversation,html.abt-tema-escuro .chat-head,html.abt-tema-escuro .composer{background:#1d1d1d!important;color:#f4f1ea!important;border-color:#5e512d!important}
+*:focus-visible { outline:3px solid #c5a059 !important; outline-offset:3px; }
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }

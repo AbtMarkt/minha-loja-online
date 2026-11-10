@@ -1,31 +1,528 @@
-<section id="contactos" class="bg-dark" style="padding: 60px 10%; background: #1c1c1c; color: white; text-align: center;">
-    <h2>Contactos</h2>
-    <p>A ABT Marketplace é uma loja online de moda que oferece roupas e acessórios para homens e mulheres de todas as idades. Nossa missão é trazer alegria e inovação para o closet dos nossos clientes, com uma experiência de compra única e produtos de qualidade.</p>
-    <div style="margin-top: 30px; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
-        <p>📍 <strong>Huambo, Angola</strong></p>
-        <p>📞 <strong>WhatsApp:</strong> +244 937 912 339</p>
-        <p>📧 <strong>Email:</strong> suporte@abtmarketplace.com</p>
-    </div>
-</section>
+<!DOCTYPE html>
 
-<section id="politicas" class="bg-white" style="padding: 60px 10%; background: white;">
-    <h2 style="border-bottom: 2px solid #d4af37; display: inline-block; padding-bottom: 5px; margin-bottom: 20px;">Políticas da Loja</h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
-        <div>
-            <h4>📦 Entrega</h4>
-            <p>De momento, realizamos entregas apenas na <strong>Província do Huambo</strong>. O prazo médio de entrega é de 24h a 48h úteis após a confirmação do pedido.</p>
+<html lang="pt">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Home | ABT Marketplace</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>if(localStorage.getItem('abt_theme')==='dark')document.documentElement.classList.add('abt-tema-escuro');</script><link rel="stylesheet" href="tema.css">
+
+    <style>
+
+        :root { --main-color: #c5a059; --bg-dark: #ffffff; --bg-light: #f9f9f9; --text-white: #000000; }
+
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg-light) url('golden.jpg') repeat; background-size: 700px; color: #000000; scroll-behavior: smooth; }
+
+        header { background: #ffffff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-bottom: 3px solid var(--main-color); }
+
+        header h1 { color: #000000; margin: 0; font-size: 1.4rem; cursor: pointer; }
+
+        .menu-hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #000000; transition: 0.3s; }
+
+        nav ul { list-style: none; display: flex; gap: 25px; margin: 0; padding: 0; align-items: center; }
+
+        nav a { color: #000000 !important; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+
+        nav a:hover { color: var(--main-color) !important; }
+
+        .ia-float { position: fixed; bottom: 25px; right: 25px; background: #ffffff; color: var(--main-color); width: 58px; height: 68px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; z-index: 2000; cursor: pointer; border: 2px solid var(--main-color); box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+
+        .btn-parceiro-float { position: fixed; bottom: 100px; right: 25px; background: var(--main-color); color: white; padding: 10px 20px; border-radius: 20px; z-index: 2000; text-decoration: none; font-weight: bold; font-size: 0.8rem; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .hero { background-color: rgba(255, 255, 255, 0.92); background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; height: 450px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #000000; text-align: center; transition: background 0.8s ease-in-out; border-bottom: 3px solid var(--main-color); }
+
+        .btn-loja { background: var(--main-color); color: #ffffff; padding: 12px 30px; border-radius: 4px; text-decoration: none; font-weight: bold; margin-top: 20px; border: none; cursor: pointer; display: inline-block; transition: 0.3s; }
+
+        .btn-loja:hover { transform: scale(1.05); background: #a38043; }
+
+        .categorias-shortcut { display: flex; justify-content: center; gap: 15px; padding: 25px 5%; background: rgba(255,255,255,0.85); border-bottom: 1px solid #e0e0e0; flex-wrap: wrap; }
+
+        .cat-btn { background: #ffffff; border: 1px solid var(--main-color); color: #000000; padding: 8px 20px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; text-decoration: none; transition: 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+
+        .cat-btn:hover { background: var(--main-color); color: #ffffff !important; transform: translateY(-2px); }
+
+        .vitrine { display: flex; gap: 20px; padding: 40px 0; width: max-content; animation: marquee 25s linear infinite; }
+
+        .produto-card { background: #ffffff !important; padding: 25px 15px 15px 15px; border-radius: 4px; width: 280px; flex-shrink: 0; box-shadow: 0 8px 25px rgba(0,0,0,0.06); text-align: center; display: flex; flex-direction: column; height: 100%; color: #000000 !important; transition: 0.3s ease-in-out; position: relative; overflow: hidden; }
+
+        .produto-card::before { content: ''; position: absolute; top: 0; left: 0; width: 24px; height: 24px; border-top: 5px solid #000000; border-left: 5px solid #000000; }
+
+        .produto-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(197,160,89,0.15); }
+
+        .vitrine:hover { animation-play-state: paused; }
+
+        .produto-card img { width: 100%; height: 250px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; transition: transform 0.3s ease; }
+
+        .produto-card:hover img { transform: scale(1.02); }
+
+        section { padding: 60px 10%; }
+
+        .bg-white { background: rgba(255, 255, 255, 0.92) !important; color: #000000 !important; overflow: hidden; }
+
+        .bg-dark-sec { background: #ffffff !important; color: #000000 !important; border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; }
+
+        h2 { border-bottom: 3px solid var(--main-color); display: inline-block; padding-bottom: 5px; margin-bottom: 20px; color: #000000; }
+
+        .politica-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+
+        .politica-card { background: #ffffff; padding: 25px; border-radius: 4px; border-left: 4px solid var(--main-color); color: #000000; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
+
+        .politica-card h3 { font-size: 1.1rem; color: var(--main-color); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+
+        .politica-card p { font-size: 0.85rem; color: #444444; }
+
+        footer { background: #ffffff; padding: 50px 5% 20px; color: #666666; text-align: center; border-top: 3px solid var(--main-color); }
+
+        .footer-links { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; }
+
+        footer a { color: #000000; text-decoration: none; font-size: 0.9rem; transition: 0.3s; font-weight: 600; }
+
+        footer a:hover { color: var(--main-color); }
+
+        #chat-modal { display:none; position:fixed; bottom:90px; left:20px; width:280px; height:350px; background:#fff; border:1px solid #ccc; z-index:2500; padding:15px; border-radius:8px; box-shadow:0 5px 15px rgba(0,0,0,0.2); }
+        .chat-head-abt { display:flex; align-items:center; justify-content:space-between; gap:8px; } .chat-head-abt a,.chat-head-abt button{font-size:.72rem;font-weight:700;color:#765718;background:transparent;border:0;cursor:pointer;text-decoration:none;padding:4px;}
+
+        #bloqueio-status { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255, 255, 255, 0.98); color:black; z-index:9999; display:none; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px; }
+
+        @media (max-width: 768px) {
+            header { padding: 12px 16px; gap: 12px; } header h1 { font-size: 1.05rem; white-space: nowrap; }
+            nav ul { gap: 13px; } nav a { font-size: .78rem; } .hero { height: auto; min-height: 360px; padding: 55px 20px; }
+            .hero h1 { font-size: clamp(2rem, 10vw, 2.7rem) !important; } .hero p { font-size: 1rem !important; }
+            section { padding: 38px 16px; } .categorias-shortcut { padding: 18px 14px; gap: 9px; justify-content:flex-start; overflow-x:auto; flex-wrap:nowrap; }
+            .cat-btn { flex:0 0 auto; padding:8px 14px; font-size:.76rem; } .vitrine { padding:24px 2px; gap:13px; animation:none; overflow-x:auto; max-width:100%; scroll-snap-type:x mandatory; }
+            .produto-card { width:clamp(190px, 72vw, 250px); padding:16px 12px 12px; scroll-snap-align:start; } .produto-card img { height:auto; aspect-ratio:1/1; }
+            .politica-grid { grid-template-columns:1fr; gap:13px; } .politica-card { padding:18px; } .footer-links { gap:14px; }
+            #chat-modal { left:12px; bottom:82px; width:calc(100vw - 24px); max-width:340px; } #btn-chat-toggle { left:14px; bottom:14px; }
+            .btn-parceiro-float { right:14px; bottom:82px; padding:9px 13px; }
+        }
+        @media (max-width: 380px) { nav ul { gap:9px; } nav a { font-size:.72rem; } .hero { min-height:330px; } }
+    </style>
+
+</head>
+
+<body>
+
+
+
+<div id="bloqueio-status">
+
+    <h2 style="color:#000000; border-bottom:3px solid #c5a059; padding-bottom:10px;">ABT MARKETPLACE</h2>
+
+    <p id="msg-status" style="font-size: 1.2rem; color: #333; margin-top: 20px;">A loja encontra-se indisponível no momento.</p>
+
+</div>
+
+
+
+<div id="btn-chat-toggle" onclick="document.getElementById('chat-modal').style.display = document.getElementById('chat-modal').style.display === 'none' ? 'block' : 'none'" style="position:fixed; bottom:20px; left:20px; background:#c5a059; color:#fff; width:50px; height:50px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:2500;">
+
+    <i class="fas fa-comment-dots"></i>
+
+</div>
+
+
+
+<div id="chat-modal">
+
+    <div class="chat-head-abt"><h4 style="margin:0;">Suporte ABT</h4><span><a href="conta.html" title="Voltar ao perfil"><i class="fas fa-user"></i> Perfil</a><button type="button" onclick="document.getElementById('chat-modal').style.display='none'" title="Fechar mensagens"><i class="fas fa-xmark"></i></button></span></div>
+
+    <div id="chat-mensagens" style="height:230px; overflow-y:auto; border-bottom:1px solid #eee; margin-bottom:10px;"></div>
+
+    <input type="text" id="msg-input" placeholder="Mensagem..." style="width:100%; padding:5px;">
+
+    <button id="btn-enviar" style="margin-top:5px; width:100%;">Enviar</button>
+
+</div>
+
+
+
+
+<a href="seja_parceiro.html" class="btn-parceiro-float"><i class="fas fa-handshake"></i> Seja Parceiro</a>
+
+
+
+<header>
+
+    <h1 onclick="location.reload()">ABT MARKETPLACE</h1>
+
+    <i id="hamburger-icon" class="fas fa-bars menu-hamburger" onclick="const m = document.getElementById('menu-list'); m.classList.toggle('active'); this.classList.toggle('fa-bars'); this.classList.toggle('fa-times');"></i>
+
+    <nav>
+
+        <ul id="menu-list">
+
+            <li><a href="loja.html">Loja</a></li>
+            <li><a href="servicos.html">Serviços</a></li>
+            <li><a href="conta.html" title="Meu perfil"><i class="fas fa-user-circle" style="font-size:1.25rem"></i></a></li>
+
+        </ul>
+
+    </nav>
+
+</header>
+
+
+
+<div class="hero" id="banner-hero">
+
+    <h1 id="texto-hero" style="font-size: 2.8rem; text-shadow: 1px 1px 10px rgba(255,255,255,0.8); font-weight: 800;">Tudo o que procura, num só lugar.</h1>
+
+    <p id="subtexto-hero" style="font-size: 1.2rem; text-shadow: 1px 1px 5px rgba(255,255,255,0.5);">Conectando empresas e aproximando pessoas</p>
+
+    <a href="loja.html" class="btn-loja">EXPLORAR AGORA</a>
+
+</div>
+
+
+
+<div class="categorias-shortcut">
+
+    <a href="loja.html?cat=roupas" class="cat-btn"><i class="fas fa-tshirt"></i> Roupas</a>
+
+    <a href="loja.html?cat=calcados" class="cat-btn"><i class="fas fa-shoe-prints"></i> Calçados</a>
+
+    <a href="loja.html?cat=acessorios" class="cat-btn"><i class="fas fa-clock"></i> Acessórios</a>
+
+    <a href="loja.html?cat=novidades" class="cat-btn"><i class="fas fa-star"></i> Novidades</a>
+
+</div>
+
+
+
+<main>
+
+    <section class="bg-white">
+
+        <h2 id="titulo-destaques">🔥 Produtos em Destaque</h2>
+
+        <div id="destacados-container" class="vitrine"></div>
+
+    </section>
+
+
+
+    <section id="sobre" class="bg-dark-sec" style="text-align: center;">
+
+        <h2>Sobre Nós</h2>
+
+<div style="max-width: 880px; margin: 0 auto; line-height: 1.8;">
+    <p>A <strong>ABT Marketplace</strong> é uma plataforma digital angolana criada para conectar empresas, empreendedores e clientes num único espaço.</p>
+    <p>O nosso objectivo é simplificar a compra e venda de produtos e serviços, proporcionando maior visibilidade aos nossos parceiros e facilitando o acesso dos consumidores a diversas opções de qualidade.</p>
+    <p>Acreditamos no potencial do mercado angolano e trabalhamos para promover novas oportunidades de negócio, incentivar o empreendedorismo e tornar a experiência de compra e venda mais simples, acessível e conveniente para todos.</p>
+</div>
+
+    </section>
+
+
+
+    <section id="politicas" class="bg-white">
+
+        <h2 style="display: block; text-align: center; margin-bottom: 40px;">Porquê escolher a ABT?</h2>
+
+        <div class="politica-grid">
+
+            <div class="politica-card">
+
+                <h3><i class="fas fa-truck-moving"></i> Entregas Grátis</h3>
+
+                <p><strong>Oferta Especial:</strong> Ganhe entrega totalmente grátis em compras com mais de 5 produtos. Economize enquanto renova o seu closet!</p>
+
+            </div>
+
+            <div class="politica-card">
+
+                <h3><i class="fas fa-shield-alt"></i> Segurança Total</h3>
+
+                <p>Seus dados estão protegidos via Firebase. Garantimos sigilo total in todas as suas informações and transações.</p>
+
+            </div>
+
+            <div class="politica-card">
+
+                <h3><i class="fas fa-shipping-fast"></i> Logística Ágil</h3>
+
+                <p>Realizamos entregas rápidas em toda a <strong>cidade do Huambo, Lossambo, Caála e Santa Iria</strong>.</p>
+
+            </div>
+
+            <div class="politica-card">
+
+                <h3><i class="fas fa-sync"></i> Troca Garantida</h3>
+
+                <p>A sua satisfação é a prioridade. Oferecemos garantia de troca facilitada em até 48h após a recepção do pedido.</p>
+
+            </div>
+
+            <div class="politica-card">
+
+                <h3><i class="fas fa-handshake-slash"></i> Compromisso de Qualidade</h3>
+
+                <p>A ABT mantém um padrão de excelência rigoroso. O incumprimento das nossas normas de serviço resultará na remoção imediata da empresa do nosso Marketplace.</p>
+
+            </div>
+
         </div>
-        <div>
-            <h4>🔄 Devolução/Troca</h4>
-            <p>Aceitamos devoluções em até 7 dias após a entrega, desde que o produto esteja em condições originais e com a etiqueta.</p>
+
+    </section>
+
+
+
+    <section id="contactos" class="bg-dark-sec">
+
+        <h2>Contactos</h2>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 40px; margin-top: 20px;">
+
+            <div style="flex: 1; min-width: 280px;">
+
+                <p><i class="fas fa-map-marker-alt" style="color:var(--main-color)"></i> <strong>Localização:</strong> Huambo, Angola</p>
+
+<p><i class="fab fa-whatsapp" style="color:var(--main-color)"></i> <strong>WhatsApp:</strong> +244 946 560 930</p>
+
+                <p><i class="fas fa-envelope" style="color:var(--main-color)"></i> <strong>Email:</strong> abtmarketplace00@gmail.com</p>
+
+            </div>
+
+            <div style="flex: 1; min-width: 280px;">
+
+                <p>Siga-nos nas redes sociais para novidades diárias e promoções exclusivas.</p>
+
+                <div style="display: flex; gap: 15px; font-size: 1.5rem; margin-top: 10px;">
+
+                    <a href="https://www.instagram.com/abt_marketplace?srtk=b21sMHlydW1ocGRn" target="_blank" rel="noopener noreferrer" aria-label="Instagram ABT Marketplace" style="color: #000000;"><i class="fab fa-instagram"></i></a>
+
+                    <a href="https://www.facebook.com/share/1F3aQ8b1v4/" target="_blank" rel="noopener noreferrer" aria-label="Facebook ABT Marketplace" style="color: #000000;"><i class="fab fa-facebook"></i></a>
+
+                    <a href="https://www.tiktok.com/@abt_marketplace?_r=1&_t=ZS-9BIKOdP5k7Y" target="_blank" rel="noopener noreferrer" aria-label="TikTok ABT Marketplace" style="color: #000000;"><i class="fab fa-tiktok"></i></a>
+
+                </div>
+
+            </div>
+
         </div>
-        <div>
-            <h4>💳 Pagamento</h4>
-            <p>Aceitamos pagamentos via transferência bancária (IBAN), TPA ou dinheiro no acto da entrega em qualquer ponto do Huambo.</p>
-        </div>
-        <div>
-            <h4>🔒 Privacidade</h4>
-            <p>Os teus dados de cliente no Huambo são protegidos e usados exclusivamente para processar a tua entrega com segurança.</p>
-        </div>
+
+    </section>
+
+</main>
+
+
+
+<footer>
+
+    <div class="footer-links">
+
+        <a href="home.html">Início</a>
+
+        <a href="loja.html">Loja</a>
+
+        <a href="faq.html">FAQ</a>
+
+        <a href="depoimento.html">Depoimentos</a>
+
+        <a href="parceiro_loja.html" style="color: var(--main-color);">Acesso Parceiro</a>
+
     </div>
-</section>
+
+    <p>&copy; 2026 ABT Marketplace - Todos os direitos reservados.</p>
+
+</footer>
+
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+import { getFirestore, collection, doc, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
+
+    authDomain: "abt-marketplace.firebaseapp.com",
+
+    projectId: "abt-marketplace",
+
+    storageBucket: "abt-marketplace.firebasestorage.app",
+
+    messagingSenderId: "763460800092",
+
+    appId: "1:763460800092:web:5ac1f341919c1fa02ea099"
+
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+
+// Sincronia com Admin
+
+onSnapshot(doc(db, "config", "estado"), (snap) => {
+
+    if(snap.exists()){
+
+        const s = snap.data();
+
+        const manutencaoTerminou = s.modo === 'Manutencao' && s.dataFim && new Date(s.dataFim).getTime() <= Date.now();
+        if(s.modo !== 'Aberto' && !manutencaoTerminou) {
+
+            document.getElementById('bloqueio-status').style.display = 'flex';
+
+            const aviso = s.mensagem || (s.modo === 'Manutencao' ? 'Em manutenção até: ' + s.dataFim : 'Loja fechada temporariamente.');
+            document.getElementById('msg-status').innerText = aviso;
+
+        } else {
+
+            document.getElementById('bloqueio-status').style.display = 'none';
+
+        }
+
+    }
+
+});
+
+
+
+document.getElementById('btn-enviar').onclick = async () => {
+
+    const input = document.getElementById('msg-input');
+
+    if(input.value.trim() !== "") {
+
+        await addDoc(collection(db, "mensagens"), { msg: input.value, data: serverTimestamp() });
+
+        input.value = "";
+
+    }
+
+};
+
+
+
+const linksImagens = {
+
+    'padrao': 'https://www.magnific.com/br/vetores-gratis/fundo-de-luxo-de-estilo-papel_14579705.htm#fromView=keyword&page=3&position=7&uuid=9d62ce80-8d31-4598-9228-4c0d5fcdceb5&track=ais_hybrid&query=Background+dourado+branco',
+
+    'blackfriday': 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2071',
+
+    'natal': 'https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=2070',
+
+    'verao': 'https://images.unsplash.com/photo-1523381210434-271e8be1f5be?q=80&w=2070',
+
+    'outono': 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?q=80&w=2070',
+
+    'inverno': 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070',
+
+    'halloween': 'https://images.unsplash.com/photo-1508361001413-7a9dca21d08a?q=80&w=2070',
+
+    'namorados': 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2070',
+
+    'independencia': 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070',
+
+    'diapaz': 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=2070',
+
+    'carnaval': 'https://images.unsplash.com/photo-1551972251-12070d63502a?q=80&w=2070',
+
+    'pascoa': 'https://images.unsplash.com/photo-1522336572468-97b06e8ef143?q=80&w=2070',
+
+    'diamae': 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070',
+
+    'diapai': 'https://images.unsplash.com/photo-1491336477066-31156b5e4f35?q=80&w=2070',
+
+    'kids': 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=2070'
+
+};
+
+
+
+let descontoDestaques = 0;
+let descontosLojasDestaques = {};
+let produtosDestaque = [];
+
+onSnapshot(doc(db, "configuracoes", "home"), (snapshot) => {
+
+    if (snapshot.exists()) {
+
+        const data = snapshot.data();
+
+        const hero = document.getElementById('banner-hero');
+
+        const tema = data.tema || 'padrao';
+
+        const bannerFinal = tema === 'padrao' ? '' : (data.bannerImg || linksImagens[tema] || '');
+
+        hero.style.backgroundImage = bannerFinal ? `linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), url('${bannerFinal}')` : 'none';
+
+        document.getElementById('texto-hero').innerText = tema === 'padrao' ? 'Tudo o que procura, num só lugar.' : (data.fraseHero || 'Tudo o que procura, num só lugar.');
+
+        if (data.subFrase) document.getElementById('subtexto-hero').innerText = data.subFrase;
+
+        descontoDestaques = Number(data.desconto || 0);
+        renderizarDestaques();
+
+    }
+
+});
+
+
+
+function renderizarDestaques() {
+    const container = document.getElementById("destacados-container");
+    const selecionados = produtosDestaque.filter(p => p.novidade === true);
+
+    if (!selecionados.length) {
+        container.style.width = '100%';
+        container.style.animation = 'none';
+        container.innerHTML = '<p style="width:100%; text-align:center;">Ainda não há produtos em destaque.</p>';
+        return;
+    }
+
+    container.style.width = '';
+    container.style.animation = '';
+    const conteudo = selecionados.map(p => {
+        const precoOriginal = Number(p.preco || 0);
+        const nomeLoja = p.marca || p.loja || (p.origem === 'ABT' ? 'ABT' : 'ABT');
+        const descontoProduto = Number(descontosLojasDestaques[nomeLoja] ?? descontoDestaques);
+        const emPromocao = p.promocao === true && descontoProduto > 0;
+        const precoFinal = emPromocao ? Math.round(precoOriginal * (1 - descontoProduto / 100)) : precoOriginal;
+        const precoHtml = emPromocao
+            ? `<span style="text-decoration:line-through; color:#999;">${precoOriginal.toLocaleString()} Kz</span><br><span style="color:var(--main-color); font-weight:bold;">${precoFinal.toLocaleString()} Kz</span>`
+            : `<span style="color:var(--main-color); font-weight:bold;">${precoFinal.toLocaleString()} Kz</span>`;
+        return `<div class="produto-card">
+            <span style="color:var(--main-color); font-size:.8rem; font-weight:700;"><i class="fas fa-star"></i> Em destaque</span>
+            <img src="${p.imagem || ''}" alt="${p.nome || 'Produto'}" onerror="this.src='https://via.placeholder.com/300x300?text=Sem+Imagem'">
+            <h3>${p.nome || 'Produto'}</h3>
+            <div style="margin-top:auto;">${precoHtml}</div>
+            <a href="produto.html?id=${p.id}" class="btn-loja" style="width:100%; box-sizing:border-box; padding:10px; margin-top:15px;">Ver produto</a>
+        </div>`;
+    }).join('');
+    container.innerHTML = conteudo + conteudo;
+}
+
+onSnapshot(collection(db, "produtos"), (snapshot) => {
+    produtosDestaque = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+    renderizarDestaques();
+});
+
+onSnapshot(doc(db, "configuracoes", "descontos_lojas"), (snapshot) => {
+    descontosLojasDestaques = snapshot.exists() ? (snapshot.data().lojas || {}) : {};
+    renderizarDestaques();
+});
+
+</script>
+</body>
+</html> 

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Seja um Parceiro ABT | Bem-vindo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f9f9f9 url('golden.jpg') repeat; background-size: 700px; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .card-cadastro { background: rgba(255, 255, 255, 0.98); padding: 40px; border-radius: 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 450px; border-top: 5px solid #c5a059; display: none; }
+        h2 { color: #000; text-transform: uppercase; margin-bottom: 20px; font-size: 1.2rem; text-align: center; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e0e0e0; border-radius: 4px; box-sizing: border-box; }
+        .btn-enviar { background: #000; color: #c5a059; border: none; padding: 15px; width: 100%; cursor: pointer; font-weight: bold; text-transform: uppercase; margin-top: 10px; }
+        
+        #modal-escolha { background: rgba(255, 255, 255, 0.98); padding: 40px; border-radius: 4px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 450px; border-top: 5px solid #c5a059; }
+        .btn-escolha { padding: 15px 25px; margin: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; border: 1px solid #000; text-decoration: none; display: inline-block; font-size: 0.8rem; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div id="modal-escolha">
+    <h2 style="font-size: 1.5rem;"><i class="fas fa-crown"></i> Seja Bem-vindo à ABT</h2>
+    <p style="color: #666; font-size: 0.95rem; line-height: 1.6; margin-bottom: 30px;">
+        É um prazer ter a sua marca connosco. O seu sucesso no mercado angolano começa aqui. 
+        Como podemos ajudar hoje?
+    </p>
+    <a href="#" onclick="mostrarFormulario()" class="btn-escolha" style="background: #fff; color: #000;">Candidatar-me</a>
+    <a href="cadastro-parceiro.html" class="btn-escolha" style="background: #c5a059; color: #fff; border: none;">Já fui aprovado (Registrar)</a>
+    
+    <a href="home.html" style="display: block; margin-top: 25px; color: #888; font-size: 0.8rem; text-decoration: underline;">Voltar ao site</a>
+</div>
+
+<div class="card-cadastro" id="card-form">
+    <h2><i class="fas fa-handshake"></i> Nova Candidatura</h2>
+    <input type="text" id="nome-empresa" placeholder="Nome da Empresa">
+    <input type="text" id="nif-empresa" placeholder="NIF">
+    <input type="email" id="email-empresa" placeholder="E-mail">
+    <input type="tel" id="tel-empresa" placeholder="Telefone">
+    <textarea id="desc-empresa" placeholder="Breve descrição dos produtos..."></textarea>
+    <button class="btn-enviar" onclick="window.enviarCandidatura()">ENVIAR CANDIDATURA</button>
+    <a href="home.html" style="display: block; text-align: center; margin-top: 20px; color: #666; font-size: 0.8rem;">Voltar atrás</a>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0", authDomain: "abt-marketplace.firebaseapp.com", projectId: "abt-marketplace", storageBucket: "abt-marketplace.firebasestorage.app", messagingSenderId: "763460800092", appId: "1:763460800092:web:5ac1f341919c1fa02ea099" };
+    const db = getFirestore(initializeApp(firebaseConfig));
+
+    window.mostrarFormulario = () => {
+        document.getElementById('modal-escolha').style.display = 'none';
+        document.getElementById('card-form').style.display = 'block';
+    };
+
+    window.enviarCandidatura = async () => {
+        const nome = document.getElementById('nome-empresa').value;
+        const nif = document.getElementById('nif-empresa').value;
+        const email = document.getElementById('email-empresa').value;
+        const tel = document.getElementById('tel-empresa').value;
+        const desc = document.getElementById('desc-empresa').value;
+
+        if(!nome || !nif || !email || !tel) return alert("Por favor, preencha todos os campos.");
+
+        try {
+            await addDoc(collection(db, "candidatos_parceiros"), { nome, nif, email, tel, desc, data: new Date().toISOString(), status: "pendente" });
+            alert("Candidatura enviada com sucesso!");
+            window.location.href = "home.html";
+        } catch (e) { alert("Erro ao enviar."); }
+    };
+</script>
+</body>
+</html>

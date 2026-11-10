@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Gestão ABT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: #f9f9f9; display: flex; }
+        
+        #sidebar { width: 250px; height: 100vh; background: #000; color: #fff; display: none; padding: 20px; box-sizing: border-box; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #333; cursor: pointer; color: #c5a059; font-weight: bold; transition: 0.3s; }
+        .menu-item:hover { background: #222; }
+        
+        .main-content { flex: 1; padding: 40px; }
+        
+        #login-screen { max-width: 350px; margin: 100px auto; background: #fff; padding: 40px; border: 1px solid #e0e0e0; text-align: center; border-radius: 4px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; box-sizing: border-box; }
+        #btn-entrar { width: 100%; padding: 12px; background: #000; color: #c5a059; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        
+        #dashboard { display: none; }
+        table { width: 100%; border-collapse: collapse; background: #fff; margin-top: 20px; }
+        th { background: #000; color: #c5a059; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <nav id="sidebar">
+        <h3 style="color: #c5a059;">MENU ABT</h3>
+        <div class="menu-item" id="nav-visao"><i class="fas fa-home"></i> Visão Geral</div>
+        <div class="menu-item" id="nav-parceiros"><i class="fas fa-users"></i> Parceiros</div>
+    </nav>
+
+    <div class="main-content">
+        <div id="login-screen">
+            <h2>LOGIN ABT</h2>
+            <input type="password" id="pass" placeholder="Senha de Acesso">
+            <button id="btn-entrar">ACESSAR</button>
+        </div>
+
+        <div id="dashboard">
+            <h2>Gestão de Parceiros</h2>
+            <table>
+                <thead>
+                    <tr><th>Empresa</th><th>Status</th><th>Faturamento</th><th>Comissão (10%)</th></tr>
+                </thead>
+                <tbody id="lista-parceiros"></tbody>
+            </table>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // --- CONFIGURAÇÃO (COLA OS TEUS DADOS AQUI) ---
+    const firebaseConfig = { 
+        apiKey: "SUA_API_KEY",
+        authDomain: "SEU_PROJETO.firebaseapp.com",
+        projectId: "SEU_PROJETO_ID",
+        storageBucket: "SEU_PROJETO.appspot.com",
+        messagingSenderId: "ID",
+        appId: "APP_ID"
+    };
+
+    const db = getFirestore(initializeApp(firebaseConfig));
+
+    document.getElementById('btn-entrar').addEventListener('click', () => {
+        const senhaDigitada = document.getElementById('pass').value;
+        if(btoa(senhaDigitada) === "YWJ0bTA0MzBz") {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'block';
+            carregarDados();
+        } else { alert("Senha incorreta!"); }
+    });
+
+    document.getElementById('nav-visao').addEventListener('click', carregarDados);
+    document.getElementById('nav-parceiros').addEventListener('click', carregarDados);
+
+    function carregarDados() {
+        onSnapshot(collection(db, "parceiros"), (snapP) => {
+            const tbody = document.getElementById("lista-parceiros");
+            tbody.innerHTML = "";
+            
+            snapP.forEach(d => {
+                const p = d.data();
+                // O código agora lê os campos diretamente do parceiro (status e faturamento)
+                // Se não existirem na base de dados, usa valores padrão (0 ou inativo)
+                const fat = p.faturamento || 0;
+                const status = p.status || 'inativo';
+                
+                tbody.innerHTML += `<tr>
+                    <td>${p.nomeEmpresa || 'Sem nome'}</td>
+                    <td style="color:${status === 'ativo' ? 'green' : 'red'}">${status}</td>
+                    <td>${Number(fat).toLocaleString()} Kz</td>
+                    <td>${(Number(fat) * 0.10).toLocaleString()} Kz</td>
+                </tr>`;
+            });
+        });
+    }
+</script>
+</body>
+</html>

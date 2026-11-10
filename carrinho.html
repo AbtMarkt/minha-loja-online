@@ -4,153 +4,161 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Carrinho | ABT Marketplace</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>if(localStorage.getItem('abt_theme')==='dark')document.documentElement.classList.add('abt-tema-escuro');</script><link rel="stylesheet" href="tema.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        .carrinho-container { max-width: 800px; margin: 30px auto; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .item-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 15px 0; }
-        .item-carrinho img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
-        .detalhes-item { flex: 1; margin-left: 15px; }
-        .btn-remover { color: red; cursor: pointer; border: none; background: none; font-size: 0.8rem; font-weight: bold; }
-        .total-box { text-align: right; margin-top: 20px; font-size: 1.4rem; font-weight: bold; color: #1c1c1c; border-top: 2px solid #d4af37; padding-top: 10px; }
-        .formulario-envio { margin-top: 30px; background: #f9f9f9; padding: 20px; border-radius: 8px; }
-        .formulario-envio input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        .btn-finalizar { width: 100%; padding: 15px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-finalizar:hover { background: #128C7E; }
+        body { font-family: 'Poppins', sans-serif; background: #f9f9f9 url('golden.jpg') repeat; background-size: 700px; margin: 0; padding: 15px; }
+        .carrinho-container { max-width: 500px; margin: 20px auto; background: rgba(255, 255, 255, 0.96); padding: 25px; border-radius: 4px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); position: relative; }
+        .carrinho-container::before { content: ''; position: absolute; top: 0; left: 0; width: 24px; height: 24px; border-top: 5px solid #000000; border-left: 5px solid #000000; }
+        h2 { border-bottom: 3px solid #c5a059; padding-bottom: 10px; font-size: 1.3rem; color: #000000; font-weight: 800; text-transform: uppercase; }
+        .item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #e0e0e0; color: #000000; }
+        .item img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+        .item-info { flex: 1; }
+        .item-info span { display: block; font-size: 0.9rem; font-weight: 600; }
+        .item-info small { color: #666666; font-size: 0.75rem; }
+        .preco-final { color: #c5a059; font-weight: 800; font-size: 0.95rem; }
+        .dados-cliente { background: #ffffff; padding: 15px; border-radius: 4px; margin: 20px 0; border: 1px solid #e0e0e0; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .dados-cliente input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e0e0e0; border-radius: 4px; box-sizing: border-box; outline: none; background: #ffffff; font-family: 'Poppins'; }
+        .total-box { text-align: right; margin: 20px 0; font-size: 1.2rem; font-weight: 800; color: #000000; }
+        .desc-aviso { color: #2ecc71; font-size: 0.75rem; display: block; margin-bottom: 5px; font-weight: 600; }
+        .btn-whats { background: #000000; color: #c5a059; border: none; padding: 16px; width: 100%; border-radius: 4px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
+        .btn-whats:hover { background: #1c1c1c; }
+        .btn-limpar { background: none; color: #d93838; border: none; width: 100%; margin-top: 15px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+        a.voltar { display: block; text-align: center; margin-top: 20px; text-decoration: none; color: #000000; font-size: 0.85rem; font-weight: 700; border-bottom: 2px solid #c5a059; width: max-content; margin-left: auto; margin-right: auto; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); }
+        .modal-card { background: #ffffff; width: 90%; max-width: 400px; padding: 40px; border-radius: 12px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border: 1px solid #c5a059; position: relative; }
+        .modal-card h3 { font-size: 1.5rem; color: #000000; margin-bottom: 10px; letter-spacing: 2px; text-transform: uppercase; }
+        .btn-premium { background: linear-gradient(135deg, #c5a059, #a38043); color: #ffffff; border: none; padding: 15px 25px; width: 100%; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .fechar-x { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #999; }
+        @media (max-width: 540px) {
+            body { padding:10px; } .carrinho-container { margin:0 auto; padding:18px 14px; } h2 { font-size:1.08rem; }
+            .item { align-items:flex-start; gap:9px; } .item img { width:46px; height:46px; } .item-info span { font-size:.8rem; }
+            .preco-final { font-size:.82rem; white-space:nowrap; } .dados-cliente { padding:12px; } .total-box { font-size:1.05rem; }
+            .modal-card { width:calc(100% - 24px); padding:28px 18px; } .modal-card h3 { font-size:1.1rem; letter-spacing:1px; }
+        }
     </style>
 </head>
 <body>
-
-<header>
-    <nav style="background: #1c1c1c; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="color: #d4af37; margin: 0; font-size: 1.2rem;">ABT Carrinho</h1>
-        <a href="loja.html" style="color: white; text-decoration: none; font-weight: bold;">🛒 Voltar à Loja</a>
-    </nav>
-</header>
-
-<main class="carrinho-container">
-    <h2>Seu Carrinho</h2>
-    <div id="lista-carrinho">
-        <p style="text-align:center;">O seu carrinho está vazio...</p>
+<div class="carrinho-container">
+    <h2><i class="fas fa-shopping-bag"></i> Teu Carrinho</h2>
+    <div id="lista-carrinho"><p style="text-align: center; padding: 20px;">A carregar...</p></div>
+    <div id="controles-carrinho" style="display: none;">
+        <div class="total-box"><span id="txt-promo" class="desc-aviso"></span>Total: <span id="valor-total" style="color:#c5a059">0</span> Kz</div>
+        <div class="dados-cliente"><input type="text" id="nome-cliente" placeholder="Teu Nome Completo"><input type="tel" id="tel-cliente" placeholder="Teu WhatsApp"></div>
+        <div id="cupom-area" style="display:none; background:#fcfaf5; border-left:4px solid #c5a059; padding:12px; margin:15px 0;"></div>
+        <div style="background:#ffffff; padding:15px; border:1px solid #e0e0e0; margin:15px 0;">
+            <strong style="display:block; margin-bottom:10px;">Método de pagamento</strong>
+            <label style="display:block; margin:8px 0;"><input type="radio" name="pagamento" value="express" checked> Multicaixa Express</label>
+            <label style="display:block; margin:8px 0;"><input type="radio" name="pagamento" value="iban"> Transferência bancária (IBAN)</label>
+            <label style="display:block; margin:8px 0;"><input type="radio" name="pagamento" value="unitel"> Unitel Money</label>
+            <label style="display:block; margin:8px 0;"><input type="radio" name="pagamento" value="entrega"> Pagamento na entrega</label>
+            <div id="instrucoes-pagamento" style="background:#fcfaf5; border-left:4px solid #c5a059; padding:10px; margin-top:12px; font-size:.85rem;"></div>
+        </div>
+        <button class="btn-whats" id="btn-finalizar"><i class="fab fa-whatsapp"></i> FINALIZAR PEDIDO</button>
+        <button class="btn-limpar" onclick="limpar()">Esvaziar Carrinho</button>
     </div>
-
-    <div class="total-box">
-        Total: <span id="valor-total">0</span> Kz
-    </div>
-
-    <div class="formulario-envio">
-        <h3>Dados de Entrega</h3>
-        <input type="text" id="nome-cliente" placeholder="Teu Nome Completo">
-        <input type="tel" id="tel-cliente" placeholder="Teu WhatsApp (Ex: 923...)">
-        <button class="btn-finalizar" id="btnFinalizar">Finalizar e Enviar Pedido 🚀</button>
-    </div>
-</main>
-
+    <a href="loja.html" class="voltar">← Voltar à Loja</a>
+</div>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
-        authDomain: "abt-marketplace.firebaseapp.com",
-        projectId: "abt-marketplace",
-        storageBucket: "abt-marketplace.firebasestorage.app",
-        messagingSenderId: "763460800092",
-        appId: "1:763460800092:web:5ac1f341919c1fa02ea099"
+    import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    const app = initializeApp({apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0", authDomain: "abt-marketplace.firebaseapp.com", projectId: "abt-marketplace", storageBucket: "abt-marketplace.firebasestorage.app", messagingSenderId: "763460800092", appId: "1:763460800092:web:5ac1f341919c1fa02ea099"});
+    const db = getFirestore(app), auth = getAuth(app);
+    let descPercent = 15, utilizadorAtual = null, cupomSelecionado = null;
+    let regrasCupons = { ativo10: true, percentual10: 10, requisito10: 100, ativo15: true, percentual15: 15, requisito15: 200 };
+    const metodosPagamento = {
+        express: { nome: 'Multicaixa Express', instrucoes: 'Envie para <strong>937 912 339</strong> via Multicaixa Express.' },
+        iban: { nome: 'Transferência bancária (IBAN)', instrucoes: 'IBAN: <strong>0006 0000 1788 8741 3014 1</strong><br>Titular: <strong>Alcídio Adelino dos Santos Saviti</strong>' },
+        unitel: { nome: 'Unitel Money', instrucoes: 'Envie para <strong>937 912 339</strong> via Unitel Money.' },
+        entrega: { nome: 'Pagamento na entrega', instrucoes: 'Pague em dinheiro no momento da entrega. A disponibilidade será confirmada pelo atendimento.' }
     };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Carregar itens do carrinho
-    let carrinho = JSON.parse(localStorage.getItem("carrinhoABT")) || [];
-
-    function renderizarCarrinho() {
-        const container = document.getElementById("lista-carrinho");
-        const totalExibicao = document.getElementById("valor-total");
-        container.innerHTML = "";
-        let totalGeral = 0;
-
-        if (carrinho.length === 0) {
-            container.innerHTML = "<p style='text-align:center;'>O carrinho está vazio.</p>";
-            totalExibicao.innerText = "0";
-            return;
-        }
-
-        carrinho.forEach((item, index) => {
-            const subtotal = item.preco * item.quantidade;
-            totalGeral += subtotal;
-
-            container.innerHTML += `
-                <div class="item-carrinho">
-                    <img src="${item.imagem}" alt="${item.nome}">
-                    <div class="detalhes-item">
-                        <strong>${item.nome}</strong><br>
-                        <small>${item.preco} Kz x ${item.quantidade}</small>
-                    </div>
-                    <div style="text-align:right;">
-                        <strong>${subtotal} Kz</strong><br>
-                        <button class="btn-remover" onclick="window.removerItem(${index})">Remover</button>
-                    </div>
-                </div>`;
-        });
-
-        totalExibicao.innerText = totalGeral;
+    function obterPagamento() { return document.querySelector('input[name="pagamento"]:checked').value; }
+    function atualizarInstrucoesPagamento() { document.getElementById('instrucoes-pagamento').innerHTML = metodosPagamento[obterPagamento()].instrucoes; }
+    async function iniciar() {
+        document.getElementById('nome-cliente').value = localStorage.getItem('abt_nome') || '';
+        document.getElementById('tel-cliente').value = localStorage.getItem('abt_tel') || '';
+        try { const config = await getDoc(doc(db, "configuracoes", "home")); if (config.exists()) descPercent = config.data().desconto || 15; const cupons = await getDoc(doc(db, 'configuracoes', 'cupons')); if (cupons.exists()) regrasCupons = {...regrasCupons, ...cupons.data()}; } catch (e) { console.log("Erro ao buscar configurações"); }
+        renderizar();
+        if (utilizadorAtual) atualizarBeneficios().catch(console.error);
     }
-
-    // Função Global para remover itens
-    window.removerItem = (index) => {
-        carrinho.splice(index, 1);
-        localStorage.setItem("carrinhoABT", JSON.stringify(carrinho));
-        renderizarCarrinho();
-    };
-
-    // Função para Finalizar o Pedido
-    document.getElementById("btnFinalizar").addEventListener("click", async () => {
-        const nome = document.getElementById("nome-cliente").value;
-        const tel = document.getElementById("tel-cliente").value;
-        const total = document.getElementById("valor-total").innerText;
-
-        if (!nome || !tel || carrinho.length === 0) {
-            alert("Por favor, preencha os seus dados e adicione itens!");
-            return;
-        }
-
+    async function atualizarBeneficios() {
+        const area = document.getElementById('cupom-area');
+        if (!utilizadorAtual) { area.style.display='block'; area.innerHTML='<strong>Cupons de fidelidade</strong><br><small>Entre na sua conta para acompanhar e usar os seus benefícios.</small><br><a href="conta.html" style="color:#000;font-weight:700;">Entrar ou criar conta</a>'; return; }
+        const pedidos = await getDocs(query(collection(db,'pedidos'), where('clienteUid','==',utilizadorAtual.uid)));
+        const concluidos = pedidos.docs.filter(p => p.data().status === 'concluido').length;
+        const opcoes=[];
+        if(regrasCupons.ativo15 && concluidos >= regrasCupons.requisito15) opcoes.push({codigo:'FIDELIDADE15', percentual:Number(regrasCupons.percentual15), requisito:regrasCupons.requisito15});
+        if(regrasCupons.ativo10 && concluidos >= regrasCupons.requisito10) opcoes.push({codigo:'FIDELIDADE10', percentual:Number(regrasCupons.percentual10), requisito:regrasCupons.requisito10});
+        area.style.display='block';
+        if(!opcoes.length) { cupomSelecionado=null; area.innerHTML=`<strong>Cupons de fidelidade</strong><br><small>Tens ${concluidos} pedidos concluídos. O próximo benefício fica disponível com ${regrasCupons.requisito10} pedidos.</small>`; renderizar(); return; }
+        area.innerHTML=`<strong>O teu cupom está disponível!</strong><br><small>${concluidos} pedidos concluídos.</small>${opcoes.map((c,i)=>`<label style="display:block;margin-top:8px;"><input type="radio" name="cupom" value="${i}" ${cupomSelecionado?.codigo===c.codigo?'checked':''}> Usar ${c.percentual}% de desconto (${c.codigo})</label>`).join('')}`;
+        area.querySelectorAll('input[name=cupom]').forEach(el=>el.addEventListener('change',()=>{cupomSelecionado=opcoes[Number(el.value)];renderizar();}));
+    }
+    function renderizar() {
+        const itens = JSON.parse(localStorage.getItem('abt_carrinho')) || [];
+        const lista = document.getElementById('lista-carrinho');
+        const box = document.getElementById('controles-carrinho');
+        let total = 0;
+        if (itens.length === 0) { lista.innerHTML = "<p style='text-align:center; padding:20px; color:#666;'>Carrinho vazio.</p>"; box.style.display = "none"; return; }
+        box.style.display = "block"; lista.innerHTML = "";
+        let temPromocao = false;
+        itens.forEach(item => {
+            const pFinal = Number(item.preco);
+            const pOriginal = Number(item.precoOriginal || item.preco);
+            temPromocao = temPromocao || item.promocao === true;
+            total += (pFinal * item.qtd);
+            const precoAnterior = pOriginal > pFinal ? ` de <del>${pOriginal.toLocaleString()}</del>` : '';
+            lista.innerHTML += `<div class="item"><img src="${item.imagem}" onerror="this.src='https://via.placeholder.com/50'"><div class="item-info"><span>${item.nome}</span><small>${item.qtd}x${precoAnterior}</small></div><div class="preco-final">${pFinal.toFixed(0).toLocaleString()} Kz</div></div>`;
+        });
+        const descontoCupom = cupomSelecionado ? total * (cupomSelecionado.percentual / 100) : 0;
+        const totalFinal = total - descontoCupom;
+        document.getElementById('txt-promo').innerText = `${temPromocao ? 'Promoções aplicadas apenas aos produtos marcados. ' : ''}${cupomSelecionado ? `Cupom ${cupomSelecionado.codigo}: -${cupomSelecionado.percentual}% (${descontoCupom.toFixed(0).toLocaleString()} Kz).` : ''}`;
+        document.getElementById('valor-total').innerText = totalFinal.toFixed(0).toLocaleString();
+    }
+    document.getElementById('btn-finalizar').onclick = async () => {
+        const n = document.getElementById('nome-cliente').value.trim(); const t = document.getElementById('tel-cliente').value.trim();
+        const itens = JSON.parse(localStorage.getItem('abt_carrinho')) || [];
+        if (!utilizadorAtual) { alert('Para finalizar e acumular benefícios, entre ou crie a sua conta.'); window.location.href = 'conta.html'; return; }
+        if (!n || !t) return alert("Preenche o teu nome e contacto!");
+        localStorage.setItem('abt_nome', n); localStorage.setItem('abt_tel', t);
         try {
-            // 1. Enviar para o Firebase
-            await addDoc(collection(db, "pedidos"), {
-                cliente: nome,
-                telefone: tel,
-                total: total,
-                itens: carrinho,
-                status: "Pendente",
-                data: new Date().toLocaleString()
-            });
-
-            // 2. Criar mensagem para WhatsApp
-            let msg = `*Novo Pedido - ABT Marketplace*%0A`;
-            msg += `*Cliente:* ${nome}%0A`;
-            msg += `*WhatsApp:* ${tel}%0A%0A`;
-            msg += `*Produtos:*%0A`;
-            carrinho.forEach(i => {
-                msg += `• ${i.nome} (x${i.quantidade})%0A`;
-            });
-            msg += `%0A*Total: ${total} Kz*`;
-
-            const meuNumero = "244937912339"; 
-            const linkZap = `https://wa.me/${meuNumero}?text=${msg}`;
-
-            // 3. Limpar e redirecionar
-            localStorage.removeItem("carrinhoABT");
-            window.location.href = linkZap;
-
-        } catch (e) {
-            console.error("Erro:", e);
-            alert("Erro ao processar o pedido.");
-        }
+            const metodoSelecionado = obterPagamento();
+            const pedido = await addDoc(collection(db, "pedidos"), { cliente: n, telefone: t, itens: itens, total: document.getElementById('valor-total').innerText, data: new Date(), clienteUid: utilizadorAtual.uid, status: 'pendente', cupom: cupomSelecionado ? { codigo: cupomSelecionado.codigo, percentual: cupomSelecionado.percentual } : null, pagamento: { metodo: metodoSelecionado, nome: metodosPagamento[metodoSelecionado].nome } });
+            const grupos = itens.reduce((acc, item) => {
+                const w = item.whatsappParceiro;
+                const wpp = (item.marca !== "ABT" && w && w.length > 8 && w !== "244900000000") ? w : "244946560930";
+                if (!acc[wpp]) acc[wpp] = []; acc[wpp].push(item); return acc;
+            }, {});
+            const modal = document.createElement("div"); modal.className = "modal-overlay";
+            const cupomResumo = cupomSelecionado ? `<p><strong>Cupom aplicado:</strong> ${cupomSelecionado.codigo} (${cupomSelecionado.percentual}%)</p>` : '';
+            modal.innerHTML = `<div class="modal-card"><span class="fechar-x" id="fechar-modal">&times;</span><div style="font-size: 3rem; color: #c5a059; margin-bottom: 15px;"><i class="fas fa-check-circle"></i></div><h3>PEDIDO CONFIRMADO</h3><p>O teu estilo está a caminho!</p><p><strong>Comprovativo:</strong> #${pedido.id.slice(0,8).toUpperCase()}</p><p><strong>Pagamento:</strong> ${metodosPagamento[metodoSelecionado].nome}</p><div style="text-align:left; font-size:.8rem; margin:10px 0;">${metodosPagamento[metodoSelecionado].instrucoes}</div>${cupomResumo}<button id="imprimir-comprovativo" class="btn-premium" style="margin-bottom:8px;">GERAR COMPROVATIVO</button><button id="prosseguir-whats" class="btn-premium">FINALIZAR NO WHATSAPP</button></div>`;
+            document.body.appendChild(modal);
+            document.getElementById("fechar-modal").onclick = () => modal.remove();
+            document.getElementById('imprimir-comprovativo').onclick = () => {
+                const janela = window.open('', '_blank');
+                janela.document.write(`<title>Comprovativo ABT</title><style>body{font-family:Arial;padding:30px}h1{color:#111}strong{color:#a38043}</style><h1>ABT Marketplace</h1><h2>Comprovativo de Pedido</h2><p><strong>Pedido:</strong> #${pedido.id.slice(0,8).toUpperCase()}</p><p><strong>Cliente:</strong> ${n}</p><p><strong>Total:</strong> ${document.getElementById('valor-total').innerText} Kz</p><p><strong>Método:</strong> ${metodosPagamento[metodoSelecionado].nome}</p><p>${metodosPagamento[metodoSelecionado].instrucoes}</p>${cupomResumo}<p>Data: ${new Date().toLocaleString('pt-AO')}</p><p>Estado: Aguardando pagamento.</p><p>Faça uma captura de ecrã ou imprima este comprovativo.</p>`); janela.document.close(); janela.print();
+            };
+            document.getElementById("prosseguir-whats").onclick = () => {
+                Object.entries(grupos).forEach(([wpp, produtos]) => {
+                    let msg = `*PEDIDO ABT MARKETPLACE*%0A*Cliente:* ${n}%0A*Contacto:* ${t}%0A*Pagamento:* ${metodosPagamento[metodoSelecionado].nome}%0A━━━━━━━━━━━━%0A`;
+                    produtos.forEach(i => msg += `• ${i.qtd}x ${i.nome} (${Number(i.preco).toFixed(0)} Kz)%0A`);
+                    window.open(`https://wa.me/${wpp}?text=${msg}`, '_blank');
+                });
+                localStorage.removeItem('abt_carrinho'); location.href = 'home.html';
+            };
+        } catch (e) { alert("Erro: " + e.message); }
+    };
+    window.limpar = () => { if(confirm("Esvaziar carrinho?")) { localStorage.removeItem('abt_carrinho'); location.reload(); } };
+    onAuthStateChanged(auth, async user => {
+        utilizadorAtual = user;
+        if (user) { const perfil = await getDoc(doc(db, 'usuarios', user.uid)); if (perfil.exists()) { document.getElementById('nome-cliente').value = perfil.data().nome || ''; document.getElementById('tel-cliente').value = perfil.data().telefone || ''; } }
+        atualizarBeneficios().catch(console.error);
     });
-
-    renderizarCarrinho();
+    document.querySelectorAll('input[name="pagamento"]').forEach(input => input.addEventListener('change', atualizarInstrucoesPagamento));
+    atualizarInstrucoesPagamento();
+    iniciar();
 </script>
-
 </body>
 </html>

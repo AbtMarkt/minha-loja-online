@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Serviços | ABT Marketplace</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>if(localStorage.getItem('abt_theme')==='dark')document.documentElement.classList.add('abt-tema-escuro');</script><link rel="stylesheet" href="tema.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--gold:#c5a059;--ink:#101010;--soft:#fcfaf5;--line:#e9e9e9}*{box-sizing:border-box;font-family:Poppins,sans-serif}body{margin:0;background:#f7f7f7;color:var(--ink)}a{color:inherit;text-decoration:none}header{padding:16px 5%;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:3px solid var(--gold)}.brand{font-weight:800;letter-spacing:1px}.brand span{color:var(--gold)}.menu{display:flex;align-items:center;gap:17px;font-weight:700;font-size:.85rem}.menu a:hover{color:var(--gold)}.hero{padding:52px 5%;color:#fff;background:linear-gradient(120deg,#080808,#30230e)}.hero h1{margin:0;font-size:clamp(1.7rem,4vw,2.5rem)}.hero p{max-width:660px;margin:9px 0 0;color:#f4dfa8;line-height:1.6}.wrap{max-width:1200px;margin:0 auto;padding:32px 20px 55px}.back{display:inline-flex;align-items:center;gap:7px;margin:0 0 14px;color:#85662b;font-weight:700;font-size:.85rem}.hidden{display:none!important}.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:20px}.section-head h2{margin:0;font-size:1.35rem}.section-head p{margin:5px 0 0;color:#666;font-size:.85rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:18px}.card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:20px;box-shadow:0 7px 20px rgba(0,0,0,.035);display:flex;flex-direction:column}.card>i{font-size:1.6rem;color:var(--gold)}.card h3{font-size:1.05rem;margin:11px 0 7px}.card p{font-size:.83rem;line-height:1.55;color:#5f5f5f;margin:0}.meta{margin:12px 0 0;font-size:.78rem;line-height:1.7;color:#444}.tag{background:var(--soft);color:#806222;padding:4px 8px;margin:3px 3px 0 0;display:inline-block;border-radius:20px;font-size:.68rem;font-weight:700}.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;background:#111;color:var(--gold);border:0;border-radius:6px;padding:11px 13px;font-size:.77rem;font-weight:800;cursor:pointer;margin-top:auto;padding-top:11px}.btn:hover{background:#2b2b2b}.btn-secondary{background:#fff;color:#222;border:1px solid var(--line);margin-top:9px}.notice{background:#fff;border:1px dashed #d5c08c;border-radius:12px;padding:22px;color:#6a5831}.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10;display:grid;place-items:center;padding:18px}.modal-box{width:min(100%,680px);max-height:90vh;overflow:auto;background:#fff;border-radius:14px;padding:25px;position:relative}.close{position:absolute;right:14px;top:10px;border:0;background:transparent;font-size:1.55rem;cursor:pointer}.modal-box h2{font-size:1.2rem;margin:0 28px 6px 0}.modal-box>p{font-size:.83rem;color:#666;margin:0 0 15px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.full{grid-column:1/-1}.modal label{display:block;margin-top:11px;font-size:.7rem;text-transform:uppercase;font-weight:800}.modal input,.modal select,.modal textarea{width:100%;border:1px solid #ddd;border-radius:6px;padding:10px;margin-top:5px;font:inherit;font-size:.85rem}.modal textarea{min-height:88px;resize:vertical}.form-status{font-size:.8rem;margin:12px 0 0;min-height:18px;color:#806222}.receipt{border:1px dashed #bba161;background:#fffdf8;padding:16px;border-radius:9px;margin-top:15px;font-size:.84rem;line-height:1.7}.receipt h3{margin:0 0 7px}.status-pill{display:inline-block;padding:3px 8px;background:#fff0c9;color:#765718;border-radius:20px;font-size:.68rem;font-weight:800;text-transform:uppercase}@media(max-width:600px){header{padding:14px}.menu{gap:12px}.hero{padding:38px 20px}.wrap{padding:24px 14px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.modal-box{padding:21px 16px}.section-head{align-items:flex-start;flex-direction:column}}
+  </style>
+  <style>
+    @media (max-width: 520px) {
+      .grid { grid-template-columns:1fr; gap:13px; }.card { padding:17px; }.card h3 { font-size:1rem; }.btn { min-height:42px; }
+      .menu { gap:12px; font-size:.78rem; }.modal { padding:9px; }.modal-box { width:100%; max-height:94vh; }.form-grid { gap:0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="home.html">ABT <span>MARKETPLACE</span></a>
+    <nav class="menu"><a href="loja.html">Loja</a><a href="conta.html" aria-label="Minha conta"><i class="fas fa-user-circle"></i></a></nav>
+  </header>
+  <section class="hero"><h1>Serviços que aproximam pessoas e empresas.</h1><p>Encontre especialistas parceiros para transformar necessidades em resultados.</p></section>
+  <main class="wrap">
+    <a id="back" class="back hidden" href="#"><i class="fas fa-arrow-left"></i> Ver todas as categorias</a>
+    <div class="section-head"><div><h2 id="title">Categorias de Serviços</h2><p id="subtitle">Escolha uma categoria para encontrar o serviço que precisa.</p></div></div>
+    <div id="content" class="grid"><p class="notice">A carregar serviços…</p></div>
+  </main>
+  <div id="modal" class="modal hidden"><div class="modal-box" id="modal-box"></div></div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getFirestore, collection, getDocs, getDoc, doc, query, where, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+    const app = initializeApp({apiKey:'AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0',authDomain:'abt-marketplace.firebaseapp.com',projectId:'abt-marketplace',storageBucket:'abt-marketplace.firebasestorage.app',messagingSenderId:'763460800092',appId:'1:763460800092:web:5ac1f341919c1fa02ea099'});
+    const db = getFirestore(app), auth = getAuth(app);
+    const el = id => document.getElementById(id);
+    const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+    let categoriasDados = [], servicosDados = [], prestadoresDados = [], utilizador = null;
+
+    function setHeading(title, subtitle) { el('title').textContent = title; el('subtitle').textContent = subtitle; }
+    function fecharModal() { el('modal').classList.add('hidden'); el('modal-box').innerHTML = ''; }
+    function mostrarAviso(texto) { el('content').innerHTML = `<div class="notice">${escapeHtml(texto)}</div>`; }
+
+    function mostrarCategorias() {
+      el('back').classList.add('hidden');
+      setHeading('Categorias de Serviços', 'Escolha uma categoria para encontrar o serviço que precisa.');
+      if (!categoriasDados.length) return mostrarAviso('Ainda não existem categorias de serviços disponíveis.');
+      el('content').innerHTML = categoriasDados.map(categoria => `
+        <article class="card">
+          <i class="${escapeHtml(categoria.icone || 'fas fa-briefcase')}"></i>
+          <h3>${escapeHtml(categoria.nome)}</h3>
+          <p>${escapeHtml(categoria.descricao || 'Serviços profissionais disponíveis na ABT.')}</p>
+          <button class="btn" data-category="${categoria.id}">Ver serviços <i class="fas fa-arrow-right"></i></button>
+        </article>`).join('');
+      document.querySelectorAll('[data-category]').forEach(button => button.onclick = () => mostrarServicos(button.dataset.category));
+    }
+
+    function mostrarServicos(categoriaId) {
+      const lista = servicosDados.filter(servico => servico.categoriaId === categoriaId);
+      el('back').classList.remove('hidden');
+      setHeading('Serviços disponíveis', 'Selecione o serviço para ver os parceiros que o oferecem.');
+      if (!lista.length) return mostrarAviso('Não há serviços ativos nesta categoria de momento.');
+      el('content').innerHTML = lista.map(servico => `
+        <article class="card"><i class="fas fa-briefcase"></i><h3>${escapeHtml(servico.nome)}</h3>
+          <p>${escapeHtml(servico.descricao || 'Consulte os parceiros disponíveis para este serviço.')}</p>
+          <button class="btn" data-service="${servico.id}">Ver prestadores <i class="fas fa-arrow-right"></i></button>
+        </article>`).join('');
+      document.querySelectorAll('[data-service]').forEach(button => button.onclick = () => mostrarPrestadores(button.dataset.service));
+    }
+
+    function nomesServicos(ids) { return ids.map(id => servicosDados.find(servico => servico.id === id)?.nome).filter(Boolean); }
+    function mostrarPrestadores(servicoId) {
+      const lista = prestadoresDados.filter(prestador => Array.isArray(prestador.servicos) && prestador.servicos.includes(servicoId));
+      const servico = servicosDados.find(item => item.id === servicoId);
+      el('back').classList.remove('hidden');
+      setHeading('Prestadores disponíveis', servico ? `Parceiros que oferecem: ${servico.nome}.` : 'Escolha o parceiro pretendido.');
+      if (!lista.length) return mostrarAviso('Nenhum parceiro ativo oferece este serviço ainda. Registe um prestador no painel Admin e associe o ID correto do serviço.');
+      el('content').innerHTML = lista.map(prestador => {
+        const tags = nomesServicos(prestador.servicos || []).map(nome => `<span class="tag">${escapeHtml(nome)}</span>`).join('');
+        return `<article class="card"><i class="fas fa-building"></i><h3>${escapeHtml(prestador.nome)}</h3><p>${escapeHtml(prestador.descricao || 'Parceiro profissional ABT.')}</p>
+          <div>${tags}</div><div class="meta"><b>Modalidade:</b> ${escapeHtml((prestador.modalidades || ['Sob consulta']).join(', '))}<br><b>Localização:</b> ${escapeHtml(prestador.localizacao || 'Sob consulta')}<br><b>Preço:</b> ${escapeHtml(prestador.preco || 'Sob consulta')}</div>
+          <button class="btn btn-secondary" data-details="${prestador.id}" data-service="${servicoId}">Ver detalhes</button>
+          <button class="btn" data-request="${prestador.id}" data-service="${servicoId}">Solicitar serviço</button></article>`;
+      }).join('');
+      document.querySelectorAll('[data-details]').forEach(button => button.onclick = () => detalhesPrestador(button.dataset.details, button.dataset.service));
+      document.querySelectorAll('[data-request]').forEach(button => button.onclick = () => abrirFormulario(button.dataset.request, button.dataset.service));
+    }
+
+    function detalhesPrestador(prestadorId, servicoId) {
+      const prestador = prestadoresDados.find(item => item.id === prestadorId), servico = servicosDados.find(item => item.id === servicoId);
+      if (!prestador || !servico) return;
+      el('modal-box').innerHTML = `<button class="close" id="close" aria-label="Fechar">×</button><h2>${escapeHtml(prestador.nome)}</h2><p>${escapeHtml(prestador.descricao || 'Parceiro profissional ABT.')}</p><div class="receipt"><b>Serviço selecionado:</b> ${escapeHtml(servico.nome)}<br><b>Modalidades:</b> ${escapeHtml((prestador.modalidades || ['Sob consulta']).join(', '))}<br><b>Localização:</b> ${escapeHtml(prestador.localizacao || 'Sob consulta')}<br><b>Preço:</b> ${escapeHtml(prestador.preco || 'Sob consulta')}</div><button class="btn" id="request-from-details">Solicitar serviço</button>`;
+      el('modal').classList.remove('hidden'); el('close').onclick = fecharModal; el('request-from-details').onclick = () => abrirFormulario(prestadorId, servicoId);
+    }
+
+    async function abrirFormulario(prestadorId, servicoId) {
+      if (!utilizador) { window.location.href = 'conta.html'; return; }
+      const prestador = prestadoresDados.find(item => item.id === prestadorId), servico = servicosDados.find(item => item.id === servicoId);
+      if (!prestador || !servico) return mostrarAviso('Não foi possível encontrar os dados deste serviço.');
+      let perfil = {};
+      try { const perfilSnap = await getDoc(doc(db, 'usuarios', utilizador.uid)); if (perfilSnap.exists()) perfil = perfilSnap.data(); } catch (_) {}
+      const modalidades = prestador.modalidades?.length ? prestador.modalidades : ['Online'];
+      el('modal-box').innerHTML = `<button class="close" id="close" aria-label="Fechar">×</button><h2>Solicitar: ${escapeHtml(servico.nome)}</h2><p><b>Prestador:</b> ${escapeHtml(prestador.nome)}. Os dados abaixo serão enviados ao parceiro pelo WhatsApp.</p><form id="request-form"><div class="form-grid"><label>Nome completo<input id="client-name" required value="${escapeHtml(perfil.nome || '')}"></label><label>WhatsApp<input id="client-phone" required value="${escapeHtml(perfil.telefone || '')}" placeholder="244…"></label><label>Modalidade<select id="modality" required>${modalidades.map(modalidade => `<option value="${escapeHtml(modalidade)}">${escapeHtml(modalidade)}</option>`).join('')}</select></label><label>Localização<input id="location" required placeholder="Ex.: Huambo, Cidade Alta"></label><label class="full">Disponibilidade<input id="availability" required placeholder="Ex.: Dias úteis, 14h às 17h"></label><label>Data e hora pretendidas<input id="date" type="datetime-local"></label><label class="full">Descrição do que necessita<textarea id="description" required></textarea></label><label class="full">Observações adicionais<textarea id="notes"></textarea></label></div><button class="btn" type="submit">Enviar solicitação <i class="fab fa-whatsapp"></i></button><p class="form-status" id="form-status"></p></form>`;
+      el('modal').classList.remove('hidden'); el('close').onclick = fecharModal;
+      el('request-form').onsubmit = event => enviarSolicitacao(event, prestador, servico);
+    }
+
+    async function enviarSolicitacao(event, prestador, servico) {
+      event.preventDefault(); const formStatus = el('form-status'); formStatus.textContent = 'A registar solicitação…';
+      const dados = {clienteUid:utilizador.uid,cliente:el('client-name').value.trim(),telefone:el('client-phone').value.trim(),servicoId:servico.id,servicoNome:servico.nome,prestadorId:prestador.id,prestadorNome:prestador.nome,prestadorWhatsapp:prestador.whatsapp || '',modalidade:el('modality').value,localizacao:el('location').value.trim(),disponibilidade:el('availability').value.trim(),dataPretendida:el('date').value,descricao:el('description').value.trim(),observacoes:el('notes').value.trim(),status:'pendente',criadoEm:serverTimestamp()};
+      try {
+        const referencia = await addDoc(collection(db, 'solicitacoes_servicos'), dados);
+        const numero = String(prestador.whatsapp || '').replace(/\D/g, '');
+        const mensagem = `SOLICITAÇÃO ABT\nCódigo: ${referencia.id.slice(0,8).toUpperCase()}\nCliente: ${dados.cliente}\nServiço: ${dados.servicoNome}\nModalidade: ${dados.modalidade}\nDescrição: ${dados.descricao}`;
+        el('modal-box').innerHTML = `<button class="close" id="close" aria-label="Fechar">×</button><h2>Solicitação registada</h2><p>O pedido ficou como <b>pendente</b>. O envio pelo WhatsApp não confirma o serviço; o parceiro deve atualizar o estado posteriormente.</p><div class="receipt"><h3>Cartão digital ABT</h3><span class="status-pill">Pendente</span><br><b>Referência:</b> #${escapeHtml(referencia.id.slice(0,8).toUpperCase())}<br><b>Serviço:</b> ${escapeHtml(dados.servicoNome)}<br><b>Prestador:</b> ${escapeHtml(dados.prestadorNome)}<br><b>Cliente:</b> ${escapeHtml(dados.cliente)}<br><b>Modalidade:</b> ${escapeHtml(dados.modalidade)}</div><button class="btn" id="print-card"><i class="fas fa-print"></i> Imprimir cartão</button>`;
+        el('close').onclick = fecharModal; el('print-card').onclick = () => window.print();
+        if (numero) window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`, '_blank');
+      } catch (erro) { console.error(erro); formStatus.textContent = 'Não foi possível registar. Confirme as regras do Firestore e tente novamente.'; }
+    }
+
+    async function carregarDados() {
+      const [categoriasSnap, servicosSnap, prestadoresSnap] = await Promise.all([
+        getDocs(query(collection(db, 'categorias_servicos'), where('ativo', '==', true))),
+        getDocs(query(collection(db, 'servicos'), where('ativo', '==', true))),
+        getDocs(query(collection(db, 'prestadores_servicos'), where('ativo', '==', true)))
+      ]);
+      categoriasDados = categoriasSnap.docs.map(item => ({id:item.id, ...item.data()}));
+      servicosDados = servicosSnap.docs.map(item => ({id:item.id, ...item.data()}));
+      prestadoresDados = prestadoresSnap.docs.map(item => ({id:item.id, ...item.data()}));
+      mostrarCategorias();
+    }
+
+    el('back').onclick = event => { event.preventDefault(); mostrarCategorias(); };
+    el('modal').onclick = event => { if (event.target === el('modal')) fecharModal(); };
+    onAuthStateChanged(auth, user => { utilizador = user; });
+    carregarDados().catch(erro => { console.error(erro); mostrarAviso('Não foi possível carregar os serviços. Confirme se publicou as regras do Firestore.'); });
+  </script>
+</body>
+</html>

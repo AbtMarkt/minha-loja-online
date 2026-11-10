@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultor IA Fashion | ABT Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>if(localStorage.getItem('abt_theme')==='dark')document.documentElement.classList.add('abt-tema-escuro');</script><link rel="stylesheet" href="tema.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f9f9f9 url('golden.jpg') repeat; background-size: 700px; color: #000000; margin: 0; padding: 15px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; margin-bottom: 25px; background: #ffffff; border-bottom: 3px solid #c5a059; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        header h1 { color: #000000; font-size: 1.3rem; margin: 0; cursor: pointer; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-voltar-loja { color:#000; border:1px solid #c5a059; background:#fff; border-radius:4px; padding:8px 12px; text-decoration:none; font-size:.78rem; font-weight:800; }
+        .btn-voltar-loja:hover { background:#c5a059; }
+        
+        .consultor-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: start; }
+        
+        .manequim-box { 
+            background: rgba(255, 255, 255, 0.96); border-radius: 4px; border: 1px solid #e0e0e0; 
+            padding: 15px; position: sticky; top: 100px; height: 450px;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06); position: relative; box-sizing: border-box;
+        }
+        .manequim-box::before { content: ''; position: absolute; top: 0; left: 0; width: 24px; height: 24px; border-top: 5px solid #000000; border-left: 5px solid #000000; z-index: 12; }
+
+        .ia-painel { background: rgba(255, 255, 255, 0.96); padding: 25px; border-radius: 4px; border: 1px solid #e0e0e0; box-shadow: 0 8px 25px rgba(0,0,0,0.06); position: relative; }
+        .ia-painel::before { content: ''; position: absolute; top: 0; left: 0; width: 24px; height: 24px; border-top: 5px solid #000000; border-left: 5px solid #000000; }
+        
+        .ia-message { background: #ffffff; padding: 15px; border-radius: 4px; border-left: 4px solid #c5a059; border-top: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; margin-bottom: 25px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .ia-message::after { content: ''; position: absolute; left: 20px; bottom: -10px; border-top: 10px solid #ffffff; border-left: 10px solid transparent; border-right: 10px solid transparent; }
+        .ia-message p { margin: 0; font-size: 0.9rem; line-height: 1.5; color: #000000; }
+
+        .filtros-ia { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .filtros-ia select { background: #ffffff; color: #000000; border: 1px solid #e0e0e0; padding: 12px; border-radius: 4px; outline: none; cursor: pointer; font-family: 'Poppins'; width: 100%; box-sizing: border-box; font-weight: 500; }
+        
+        .btn-analisar { background: #000000; color: #c5a059; border: none; width: 100%; padding: 15px; border-radius: 4px; font-weight: 800; cursor: pointer; margin-bottom: 20px; transition: 0.3s; font-family: 'Poppins'; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-analisar:hover { background: #1c1c1c; transform: scale(1.01); }
+
+        .sugestao-unica { background: #ffffff; padding: 20px; border-radius: 4px; border: 1px solid #e0e0e0; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .sugestao-unica h3 { font-size: 1rem; margin: 10px 0; color: #000000; font-weight: 800; }
+        .sugestao-unica .dica-ia { display: block; font-size: 0.8rem; color: #c5a059; margin-bottom: 15px; font-style: italic; font-weight: 500; }
+        
+        .preco-novo { color: #c5a059; font-weight: 800; font-size: 1.2rem; }
+        .btn-add-look { background: #000000; color: #c5a059; border: none; width: 100%; padding: 14px; border-radius: 4px; font-weight: 800; cursor: pointer; font-size: 0.85rem; margin-top: 15px; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; }
+        .btn-add-look:hover { background: #1c1c1c; }
+        
+        #loader { display: none; text-align: center; padding: 20px; }
+        .spinner { border: 3px solid rgba(0,0,0,0.05); border-left-color: #c5a059; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .cart-badge { position: absolute; top: -7px; right: -12px; background: #000000; color: #c5a059; font-size: 0.65rem; padding: 2px 6px; border-radius: 50%; font-weight: 800; border: 1px solid #c5a059; }
+        a.voltar { display: block; text-align: center; margin-top: 25px; color: #777777; text-decoration: none; font-size: 0.85rem; font-weight: 600; }
+        a.voltar:hover { color: #c5a059; }
+
+        @media (max-width: 768px) {
+            .consultor-grid { grid-template-columns: 1fr; }
+            .manequim-box { position: relative; top: 0; margin-bottom: 20px; height: 350px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 onclick="window.location.href='home.html'">ABT IA FASHION</h1>
+    <div style="display:flex;align-items:center;gap:14px;">
+        <a class="btn-voltar-loja" href="loja.html"><i class="fas fa-arrow-left"></i> Voltar para a Loja</a>
+        <a href="carrinho.html" style="color: #000000; text-decoration: none; position: relative;">
+            <i class="fas fa-shopping-bag" style="font-size: 1.2rem;"></i>
+            <span id="cart-count" class="cart-badge">0</span>
+        </a>
+    </div>
+</header>
+
+<div class="consultor-grid">
+    <div class="manequim-box" id="manequim-content">
+        <div id="manequim-vitrine-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; height: 100%; display: none;">
+            <div style="height: 200px; border-radius: 4px; overflow: hidden; border: 1px solid #e0e0e0;"><img id="layer-superior" style="width:100%; height:100%; object-fit:cover;" src="" alt="Superior"></div>
+            <div style="height: 200px; border-radius: 4px; overflow: hidden; border: 1px solid #e0e0e0;"><img id="layer-inferior" style="width:100%; height:100%; object-fit:cover;" src="" alt="Inferior"></div>
+            <div style="height: 200px; border-radius: 4px; overflow: hidden; border: 1px solid #e0e0e0;"><img id="layer-calcado" style="width:100%; height:100%; object-fit:cover;" src="" alt="Calçado"></div>
+            <div style="height: 200px; border-radius: 4px; overflow: hidden; border: 1px solid #e0e0e0;"><img id="layer-acessorio" style="width:100%; height:100%; object-fit:cover;" src="" alt="Acessório"></div>
+        </div>
+        <p id="manequim-placeholder" style="color: #888888; font-size: 0.85rem; text-align: center; position: absolute; font-weight: 500; padding: 0 20px;">A peça sugerida aparecerá aqui vestindo o conceito ABT.</p>
+    </div>
+
+    <div class="ia-painel">
+        <div class="ia-message">
+            <p id="boas-vindas">
+                Olá! Sou o teu <strong>Consultor IA ABT</strong>. Diz-me o que procuras e o teu estilo, e eu vou sugerir o look perfeito para ti.
+            </p>
+        </div>
+
+        <div class="filtros-ia">
+            <select id="select-loja">
+                <option value="todas">Todas as lojas e parceiros</option>
+                <option value="ABT">Loja ABT (Principal)</option>
+            </select>
+            <select id="select-genero">
+                <option value="">O que procuras?</option>
+                <option value="Masculino">Moda Masculina</option>
+                <option value="Feminino">Moda Feminina</option>
+                <option value="Criança">Moda Infantil</option>
+            </select>
+            <select id="select-estilo" style="grid-column: span 2;">
+                <option value="casual">Estilo Casual</option>
+                <option value="desportivo">Estilo Desportivo</option>
+                <option value="gala">Gala / Social</option>
+                <option value="streetwear">Streetwear</option>
+            </select>
+        </div>
+
+        <button class="btn-analisar" onclick="gerarLooksIA()">
+            <i class="fas fa-magic"></i> CRIAR SUGESTÃO ÚNICA IA
+        </button>
+
+        <div id="loader">
+            <div class="spinner"></div>
+            <p style="font-size: 0.8rem; color: #c5a059; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Processando Estética ABT...</p>
+        </div>
+
+        <div id="container-sugestoes"></div>
+
+        <a href="loja.html" class="voltar">← Explorar Loja Completa</a>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, getDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDWTvMQNPc27WJpQfKr1zwdvaw1LDMUxH0",
+        authDomain: "abt-marketplace.firebaseapp.com",
+        projectId: "abt-marketplace",
+        storageBucket: "abt-marketplace.firebasestorage.app",
+        messagingSenderId: "763460800092",
+        appId: "1:763460800092:web:5ac1f341919c1fa02ea099"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let percentagemDesconto = 0, descontosLojasIA = {};
+
+    async function carregarLojas() {
+        const snap = await getDocs(collection(db, "produtos"));
+        const select = document.getElementById('select-loja');
+        const lojas = new Set();
+        snap.forEach(d => {
+            const p = d.data();
+            const nomeLoja = p.marca || p.loja || (p.origem === 'ABT' ? 'ABT' : '');
+            if (nomeLoja && nomeLoja !== 'ABT') lojas.add(nomeLoja);
+        });
+        lojas.forEach(nomeLoja => { select.innerHTML += `<option value="${nomeLoja}">${nomeLoja}</option>`; });
+    }
+
+    async function carregarConfigIA() {
+        try {
+            const [snap, lojas] = await Promise.all([getDoc(doc(db, "configuracoes", "home")), getDoc(doc(db, "configuracoes", "descontos_lojas"))]);
+            if(snap.exists()) percentagemDesconto = Number(snap.data().desconto || 0);
+            if(lojas.exists()) descontosLojasIA = lojas.data().lojas || {};
+        } catch(e) {}
+    }
+
+    window.adicionarLookCompletoAoCarrinho = (pecasJSON) => {
+        const pecas = JSON.parse(decodeURIComponent(pecasJSON));
+        let carrinho = JSON.parse(localStorage.getItem('abt_carrinho')) || [];
+        
+        pecas.forEach(p => {
+            const index = carrinho.findIndex(item => item.id === p.id);
+            if (index > -1) { carrinho[index].qtd += 1; } else { carrinho.push({ id: p.id, nome: p.nome, preco: p.preco, imagem: p.img, qtd: 1 }); }
+        });
+        
+        localStorage.setItem('abt_carrinho', JSON.stringify(carrinho));
+        atualizarIcone();
+        alert("Look completo adicionado ao carrinho! ✓");
+    };
+
+    function atualizarIcone() {
+        const itens = JSON.parse(localStorage.getItem('abt_carrinho')) || [];
+        const total = itens.reduce((acc, item) => acc + item.qtd, 0);
+        document.getElementById('cart-count').innerText = total;
+    }
+
+    window.gerarLooksIA = async () => {
+        const loja = document.getElementById('select-loja').value;
+        const genero = document.getElementById('select-genero').value;
+        const estilo = document.getElementById('select-estilo').value;
+        const container = document.getElementById('container-sugestoes');
+        const loader = document.getElementById('loader');
+        const placeholderManequim = document.getElementById('manequim-placeholder');
+        const txtBoasVindas = document.getElementById('boas-vindas');
+        const vitrineGrid = document.getElementById('manequim-vitrine-grid');
+
+        if (!genero) return alert("Seleciona o género primeiro.");
+
+        loader.style.display = "block";
+        container.innerHTML = "";
+        vitrineGrid.style.display = "none";
+        placeholderManequim.style.display = "block"; 
+
+        try {
+            const snap = await getDocs(collection(db, "produtos"));
+
+            loader.style.display = "none";
+
+            const produtosFiltrados = [];
+            snap.forEach(d => {
+                const p = d.data();
+                const nomeLoja = p.marca || p.loja || (p.origem === 'ABT' ? 'ABT' : '');
+                const correspondeLoja = loja === 'todas' || nomeLoja === loja;
+                const correspondeGenero = !p.genero || p.genero === genero;
+                if(correspondeLoja && correspondeGenero && Number(p.estoque || 0) > 0) {
+                    produtosFiltrados.push({id: d.id, ...p});
+                }
+            });
+
+            if (produtosFiltrados.length === 0) {
+                placeholderManequim.innerText = "Sem Peças Disponíveis";
+                container.innerHTML = "<p style='text-align:center; font-weight:600; color:#666;'>Nenhum produto cadastrado para este género na loja escolhida.</p>";
+                return;
+            }
+
+            const catMap = { 'Peça Superior': [], 'Peça Inferior': [], 'Peça Única': [], 'Calçado': [], 'Acessório': [] };
+            produtosFiltrados.forEach(p => { if(catMap[p.categoria]) catMap[p.categoria].push(p); });
+            const obterPecaAleatoria = lista => lista[Math.floor(Math.random() * lista.length)];
+            const pSuperior = catMap['Peça Superior'].length ? obterPecaAleatoria(catMap['Peça Superior']) : null;
+            const pInferior = catMap['Peça Inferior'].length ? obterPecaAleatoria(catMap['Peça Inferior']) : null;
+            const pUnica = catMap['Peça Única'].length ? obterPecaAleatoria(catMap['Peça Única']) : null;
+            const pCalcado = catMap['Calçado'].length ? obterPecaAleatoria(catMap['Calçado']) : null;
+            const pAcessorio = catMap['Acessório'].length ? obterPecaAleatoria(catMap['Acessório']) : null;
+            const pBase = pUnica || pSuperior;
+            const componentes = [
+                {nome:pUnica ? 'Peça Única' : 'Peça Superior', item:pBase, camada:'layer-superior', icone:pUnica ? 'fa-person-dress' : 'fa-tshirt'},
+                {nome:'Peça Inferior', item:pInferior, camada:'layer-inferior', icone:'fa-socks'},
+                {nome:'Calçado', item:pCalcado, camada:'layer-calcado', icone:'fa-shoe-prints'},
+                {nome:'Acessório', item:pAcessorio, camada:'layer-acessorio', icone:'fa-gem'}
+            ].filter(componente => componente.item);
+
+            if (!componentes.length) {
+                placeholderManequim.innerText = "Sem peças para combinar";
+                container.innerHTML = "<p style='text-align:center; color:#c5a059; font-size:0.85rem; padding:10px; font-weight:600;'>Não há produtos de moda disponíveis com estas opções.</p>";
+                return;
+            }
+
+            document.querySelectorAll('#manequim-vitrine-grid > div').forEach(bloco => bloco.style.display = 'none');
+            componentes.forEach(componente => {
+                const imagem = document.getElementById(componente.camada);
+                imagem.src = componente.item.imagem || 'https://via.placeholder.com/400?text=ABT';
+                imagem.parentElement.style.display = 'block';
+            });
+
+            placeholderManequim.style.display = "none";
+            vitrineGrid.style.display = "grid";
+
+            txtBoasVindas.innerHTML = `Com base no perfil <strong>${genero}</strong>, estilo <strong>${estilo}</strong> e produtos disponíveis em <strong>${loja === 'todas' ? 'todas as lojas parceiras' : loja}</strong>, montámos esta sugestão:`;
+
+            const calcularPrecoPeca = (item) => {
+                const precoOriginal = parseFloat(item.preco) || 0;
+                const nomeLoja = item.marca || item.loja || (item.origem === 'ABT' ? 'ABT' : 'ABT');
+                const descontoLoja = Number(descontosLojasIA[nomeLoja] ?? percentagemDesconto);
+                if (item.promocao === true && descontoLoja > 0) {
+                    return precoOriginal * (1 - (descontoLoja / 100));
+                }
+                return precoOriginal;
+            };
+
+            const pacoteLook = componentes.map(componente => ({ ...componente, precoFinal: Math.round(calcularPrecoPeca(componente.item)) }));
+            const precoTotalLook = pacoteLook.reduce((total, componente) => total + componente.precoFinal, 0);
+            const pacoteCarrinho = pacoteLook.map(componente => ({ id: componente.item.id, nome: componente.item.nome, preco: componente.precoFinal, img: componente.item.imagem }));
+            const pacoteJSON = encodeURIComponent(JSON.stringify(pacoteCarrinho));
+
+            container.innerHTML = `
+                <div class="sugestao-unica" style="text-align: left;">
+                    <h3 style="color:#000000; border-bottom:2px solid #c5a059; padding-bottom:5px; font-size:1.1rem; margin-top:0; text-transform:uppercase; letter-spacing:0.5px; width:max-content;">📋 Componentes do Look:</h3>
+                    <ul style="list-style: none; padding: 0; font-size: 0.85rem; line-height: 1.8; color: #333; margin-bottom: 15px; font-weight:500;">
+                        ${pacoteLook.map(componente => `<li><i class="fas ${componente.icone}" style="color:#c5a059; width:20px;"></i> <strong>${componente.nome}:</strong> ${componente.item.nome} (${componente.precoFinal.toLocaleString()} Kz)</li>`).join('')}
+                    </ul>
+                    <p style="color: #c5a059; font-size: 0.85rem; font-weight: 700; text-align: center; font-style: italic; border-top: 1px solid #c5a059; padding-top: 10px;">✨ Esta combinação foi selecionada pela nossa IA para destacar a sua elegância e estilo único.</p>
+                    <div style="margin-top: 15px; background: #ffffff; padding: 12px; border-radius: 4px; text-align: center; border: 1px solid #e0e0e0;">
+                        <span style="font-size: 0.8rem; color: #777777; display: block; text-transform: uppercase; font-weight:700;">Total do Outfit</span>
+                        <span class="preco-novo" style="font-size: 1.5rem;">${precoTotalLook.toLocaleString()} Kz</span>
+                    </div>
+                    <button class="btn-add-look" onclick="adicionarLookCompletoAoCarrinho('${pacoteJSON}')">
+                        <i class="fas fa-shopping-bag"></i> ADICIONAR LOOK COMPLETO AO CARRINHO
+                    </button>
+                </div>`;
+
+        } catch (e) {
+            loader.style.display = "none";
+            alert("Erro ao ligar à base de dados.");
+        }
+    }
+
+    carregarLojas();
+    atualizarIcone();
+    carregarConfigIA();
+</script>
+
+</body>
+</html>
